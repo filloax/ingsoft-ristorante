@@ -8,6 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+// NOTA: Per come funziona Spring, cerca classi con mapping di url (tipo /home, /ordina, ecc.)
+// nello stesso package della classe con @SpringBootApplication
+// se si vuol estendere la ricerca ad altri package, c'è una nota apposita
 @SpringBootApplication
 public class FortunaApplication {
 
