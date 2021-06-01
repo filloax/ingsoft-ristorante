@@ -14,9 +14,9 @@ public interface IGestioneSconti {
     
     public boolean rimuoviSconto(Sconto sconto);
 
-    public List<Sconto> listaSconti(LocalDateTime start, LocalDateTime end);
-    public List<Sconto> listaSconti(LocalDateTime start, LocalDateTime end, double prezzo);
-    public List<Sconto> listaSconti(LocalDateTime start, LocalDateTime end, Prodotto perProdotto);
-    public List<Sconto> listaSconti(LocalDateTime start, LocalDateTime end, double prezzo, Prodotto perProdotto);
+    public List<Sconto> listaSconti(LocalDateTime tempo);
+    public List<Sconto> listaSconti(LocalDateTime tempo, double prezzo);
+    public List<Sconto> listaSconti(LocalDateTime tempo, Prodotto perProdotto);
+    public List<Sconto> listaSconti(LocalDateTime tempo, double prezzo, Prodotto perProdotto);
     public List<Sconto> listaScontiTotali();
 }
