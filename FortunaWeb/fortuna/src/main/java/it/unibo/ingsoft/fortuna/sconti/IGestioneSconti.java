@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna;
+package it.unibo.ingsoft.fortuna.sconti;
 
 import java.time.LocalDateTime;
 import java.util.List;

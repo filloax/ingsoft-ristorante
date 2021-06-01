@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna;
+package it.unibo.ingsoft.fortuna.zoneconsegna;
 
 import java.util.List;
 
