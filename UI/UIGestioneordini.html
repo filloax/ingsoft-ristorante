@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table,
+td {
+    border: 1px solid #333;
+}
+
+thead,
+tfoot {
+    background-color: #333;
+    color: #fff;
+}
+</style>
+</head>
+<body>
+
+
+
+
+  
+  
+  
+
+
+<h1>Elenco Ordini</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Ora</th>
+            <th>Tempo rimanente</th>
+            <th>ID Richiesta</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>14/05/2021</td>
+            <td>13:21</td>
+            <th>20 min</th>
+            <td>8dbfa860</td>
+            <td><button>Mostra</button></td>
+        </tr>
+         <tr>
+           <td>14/05/2021</td>
+            <td>13:25</td>
+            <th>24 min</th>
+            <td>c99698e5</td>
+            <td><button>Mostra</button></td>
+           
+        </tr>
+         <tr>
+           <td>14/05/2021</td>
+            <td>13:29</td>
+             <th>20 min</th>
+            <td>5cbb9a20</td>
+            <td><button>Mostra</button></td>
+           
+        </tr>
+    </tbody>
+</table>
+
+<h1>Elenco Periodi Disattivazione</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Data Inizio</th>
+            <th>Orario Inizio</th>
+            <th>Data Fine</th>
+            <th>Orario Fine</th>
+            <th>Tipo Ordinazione</th>
+            <th>Prodotto</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>14/05/2021</td>
+            <td>13:21</td>
+            <td>14/05/2021</td>
+            <td>13:51</td>
+            <td>ORDINAZIONE A DOMICILIO</td>
+            <td></td>
+            <td><button>Riabilita</button></td>
+        </tr>
+         <tr>
+            <td>15/05/2021</td>
+            <td>12:30</td>
+            <td>15/05/2021</td>
+            <td>13:30</td>
+            <td>ORDINAZIONE ASPORTO</td>
+            <td></td>
+            <td><button>Riabilita</button></td>
+        </tr>
+         <tr>
+            <td>15/05/2021</td>
+            <td>12:30</td>
+            <td>16/05/2021</td>
+            <td>12:30</td>
+            <td></td>
+            <td>RAVIOLI AL VAPORE</td>
+            <td><button>Riabilita</button></td>
+           
+        </tr>
+    </tbody>
+</table>
+<h1>Aggiungi Periodo Disabilitazione</h1>
+
+<form action="/action_page.php">
+  <label for="birthday">Inizio:</label>
+  <input type="date" id="birthday" name="birthday">
+  <input type="time" id="appt" name="appt">
+  <br><br>
+  <label for="birthday">Fine :</label>
+  <input type="date" id="birthday" name="birthday">
+  <input type="time" id="appt" name="appt">
+  <br><br>
+    <label for="birthday">Tipo Ordinazione:</label>
+  <select name="cars" id="cars">
+    <option value="volvo">Scegli il tipo di Ordinazione da Disattivare</option>
+    
+  </select>
+  <br><br>
+  <label for="birthday">Prodotto:</label>
+  <select name="cars" id="cars">
+    <option value="volvo">Scegli un prodotto da disabilitare</option>
+  </select>
+  <br><br>
+  <input type="submit" value="Aggiungi Periodo Disabilitazione">
+</form>
+</body>
+</html>
