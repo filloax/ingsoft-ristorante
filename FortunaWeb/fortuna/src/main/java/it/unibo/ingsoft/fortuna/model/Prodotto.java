@@ -1,5 +1,7 @@
 package it.unibo.ingsoft.fortuna.model;
 
+import java.util.Objects;
+
 public class Prodotto {
     private int numero;
     private String nome;
@@ -19,6 +21,8 @@ public class Prodotto {
         this.numero = numero;
         this.nome = nome;
         this.prezzo = prezzo;
+        this.desc = "";
+        this.img = "";
     }
 
 
@@ -60,5 +64,22 @@ public class Prodotto {
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Prodotto)) {
+            return false;
+        }
+        Prodotto prodotto = (Prodotto) o;
+        return numero == prodotto.numero && Objects.equals(nome, prodotto.nome) && prezzo == prodotto.prezzo && Objects.equals(desc, prodotto.desc) && Objects.equals(img, prodotto.img);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numero, nome, prezzo, desc, img);
     }
 }

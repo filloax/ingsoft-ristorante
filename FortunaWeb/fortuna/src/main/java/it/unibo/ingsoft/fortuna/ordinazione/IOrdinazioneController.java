@@ -17,7 +17,7 @@ public interface IOrdinazioneController {
     public List<Prodotto> getMenu();
     public List<Sconto> getSconti();
 
-    public OrdineAlTavolo creaOrdineTavolo(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String tavolo);
+    public OrdineAlTavolo creaOrdineTavolo(String nome, List<Prodotto> prodotti, String note, String tavolo);
     public OrdineDomicilio creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono, String indirizzo);
     public OrdineDomicilio creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono, String indirizzo, String tokenPagamento);
     public OrdineTakeAway creaOrdineAsporto(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono);

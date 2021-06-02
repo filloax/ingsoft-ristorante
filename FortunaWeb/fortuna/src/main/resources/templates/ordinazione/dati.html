@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Fortuna: Ordinazione</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Ordinazione</h1>
+    <p th:text="'Ordinazione scelta: ' + ${session.tipoOrdine}" />
+    <div>
+        <h2>Dati finali:</h2>
+
+        <div id="carrello">
+            <h3>Prodotti Scelti</h3>
+            <form action="#" th:action="@{/ordine-prodotti}" method="POST">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Prezzo</th>
+                            <th>Quatità</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="prodotto : ${session.prodotti}">
+                            <td th:text="${prodotto.numero}">101</td>
+                            <td th:text="${prodotto.nome}">Involtini Primavera</td>
+                            <td th:text="${prodotto.prezzo}">1.50</td>
+                            <td th:text="${prodotto.desc}">-</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">--------</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Totale</td>
+                            <td colspan="2" th:text="${totale}">19.60</td>
+                        </tr>
+                    </tbody>
+                </table>  
+            </form>
+        </div>
+
+        <div id="dati">
+            <h3>Dati ordine</h3>
+            <form action="#" th:object="${datiOrdine}" method="POST">
+                <fieldset th:if="${chiediTelefono}">
+                    <label>Telefono</label>
+                    <input type="text" th:field="*{telefono}">
+                </fieldset>
+                <fieldset>
+                    <div th:if="${chiediTavolo}">
+                        <label>Tavolo</label>
+                        <input type="text" th:field="*{tavolo}">
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <label>Nome</label>
+                    <input type="text" th:field="*{nome}"><br>
+                    <label>Note</label>
+                    <textarea th:field="*{note}"></textarea><br>
+                </fieldset>
+                <button name="conferma" value="true">Conferma e effettua l'ordine</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

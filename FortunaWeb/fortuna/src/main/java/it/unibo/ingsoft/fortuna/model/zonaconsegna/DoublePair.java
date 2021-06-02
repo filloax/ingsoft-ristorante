@@ -1,5 +1,7 @@
 package it.unibo.ingsoft.fortuna.model.zonaconsegna;
 
+import java.util.Objects;
+
 public class DoublePair {
     private double x;
     private double y;

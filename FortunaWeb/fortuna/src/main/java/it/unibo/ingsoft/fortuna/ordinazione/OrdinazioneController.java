@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import it.unibo.ingsoft.fortuna.Controller;
 import it.unibo.ingsoft.fortuna.PeriodiController;
@@ -21,6 +22,7 @@ import it.unibo.ingsoft.fortuna.prodotti.IGestioneProdotti;
 import it.unibo.ingsoft.fortuna.sconti.IGestioneSconti;
 import it.unibo.ingsoft.fortuna.zoneconsegna.IGestioneZoneConsegna;
 
+@Component
 public class OrdinazioneController extends Controller implements IOrdinazioneController {
     private PeriodiController periodiDisattivazione;
 
@@ -53,6 +55,16 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
     }
 
     @Override
+    public List<Prodotto> getMenu() {
+        return gestioneProdotti.listaProdotti();
+    }
+
+    @Override
+    public List<Sconto> getSconti() {
+        return gestioneSconti.listaScontiTotali();
+    }
+
+    @Override
     public boolean verificaZonaConsegna(String indirizzo, double costo) {
         List<IZonaConsegna> zoneConsegna = gestioneZoneConsegna.listaZoneConsegna();
 
@@ -63,16 +75,6 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         }
 
         return false;
-    }
-
-    @Override
-    public List<Prodotto> getMenu() {
-        return gestioneProdotti.listaProdotti();
-    }
-
-    @Override
-    public List<Sconto> getSconti() {
-        return gestioneSconti.listaScontiTotali();
     }
 
     private void impostaOrdine(Ordine ordine, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note) {
@@ -90,13 +92,16 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
     }
 
     @Override
-    public OrdineAlTavolo creaOrdineTavolo(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
+    public OrdineAlTavolo creaOrdineTavolo(String nome, List<Prodotto> prodotti, String note,
             String tavolo) {
         OrdineAlTavolo ordine = new OrdineAlTavolo();
-        impostaOrdine(ordine, nome, prodotti, dataOra, note);
+        impostaOrdine(ordine, nome, prodotti, LocalDateTime.now(), note);
         ordine.setTavolo(tavolo);
 
         // TODO Inserisci in DB
+
+        System.out.println(String.format("Creato ordine tavolo: %s | %d prodotti | %s | tavolo %s",
+            nome, prodotti.size(), note, tavolo));
 
         return ordine;
     }
@@ -109,6 +114,9 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         ordine.setTelefono(telefono);
         ordine.setTelefono(indirizzo);
         ordine.setTokenPagamento("");
+
+        System.out.println(String.format("Creato ordine domicilio: %s | %d prodotti | %s | %s | telefono %s | indirizzo %s",
+            nome, prodotti.size(), dataOra.toString(), note, telefono, indirizzo));
 
         // TODO Inserisci in DB
 
@@ -126,6 +134,9 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
 
         // TODO Inserisci in DB
 
+        System.out.println(String.format("Creato ordine domicilio: %s | %d prodotti | %s | %s | telefono %s | indirizzo %s | token %s",
+            nome, prodotti.size(), dataOra.toString(), note, telefono, indirizzo, tokenPagamento));
+
         return ordine;
     }
 
@@ -138,6 +149,42 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         
         // TODO Inserisci in DB
 
+        System.out.println(String.format("Creato ordine asporto: %s | %d prodotti | %s | %s | telefono %s",
+            nome, prodotti.size(), dataOra.toString(), note, telefono));
+
         return ordine;
+    }
+
+
+    public PeriodiController getPeriodiDisattivazione() {
+        return this.periodiDisattivazione;
+    }
+
+    public void setPeriodiDisattivazione(PeriodiController periodiDisattivazione) {
+        this.periodiDisattivazione = periodiDisattivazione;
+    }
+
+    public IGestioneProdotti getGestioneProdotti() {
+        return this.gestioneProdotti;
+    }
+
+    public void setGestioneProdotti(IGestioneProdotti gestioneProdotti) {
+        this.gestioneProdotti = gestioneProdotti;
+    }
+
+    public IGestioneSconti getGestioneSconti() {
+        return this.gestioneSconti;
+    }
+
+    public void setGestioneSconti(IGestioneSconti gestioneSconti) {
+        this.gestioneSconti = gestioneSconti;
+    }
+
+    public IGestioneZoneConsegna getGestioneZoneConsegna() {
+        return this.gestioneZoneConsegna;
+    }
+
+    public void setGestioneZoneConsegna(IGestioneZoneConsegna gestioneZoneConsegna) {
+        this.gestioneZoneConsegna = gestioneZoneConsegna;
     }
 }
