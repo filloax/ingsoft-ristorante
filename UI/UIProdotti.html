@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table,
+td {
+    border: 1px solid #333;
+}
+
+thead,
+tfoot {
+    background-color: #333;
+    color: #fff;
+}
+</style>
+</head>
+<body>
+
+<h1>Aggiungi Prodotto</h1>
+
+<form action="/action_page.php">
+ <label for="birthday">ID Prodotto:</label>
+  <input type="text" id="birthday" name="birthday">
+  <br><br>
+
+  <label for="birthday">Nome Prodotto:</label>
+  <input type="text" id="birthday" name="birthday">
+  
+  <br><br>
+ <label for="birthday">Prezzo:</label>
+  <input type="number" id="birthday" name="birthday">
+  <br><br>
+  <label for="birthday">Descrizione:</label>
+  <input type="text" id="birthday" name="birthday">
+  <br><br>
+  <label for="birthday">Foto</label>
+  <input type="file"
+       id="avatar" name="avatar"
+       accept="image/png, image/jpeg">
+  <br><br>
+  
+  
+  <input type="submit" value="Aggiungi Prodotto">
+</form>
+
+<br>
+
+<h1>Elenco Prodotto</h1>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Prezzo</th>
+            <th>Descrizione</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>101</td>
+            <td>Involtini Primavera</td>
+            <td>1.50</td>
+            <td>-</td>
+            <td><button>Rimuovi</button></td>
+        </tr>
+         <tr>
+            <td>95</td>
+            <td>Barca Piccola</td>
+            <td>18.00</td>
+            <td>8 sashimi, 4 uramaki, 4 hosomaki, 4 nigiri</td>
+            <td><button>Rimuovi</button></td>
+           
+        </tr>
+    </tbody>
+</table>
+
+
+</body>
+</html>
