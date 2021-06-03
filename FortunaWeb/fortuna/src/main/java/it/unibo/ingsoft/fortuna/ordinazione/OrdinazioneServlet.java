@@ -32,11 +32,11 @@ public class OrdinazioneServlet {
     }
 
     @PostMapping({"/ordine-prodotti"})
-    public String scegliProdotti(Model model, HttpServletRequest request, 
+    public String scegliProdotti(Model model, HttpServletRequest request, HttpSession session,
             @RequestParam(value = "tipoOrdine", required = false) String tipoOrdine, 
             @RequestParam(value = "add", required = false) String toAddNumero, 
             @RequestParam(value = "remove", required = false) String toRemoveIndex) {
-        HttpSession session = request.getSession();
+
         if (tipoOrdine != null)
             session.setAttribute("tipoOrdine", tipoOrdine);
         
@@ -73,16 +73,41 @@ public class OrdinazioneServlet {
     }
 
     @GetMapping({"/ordine-indirizzo"})
-    public String scegliIndirizzo(Model model, HttpServletRequest request) {
+    public String scegliIndirizzoGet(Model model, HttpServletRequest request, HttpSession session) {
+        model.addAttribute("indirizzoSbagliato", false);
         return "ordinazione/indirizzo";
     }
 
+    @PostMapping({"/ordine-indirizzo"})
+    public String scegliIndirizzoPost(Model model, HttpServletRequest request, HttpSession session,
+            @RequestParam(value = "indirizzo", required = false) String indirizzo) {
+        
+        if (indirizzo != null) {
+            @SuppressWarnings("unchecked")
+            List<Prodotto> prodotti = (List<Prodotto>) session.getAttribute("prodotti");
+            // Zona consegna scelta in base a totale, non totale scontato
+            double costo = prodotti.stream()
+                .map(prodotto -> prodotto.getPrezzo())
+                .reduce(0., (a, b) -> a + b);
+
+            if (ordinazione.verificaZonaConsegna(indirizzo, costo)) {
+                session.setAttribute("indirizzo", indirizzo);
+                return "redirect:/ordine-dati";
+            } else {
+                model.addAttribute("indirizzoSbagliato", true);
+                return "ordinazione/indirizzo";
+            }
+
+
+        } else {
+            return scegliIndirizzoGet(model, request, session);
+        }
+    }
+
     @RequestMapping({"/ordine-dati"})
-    public String inviaDatiFinaliGet(Model model, HttpServletRequest request,
+    public String inviaDatiFinaliGet(Model model, HttpServletRequest request, HttpSession session,
             @ModelAttribute("datiOrdine") DatiOrdine datiOrdine,
             @RequestParam(value = "conferma", defaultValue = "false") String conferma) {
-
-        HttpSession session = request.getSession();
         
         @SuppressWarnings("unchecked")
         List<Prodotto> prodotti = (List<Prodotto>) session.getAttribute("prodotti");
@@ -95,10 +120,10 @@ public class OrdinazioneServlet {
         model.addAttribute("chiediData", !"tavolo".equals(session.getAttribute("tipoOrdine")));
 
         if (request.getMethod().equals("POST") && conferma.equals("true")) {
-            LocalDateTime dataOra;
-            dataOra = LocalDateTime.now(); //TODO
-
-            session.setAttribute("indirizzo", "sos"); //TODO
+            LocalDateTime dataOra = null;
+            if (!"tavolo".equals(session.getAttribute("tipoOrdine"))) {
+                dataOra = LocalDateTime.of(datiOrdine.getData(), datiOrdine.getOra());
+            }
 
             switch((String) session.getAttribute("tipoOrdine")) {
                 case "domicilio": ordinazione.creaOrdineDomicilio(datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 

@@ -29,7 +29,10 @@
                             <td th:text="${prodotto.nome}">Involtini Primavera</td>
                             <td th:text="${prodotto.prezzo}">1.50</td>
                             <td th:text="${prodotto.desc}">-</td>
-                            <td><button type="submit" name="add" th:value="${prodotto.numero}">Aggiungi</button></td>
+                            <td>
+                                <button th:unless="${#sets.contains(prodottiDisabilitati, prodotto)}" type="submit" name="add" th:value="${prodotto.numero}">Aggiungi</button>
+                                <span th:if="${#sets.contains(prodottiDisabilitati, prodotto)}">Non disponibile</button>
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="5" style="font-size: xx-large">..........</td>

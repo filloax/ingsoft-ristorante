@@ -27,7 +27,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
     private PeriodiController periodiDisattivazione;
 
     // Campi Autowired inseriti automaticamente da Spring Boot a partire da classi
-    // marcate con @Component("nome") es: @Component("gestioneProdotti")
+    // marcate con @Component del tipo corrispondente
     @Autowired
     private IGestioneProdotti gestioneProdotti;
 
@@ -69,7 +69,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         List<IZonaConsegna> zoneConsegna = gestioneZoneConsegna.listaZoneConsegna();
 
         for (IZonaConsegna zonaConsegna : zoneConsegna) {
-            if (!zonaConsegna.include(indirizzo, costo)) {
+            if (zonaConsegna.include(indirizzo, costo)) {
                 return true;
             }
         }

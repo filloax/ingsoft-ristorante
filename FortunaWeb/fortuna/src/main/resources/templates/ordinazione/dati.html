@@ -19,7 +19,7 @@
                             <th>ID</th>
                             <th>Nome</th>
                             <th>Prezzo</th>
-                            <th>Quatità</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,10 +30,10 @@
                             <td th:text="${prodotto.desc}">-</td>
                         </tr>
                         <tr>
-                            <td colspan="5">--------</td>
+                            <td colspan="4">--------</td>
                         </tr>
                         <tr>
-                            <td colspan="3">Totale</td>
+                            <td colspan="2">Totale</td>
                             <td colspan="2" th:text="${totale}">19.60</td>
                         </tr>
                     </tbody>
@@ -41,18 +41,26 @@
             </form>
         </div>
 
+        <div id="indirizzo" th:if="${session.indirizzo}">
+            <h3>Indirizzo scelto:</h3>
+            <p th:text="${session.indirizzo}"></p>
+        </div>
+
         <div id="dati">
             <h3>Dati ordine</h3>
             <form action="#" th:object="${datiOrdine}" method="POST">
+                <fieldset th:if="${chiediData}">
+                    <label>Data e Ora</label>
+                    <input type="date" th:field="*{data}">
+                    <input type="time" th:field="*{ora}">
+                </fieldset>
                 <fieldset th:if="${chiediTelefono}">
                     <label>Telefono</label>
                     <input type="text" th:field="*{telefono}">
                 </fieldset>
-                <fieldset>
-                    <div th:if="${chiediTavolo}">
-                        <label>Tavolo</label>
-                        <input type="text" th:field="*{tavolo}">
-                    </div>
+                <fieldset th:if="${chiediTavolo}">
+                    <label>Tavolo</label>
+                    <input type="text" th:field="*{tavolo}">
                 </fieldset>
                 <fieldset>
                     <label>Nome</label>

@@ -9,7 +9,11 @@
     <div>
         <h2>Indirizzo:</h2>
 
-        <form action="#" th:action="@{/ordine-dati}" method="GET">
+        <p class="error" th:if="${indirizzoSbagliato}">Non possiamo fare consegne a domicilio a queste distanze, in questa fascia di prezzo.</p>
+
+        <form action="#" th:action="@{/ordine-indirizzo}" method="POST">
+            <label>Indirizzo</label>
+            <input type="text" name="indirizzo" th:value="${session.indirizzo}"> 
             <button>Conferma</button>
         </form>
     </div>
