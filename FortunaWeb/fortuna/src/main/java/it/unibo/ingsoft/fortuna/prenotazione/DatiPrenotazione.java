@@ -1,18 +1,17 @@
-package it.unibo.ingsoft.fortuna.ordinazione;
+package it.unibo.ingsoft.fortuna.prenotazione;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class DatiOrdine {
+public class DatiPrenotazione {
     private String nome;
-    private String note;
     private String telefono;
-    private String tavolo;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate data;
     private LocalTime ora;
+    private int numeroPersone;
 
 
     public String getNome() {
@@ -23,28 +22,12 @@ public class DatiOrdine {
         this.nome = nome;
     }
 
-    public String getNote() {
-        return this.note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
     public String getTelefono() {
         return this.telefono;
     }
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
-    }
-
-    public String getTavolo() {
-        return this.tavolo;
-    }
-
-    public void setTavolo(String tavolo) {
-        this.tavolo = tavolo;
     }
 
     public LocalDate getData() {
@@ -62,4 +45,13 @@ public class DatiOrdine {
     public void setOra(LocalTime ora) {
         this.ora = ora;
     }
+
+    public int getNumeroPersone() {
+        return this.numeroPersone;
+    }
+
+    public void setNumeroPersone(int numeroPersone) {
+        this.numeroPersone = numeroPersone;
+    }
+    
 }

@@ -54,15 +54,11 @@ public class OrdinazioneServlet {
                 .filter(prod -> prod.getNumero() == numero)
                 .findFirst().get();
             prodotti.add(prodotto);
-
-            System.out.println("Debug: aggiunto prodotto " + prodotto.getNome() + ", menu: " + String.join(", ", prodotti.stream().map(p -> p.getNome()).collect(Collectors.toList())));
         }
 
         if (toRemoveIndex != null) {
             int i = Integer.parseInt(toRemoveIndex);
-            Prodotto prodotto = prodotti.remove(i);
-
-            System.out.println("Debug: rimosso prodotto " + prodotto.getNome());
+            prodotti.remove(i);
         }
 
         model.addAttribute("totale", prodotti.stream()
@@ -138,6 +134,7 @@ public class OrdinazioneServlet {
             }
 
             if (status.equals("success")) {
+                // TODO: log
                 return "ordinazione/finale";
             } else {
                 model.addAttribute("error", status);

@@ -46,10 +46,7 @@
             <p th:text="${session.indirizzo}"></p>
         </div>
 
-        <div class="error" th:switch="${status}">
-            <p th:case="'err-unknown'">
-                Errore sconosciuto
-            </p>
+        <div class="error" th:if="${error}" th:switch="${error}">
             <p th:case="'err-tipo'">
                 Errore: tipo di ordinazione non disponibile
             </p>
