@@ -91,9 +91,35 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         ordine.setSconti(scontiApplicabili);
     }
 
+    private boolean verificaTipo(TipoDisattivazione tipo) {
+        return !getTipoOrdiniDisabilitati().contains(tipo);
+    }
+
+    // Controlla che nessuno degli ordini richiesti sia disabilitato o inesistente
+    private boolean verificaProdotti(List<Prodotto> prodotti) {
+        boolean contieneDisabilitato = prodotti.stream()
+            .anyMatch(prodotto -> getProdottiDisabilitati().contains(prodotto));
+
+        boolean contieneInesistente = !getMenu().containsAll(prodotti);
+
+        return !contieneDisabilitato && !contieneInesistente;
+    }
+
+    private boolean verificaTavolo(String tavolo) {
+        // TODO: controllare se tavolo esiste, è valido, ecc, funzionalità aggiuntiva probabilmente
+        return true;
+    }
+
     @Override
-    public OrdineAlTavolo creaOrdineTavolo(String nome, List<Prodotto> prodotti, String note,
+    public String creaOrdineTavolo(String nome, List<Prodotto> prodotti, String note,
             String tavolo) {
+        if (!verificaTipo(TipoDisattivazione.ORDINAZ_TAVOLO))
+            return "err-tipo";
+        if (!verificaProdotti(prodotti))
+            return "err-prodotti";
+        if (!verificaTavolo(tavolo))
+            return "err-tavolo";
+
         OrdineAlTavolo ordine = new OrdineAlTavolo();
         impostaOrdine(ordine, nome, prodotti, LocalDateTime.now(), note);
         ordine.setTavolo(tavolo);
@@ -103,31 +129,29 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         System.out.println(String.format("Creato ordine tavolo: %s | %d prodotti | %s | tavolo %s",
             nome, prodotti.size(), note, tavolo));
 
-        return ordine;
+        return "success";
     }
 
     @Override
-    public OrdineDomicilio creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
+    public String creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
             String telefono, String indirizzo) {
-        OrdineDomicilio ordine = new OrdineDomicilio();
-        impostaOrdine(ordine, nome, prodotti, dataOra, note);
-        ordine.setTelefono(telefono);
-        ordine.setTelefono(indirizzo);
-        ordine.setTokenPagamento("");
-
-        System.out.println(String.format("Creato ordine domicilio: %s | %d prodotti | %s | %s | telefono %s | indirizzo %s",
-            nome, prodotti.size(), dataOra.toString(), note, telefono, indirizzo));
-
-        // TODO Inserisci in DB
-
-        return ordine;
+        return creaOrdineDomicilio(nome, prodotti, dataOra, note, telefono, indirizzo, "");
     }
 
     @Override
-    public OrdineDomicilio creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
+    public String creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
             String telefono, String indirizzo, String tokenPagamento) {
+        if (!verificaTipo(TipoDisattivazione.ORDINAZ_DOMICILIO))
+            return "err-tipo";
+        if (!verificaProdotti(prodotti))
+            return "err-prodotti";
+    
         OrdineDomicilio ordine = new OrdineDomicilio();
         impostaOrdine(ordine, nome, prodotti, dataOra, note);
+    
+        if (!verificaZonaConsegna(indirizzo, ordine.calcolaCostoTotale()))
+            return "err-zona";
+    
         ordine.setTelefono(telefono);
         ordine.setTelefono(indirizzo);
         ordine.setTokenPagamento(tokenPagamento);
@@ -137,12 +161,17 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         System.out.println(String.format("Creato ordine domicilio: %s | %d prodotti | %s | %s | telefono %s | indirizzo %s | token %s",
             nome, prodotti.size(), dataOra.toString(), note, telefono, indirizzo, tokenPagamento));
 
-        return ordine;
+        return "success";
     }
 
     @Override
-    public OrdineTakeAway creaOrdineAsporto(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
+    public String creaOrdineAsporto(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
             String telefono) {
+        if (!verificaTipo(TipoDisattivazione.ORDINAZ_ASPORTO))
+            return "err-tipo";
+        if (!verificaProdotti(prodotti))
+            return "err-prodotti";
+
         OrdineTakeAway ordine = new OrdineTakeAway();
         impostaOrdine(ordine, nome, prodotti, dataOra, note);
         ordine.setTelefono(telefono);
@@ -152,7 +181,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         System.out.println(String.format("Creato ordine asporto: %s | %d prodotti | %s | %s | telefono %s",
             nome, prodotti.size(), dataOra.toString(), note, telefono));
 
-        return ordine;
+        return "success";
     }
 
 

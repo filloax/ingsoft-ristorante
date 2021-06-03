@@ -46,6 +46,27 @@
             <p th:text="${session.indirizzo}"></p>
         </div>
 
+        <div class="error" th:switch="${status}">
+            <p th:case="'err-unknown'">
+                Errore sconosciuto
+            </p>
+            <p th:case="'err-tipo'">
+                Errore: tipo di ordinazione non disponibile
+            </p>
+            <p th:case="'err-prodotti'">
+                Errore: hai scelto un prodotto non valido
+            </p>
+            <p th:case="'err-tavolo'">
+                Errore: tavolo non valido
+            </p>
+            <p th:case="'err-zona'">
+                Errore: indirizzo fuori dalla zona di consegna
+            </p>
+            <p th:case="'err-unknown'">
+                Errore sconosciuto
+            </p>
+        </div>
+
         <div id="dati">
             <h3>Dati ordine</h3>
             <form action="#" th:object="${datiOrdine}" method="POST">

@@ -125,17 +125,24 @@ public class OrdinazioneServlet {
                 dataOra = LocalDateTime.of(datiOrdine.getData(), datiOrdine.getOra());
             }
 
+            String status = "err-unknown";
+
             switch((String) session.getAttribute("tipoOrdine")) {
-                case "domicilio": ordinazione.creaOrdineDomicilio(datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 
+                case "domicilio": status = ordinazione.creaOrdineDomicilio(datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 
                     datiOrdine.getTelefono(), (String)session.getAttribute("indirizzo")); break;
-                case "tavolo": ordinazione.creaOrdineTavolo(datiOrdine.getNome(), prodotti, datiOrdine.getNote(), 
+                case "tavolo": status = ordinazione.creaOrdineTavolo(datiOrdine.getNome(), prodotti, datiOrdine.getNote(), 
                     datiOrdine.getTavolo()); break;
-                case "takeAway": ordinazione.creaOrdineAsporto(datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 
+                case "takeAway": status = ordinazione.creaOrdineAsporto(datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 
                     datiOrdine.getTelefono()); break;
                 default: //TODO gestire tipo ordine invalido
             }
 
-            return "ordinazione/finale";
+            if (status.equals("success")) {
+                return "ordinazione/finale";
+            } else {
+                model.addAttribute("error", status);
+                return "ordinazione/dati";
+            }
         } 
 
         return "ordinazione/dati";

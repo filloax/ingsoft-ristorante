@@ -6,7 +6,6 @@ import java.util.Set;
 
 import it.unibo.ingsoft.fortuna.model.*;
 import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
-import it.unibo.ingsoft.fortuna.model.richiesta.*;
 
 public interface IOrdinazioneController {
     public Set<TipoDisattivazione> getTipoOrdiniDisabilitati();
@@ -17,8 +16,8 @@ public interface IOrdinazioneController {
     public List<Prodotto> getMenu();
     public List<Sconto> getSconti();
 
-    public OrdineAlTavolo creaOrdineTavolo(String nome, List<Prodotto> prodotti, String note, String tavolo);
-    public OrdineDomicilio creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono, String indirizzo);
-    public OrdineDomicilio creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono, String indirizzo, String tokenPagamento);
-    public OrdineTakeAway creaOrdineAsporto(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono);
+    public String creaOrdineTavolo(String nome, List<Prodotto> prodotti, String note, String tavolo);
+    public String creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono, String indirizzo);
+    public String creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono, String indirizzo, String tokenPagamento);
+    public String creaOrdineAsporto(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono);
 }
