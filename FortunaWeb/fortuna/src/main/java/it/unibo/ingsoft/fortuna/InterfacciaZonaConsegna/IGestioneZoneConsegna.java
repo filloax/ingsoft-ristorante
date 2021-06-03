@@ -1,6 +1,6 @@
 package it.unibo.ingsoft.fortuna.InterfacciaZonaConsegna;
 import java.util.Set;
-import java.util.List;
+//import java.util.List;
 
 import it.unibo.ingsoft.fortuna.model.ZonaConsegna;
 
