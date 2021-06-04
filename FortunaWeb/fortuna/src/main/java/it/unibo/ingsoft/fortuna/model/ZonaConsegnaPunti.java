@@ -6,7 +6,12 @@ import java.util.Map.Entry;
 public class ZonaConsegnaPunti implements IZonaConsegna{
     private double prezzoMinimo;
     private List<Entry<Double, Double>> punti;
-    
+
+    public ZonaConsegnaPunti(List<Entry<Double, Double>> punti, double prezzoMinimo) {
+        this.prezzoMinimo = prezzoMinimo;
+        this.punti = punti;
+    }
+
     @Override
     public boolean include(Entry<Double, Double> coordinata, double prezzo) {
         

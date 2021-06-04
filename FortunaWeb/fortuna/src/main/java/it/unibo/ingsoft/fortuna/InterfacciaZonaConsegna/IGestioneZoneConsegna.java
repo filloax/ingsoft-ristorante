@@ -6,7 +6,7 @@ import java.util.List;
 import it.unibo.ingsoft.fortuna.model.ZonaConsegnaPunti;
 
 public interface IGestioneZoneConsegna {
-    public void aggiungZonaConsegna(List<Entry<Double,Double>> punti, double prezzoMinimo);
+    public void aggiungiZonaConsegna(List<Entry<Double,Double>> punti, double prezzoMinimo);
     public void rimuoviZonaConsegna(ZonaConsegnaPunti toRemove);
     public Set<ZonaConsegnaPunti> listaZoneConsegna();
 }
