@@ -29,10 +29,9 @@ public class PrenotazioneServlet {
 
             String status = "err-unknown";
 
-            status = prenotazioneController.creaPrenotazione(datiPrenotazione.getNome(), dataOra, datiPrenotazione.getTelefono(), datiPrenotazione.getNumeroPersone());
+            status = prenotazioneController.creaPrenotazione(request, datiPrenotazione.getNome(), dataOra, datiPrenotazione.getTelefono(), datiPrenotazione.getNumeroPersone());
 
             if (status.equals("success")) {
-                // TODO: log
                 return "prenotazione/finale";
             } else {
                 model.addAttribute("error", status);

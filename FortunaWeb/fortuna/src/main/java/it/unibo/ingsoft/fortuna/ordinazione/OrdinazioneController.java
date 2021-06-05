@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -111,8 +114,10 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
     }
 
     @Override
-    public String creaOrdineTavolo(String nome, List<Prodotto> prodotti, String note,
+    public String creaOrdineTavolo(HttpServletRequest request, String nome, List<Prodotto> prodotti, String note,
             String tavolo) {
+        scriviOperazione(request.getRemoteAddr(), String.format("creaOrdineTavolo(tavolo: %s)", tavolo));
+
         if (!verificaTipo(TipoDisattivazione.ORDINAZ_TAVOLO))
             return "err-tipo";
         if (!verificaProdotti(prodotti))
@@ -133,14 +138,16 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
     }
 
     @Override
-    public String creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
+    public String creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
             String telefono, String indirizzo) {
-        return creaOrdineDomicilio(nome, prodotti, dataOra, note, telefono, indirizzo, "");
+        return creaOrdineDomicilio(request, nome, prodotti, dataOra, note, telefono, indirizzo, "");
     }
 
     @Override
-    public String creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
+    public String creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
             String telefono, String indirizzo, String tokenPagamento) {
+        scriviOperazione(request.getRemoteAddr(), String.format("creaOrdineDomicilio(dataOra: %s, pagamento: %s)", dataOra.toString(), tokenPagamento));
+
         if (!verificaTipo(TipoDisattivazione.ORDINAZ_DOMICILIO))
             return "err-tipo";
         if (!verificaProdotti(prodotti))
@@ -165,8 +172,10 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
     }
 
     @Override
-    public String creaOrdineAsporto(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
+    public String creaOrdineAsporto(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
             String telefono) {
+        scriviOperazione(request.getRemoteAddr(), String.format("creaOrdineAsporto(dataOra: %s)", dataOra.toString()));
+
         if (!verificaTipo(TipoDisattivazione.ORDINAZ_ASPORTO))
             return "err-tipo";
         if (!verificaProdotti(prodotti))

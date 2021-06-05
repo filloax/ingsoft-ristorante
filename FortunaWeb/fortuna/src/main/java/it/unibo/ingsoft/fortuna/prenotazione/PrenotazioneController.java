@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Component;
 
 import it.unibo.ingsoft.fortuna.Controller;
@@ -28,7 +30,10 @@ public class PrenotazioneController extends Controller implements IPrenotazioneC
     }
 
     @Override
-    public String creaPrenotazione(String nome, LocalDateTime dataOra, String telefono, int numeroPersone) {
+    public String creaPrenotazione(HttpServletRequest request, String nome, LocalDateTime dataOra, String telefono, int numeroPersone) {
+        // Log prima di controllo, serve a evitare DOS
+        scriviOperazione(request.getRemoteAddr(), String.format("creaPrenotazione(dataOra: %s)", dataOra.toString()));
+
         boolean dataValida = getPeriodiDisattivati().stream()
             .noneMatch(periodo -> (periodo.getInizio().isBefore(dataOra) || periodo.getInizio().equals(dataOra)) && periodo.getFine().isAfter(dataOra));
         if (!dataValida)

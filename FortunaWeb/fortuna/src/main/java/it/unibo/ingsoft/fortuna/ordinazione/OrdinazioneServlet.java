@@ -115,6 +115,8 @@ public class OrdinazioneServlet {
         model.addAttribute("chiediTavolo", "tavolo".equals(session.getAttribute("tipoOrdine")));
         model.addAttribute("chiediData", !"tavolo".equals(session.getAttribute("tipoOrdine")));
 
+        // TODO: pagamento
+
         if (request.getMethod().equals("POST") && conferma.equals("true")) {
             LocalDateTime dataOra = null;
             if (!"tavolo".equals(session.getAttribute("tipoOrdine"))) {
@@ -124,17 +126,16 @@ public class OrdinazioneServlet {
             String status = "err-unknown";
 
             switch((String) session.getAttribute("tipoOrdine")) {
-                case "domicilio": status = ordinazione.creaOrdineDomicilio(datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 
+                case "domicilio": status = ordinazione.creaOrdineDomicilio(request, datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 
                     datiOrdine.getTelefono(), (String)session.getAttribute("indirizzo")); break;
-                case "tavolo": status = ordinazione.creaOrdineTavolo(datiOrdine.getNome(), prodotti, datiOrdine.getNote(), 
+                case "tavolo": status = ordinazione.creaOrdineTavolo(request, datiOrdine.getNome(), prodotti, datiOrdine.getNote(), 
                     datiOrdine.getTavolo()); break;
-                case "takeAway": status = ordinazione.creaOrdineAsporto(datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 
+                case "takeAway": status = ordinazione.creaOrdineAsporto(request, datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 
                     datiOrdine.getTelefono()); break;
                 default: //TODO gestire tipo ordine invalido
             }
 
             if (status.equals("success")) {
-                // TODO: log
                 return "ordinazione/finale";
             } else {
                 model.addAttribute("error", status);
