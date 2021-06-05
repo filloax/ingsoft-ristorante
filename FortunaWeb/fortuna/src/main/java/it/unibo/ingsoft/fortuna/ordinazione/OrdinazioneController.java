@@ -1,5 +1,9 @@
 package it.unibo.ingsoft.fortuna.ordinazione;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,11 +84,21 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         return false;
     }
 
-    private void impostaOrdine(Ordine ordine, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note) {
+    private boolean impostaOrdine(Ordine ordine, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note) {
         ordine.nominativo(nome)
             .prodotti(prodotti)
             .dataOra(dataOra)
             .note(note);
+        
+        try {
+            ordine.setIdRichiesta(generaId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
         List<Sconto> scontiApplicabili = new ArrayList<>();
         scontiApplicabili.addAll(gestioneSconti.listaSconti(dataOra, ordine.calcolaCostoTotale()));
@@ -92,6 +106,8 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             scontiApplicabili.addAll(gestioneSconti.listaSconti(dataOra, ordine.calcolaCostoTotale(), prodotto));
         }
         ordine.setSconti(scontiApplicabili);
+
+        return true;
     }
 
     private boolean verificaTipo(TipoDisattivazione tipo) {
@@ -126,7 +142,11 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             return "err-tavolo";
 
         OrdineAlTavolo ordine = new OrdineAlTavolo();
-        impostaOrdine(ordine, nome, prodotti, LocalDateTime.now(), note);
+        boolean success = impostaOrdine(ordine, nome, prodotti, LocalDateTime.now(), note);
+
+        if (!success)
+            return "err-database";
+
         ordine.setTavolo(tavolo);
 
         // TODO Inserisci in DB
@@ -154,8 +174,11 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             return "err-prodotti";
     
         OrdineDomicilio ordine = new OrdineDomicilio();
-        impostaOrdine(ordine, nome, prodotti, dataOra, note);
+        boolean success = impostaOrdine(ordine, nome, prodotti, dataOra, note);
     
+        if (!success)
+            return "err-database";
+
         if (!verificaZonaConsegna(indirizzo, ordine.calcolaCostoTotale()))
             return "err-zona";
     
@@ -182,7 +205,11 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             return "err-prodotti";
 
         OrdineTakeAway ordine = new OrdineTakeAway();
-        impostaOrdine(ordine, nome, prodotti, dataOra, note);
+        boolean success = impostaOrdine(ordine, nome, prodotti, dataOra, note);
+    
+        if (!success)
+            return "err-database";
+
         ordine.setTelefono(telefono);
         
         // TODO Inserisci in DB
@@ -191,6 +218,38 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             nome, prodotti.size(), dataOra.toString(), note, telefono));
 
         return "success";
+    }
+
+    private String generaId() throws SQLException, Exception {
+        PreparedStatement statement = null;
+        Connection connection = null;
+        int id = -1;
+
+        try {
+            connection = getConnection();
+            String query = "SELECT(NEXTVAL FOR ordine_id_seq) INTO newId";
+            statement = connection.prepareStatement(query);
+            ResultSet result = statement.executeQuery();
+
+            if (result.next())
+                id = result.getInt("newId");
+            else
+                throw new Exception("ID invalido"); //opzionalmente sostituire con eccezione più appropriata
+        } catch (SQLException e) {
+            throw e; //opzionalmente sostituire con eccezione più appropriata
+        } finally {
+            try {
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch(SQLException e) {
+                throw e; //opzionalmente sostituire con eccezione più appropriata
+            }
+        }
+
+        if (id >= 0)
+            return "O" + String.format("%5d", id);
+        else
+            throw new Exception("ID invalido"); //opzionalmente sostituire con eccezione più appropriata
     }
 
 
