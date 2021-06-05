@@ -2,37 +2,54 @@ package it.unibo.ingsoft.fortuna;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
-import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import it.unibo.ingsoft.fortuna.ConfigProps.DatabaseProps;
 
 public abstract class Controller {
+
+    @Autowired
+    private ConfigProps config;
 
 	private Connection connessioneDB;
 
 	// "jdbc:db2://diva.disi.unibo.it:50000/sample" esempio String database
-	private void apriConnessione(String database) throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
+	private void apriConnessione() throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
 		String password, user;
-		Scanner sc = new Scanner(System.in);
-		
-		Class.forName("com.ibm.db2.jcc.DB2Driver").getDeclaredConstructor().newInstance();
-		
-		System.out.println("Inserire user: ");
-		user = sc.nextLine();
-		System.out.println("Inserire password: ");
-		password = sc.nextLine();
-		sc.close();
+		DatabaseProps dbConf = config.getDb();
 
-		connessioneDB = DriverManager.getConnection(database, user, password);
+		Class.forName(dbConf.getDriver()).getDeclaredConstructor().newInstance();
+
+		user = dbConf.getUsername();
+		password = dbConf.getPassword();
+
+		String uri = String.format("jdbc:%s://%s:%d/%s", dbConf.getDbms(), dbConf.getHost(), dbConf.getPort(), dbConf.getName());
+
+		connessioneDB = DriverManager.getConnection(uri, user, password);
 	}
 
-	protected Connection getConnection() {
+	protected Connection getConnection() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, SQLException {
+		if (connessioneDB == null || connessioneDB.isClosed())
+			apriConnessione();
+
 		return connessioneDB;
 	}
 
 	protected void scriviMessaggio(String msg) {
-		// aprire file e scrivere msg, non ricordo se andava bene "File" o meno
+		System.out.println("LOG: " + msg);
 	}
 
 	protected void scriviOperazione(String ip, String operazione) {
-		// same rispetto a sopra
+		System.out.println("LOG: " + ip + ": " + operazione);
 	}
+
+	//getter setter per permettere injection
+    public ConfigProps getConfig() {
+        return this.config;
+    }
+
+    public void setConfig(ConfigProps config) {
+        this.config = config;
+    }
 }

@@ -1,15 +1,16 @@
 package it.unibo.ingsoft.fortuna.ordinazione;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,21 +85,21 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         return false;
     }
 
-    private boolean impostaOrdine(Ordine ordine, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note) {
+    private void impostaOrdine(Ordine ordine, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note) {
         ordine.nominativo(nome)
             .prodotti(prodotti)
             .dataOra(dataOra)
             .note(note);
         
-        try {
-            ordine.setIdRichiesta(generaId());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        // try {
+        //     ordine.setIdRichiesta(generaId());
+        // } catch (SQLException e) {
+        //     e.printStackTrace();
+        //     return false;
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        //     return false;
+        // }
 
         List<Sconto> scontiApplicabili = new ArrayList<>();
         scontiApplicabili.addAll(gestioneSconti.listaSconti(dataOra, ordine.calcolaCostoTotale()));
@@ -106,8 +107,6 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             scontiApplicabili.addAll(gestioneSconti.listaSconti(dataOra, ordine.calcolaCostoTotale(), prodotto));
         }
         ordine.setSconti(scontiApplicabili);
-
-        return true;
     }
 
     private boolean verificaTipo(TipoDisattivazione tipo) {
@@ -142,17 +141,34 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             return "err-tavolo";
 
         OrdineAlTavolo ordine = new OrdineAlTavolo();
-        boolean success = impostaOrdine(ordine, nome, prodotti, LocalDateTime.now(), note);
-
-        if (!success)
-            return "err-database";
+        impostaOrdine(ordine, nome, prodotti, LocalDateTime.now(), note);
 
         ordine.setTavolo(tavolo);
 
-        // TODO Inserisci in DB
+        PreparedStatement preparedStmt = null; 
 
-        System.out.println(String.format("Creato ordine tavolo: %s | %d prodotti | %s | tavolo %s",
-            nome, prodotti.size(), note, tavolo));
+        try (Connection connection = getConnection()) {
+            String query = "INSERT INTO ordini (nome, note, data_ora, tavolo) VALUES (?, ?, ?, ?)";
+            preparedStmt = connection.prepareStatement(query);
+            preparedStmt.setString(1, ordine.getNominativo());
+            preparedStmt.setString(2, ordine.getNote());
+            preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
+            preparedStmt.setString(4, ordine.getTavolo());
+
+            //TODO: inserisci prodotti e sconti
+
+            preparedStmt.executeUpdate();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return "err-database";
+        } finally {
+            try {
+                if (preparedStmt != null) preparedStmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
         return "success";
     }
@@ -174,22 +190,41 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             return "err-prodotti";
     
         OrdineDomicilio ordine = new OrdineDomicilio();
-        boolean success = impostaOrdine(ordine, nome, prodotti, dataOra, note);
-    
-        if (!success)
-            return "err-database";
+        impostaOrdine(ordine, nome, prodotti, dataOra, note);
 
         if (!verificaZonaConsegna(indirizzo, ordine.calcolaCostoTotale()))
             return "err-zona";
     
         ordine.setTelefono(telefono);
-        ordine.setTelefono(indirizzo);
+        ordine.setIndirizzo(indirizzo);
         ordine.setTokenPagamento(tokenPagamento);
 
-        // TODO Inserisci in DB
 
-        System.out.println(String.format("Creato ordine domicilio: %s | %d prodotti | %s | %s | telefono %s | indirizzo %s | token %s",
-            nome, prodotti.size(), dataOra.toString(), note, telefono, indirizzo, tokenPagamento));
+        PreparedStatement preparedStmt = null; 
+
+        try (Connection connection = getConnection()) {
+            String query = "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo) VALUES (?, ?, ?, ?, ?)";
+            preparedStmt = connection.prepareStatement(query);
+            preparedStmt.setString(1, ordine.getNominativo());
+            preparedStmt.setString(2, ordine.getNote());
+            preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
+            preparedStmt.setString(4, ordine.getTelefono());
+            preparedStmt.setString(5, ordine.getIndirizzo());
+
+            //TODO: inserisci prodotti e sconti
+
+            preparedStmt.executeUpdate();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return "err-database";
+        } finally {
+            try {
+                if (preparedStmt != null) preparedStmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
         return "success";
     }
@@ -205,21 +240,42 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             return "err-prodotti";
 
         OrdineTakeAway ordine = new OrdineTakeAway();
-        boolean success = impostaOrdine(ordine, nome, prodotti, dataOra, note);
-    
-        if (!success)
-            return "err-database";
+        impostaOrdine(ordine, nome, prodotti, dataOra, note);
 
         ordine.setTelefono(telefono);
-        
-        // TODO Inserisci in DB
 
-        System.out.println(String.format("Creato ordine asporto: %s | %d prodotti | %s | %s | telefono %s",
-            nome, prodotti.size(), dataOra.toString(), note, telefono));
+        PreparedStatement preparedStmt = null; 
+
+        try (Connection connection = getConnection()) {
+            String query = "INSERT INTO ordini (nome, note, data_ora, telefono) VALUES (?, ?, ?, ?)";
+            preparedStmt = connection.prepareStatement(query);
+            preparedStmt.setString(1, ordine.getNominativo());
+            preparedStmt.setString(2, ordine.getNote());
+            preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
+            preparedStmt.setString(4, ordine.getTelefono());
+
+            //TODO: inserisci prodotti e sconti
+
+            preparedStmt.executeUpdate();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return "err-database";
+        } finally {
+            try {
+                if (preparedStmt != null) preparedStmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
         return "success";
     }
 
+    // Non utilizzato: mySql ha attributo auto_increment
+    // che si occupa di generare ID unico quando viene
+    // inserito un nuovo elemento alla tabella
+    @SuppressWarnings("unused")
     private String generaId() throws SQLException, Exception {
         PreparedStatement statement = null;
         Connection connection = null;
@@ -246,10 +302,11 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             }
         }
 
-        if (id >= 0)
+        if (id >= 0) {
             return "O" + String.format("%5d", id);
-        else
+        } else {
             throw new Exception("ID invalido"); //opzionalmente sostituire con eccezione più appropriata
+        }
     }
 
 
