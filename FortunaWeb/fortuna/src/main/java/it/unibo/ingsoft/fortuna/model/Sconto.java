@@ -2,6 +2,7 @@ package it.unibo.ingsoft.fortuna.model;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class Sconto {
@@ -130,5 +131,22 @@ public class Sconto {
     public Sconto perProdotti(Set<Prodotto> perProdotti) {
         setPerProdotti(perProdotti);
         return this;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Sconto)) {
+            return false;
+        }
+        Sconto sconto = (Sconto) o;
+        return Objects.equals(inizio, sconto.inizio) && Objects.equals(fine, sconto.fine) && quantita == sconto.quantita && quantitaPct == sconto.quantitaPct && costoMinimo == sconto.costoMinimo && Objects.equals(perProdotti, sconto.perProdotti);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(inizio, fine, quantita, quantitaPct, costoMinimo, perProdotti);
     }
 }

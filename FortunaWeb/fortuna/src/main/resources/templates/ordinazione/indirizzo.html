@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Fortuna: Ordinazione</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Ordinazione</h1>
+    <div>
+        <h2>Indirizzo:</h2>
+
+        <p class="error" th:if="${indirizzoSbagliato}">Non possiamo fare consegne a domicilio a queste distanze, in questa fascia di prezzo.</p>
+
+        <form action="#" th:action="@{/ordine-indirizzo}" method="POST">
+            <label>Indirizzo</label>
+            <input type="text" name="indirizzo" th:value="${session.indirizzo}"> 
+            <button>Conferma</button>
+        </form>
+    </div>
+</body>
+</html>

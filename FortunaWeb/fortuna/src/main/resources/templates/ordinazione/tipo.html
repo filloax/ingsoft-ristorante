@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Fortuna: Ordinazione</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Ordinazione</h1>
+    <div>
+        <h2>Scegli il tipo di ordine:</h2>
+
+        <form action="#" th:action="@{/ordine-prodotti}" method="POST">
+            <button th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_ASPORTO)}" 
+                name="tipoOrdine" type="submit" value="takeAway" >Take Away</button>
+            <button th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_DOMICILIO)}"
+                name="tipoOrdine" type="submit" value="domicilio" >Domicilio</button>
+            <button th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_TAVOLO)}"
+                name="tipoOrdine" type="submit" value="tavolo" >Al Tavolo</button>
+        </form>
+    </div>
+</body>
+</html>

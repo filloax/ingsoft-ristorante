@@ -1,0 +1,25 @@
+package it.unibo.ingsoft.fortuna.ordinazione;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
+import it.unibo.ingsoft.fortuna.model.*;
+import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
+
+public interface IOrdinazioneController {
+    public Set<TipoDisattivazione> getTipoOrdiniDisabilitati();
+    public Set<Prodotto> getProdottiDisabilitati();
+
+    public boolean verificaZonaConsegna(String indirizzo, double costo);
+
+    public List<Prodotto> getMenu();
+    public List<Sconto> getSconti();
+
+    public String creaOrdineTavolo(HttpServletRequest request, String nome, List<Prodotto> prodotti, String note, String tavolo);
+    public String creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono, String indirizzo);
+    public String creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono, String indirizzo, String tokenPagamento);
+    public String creaOrdineAsporto(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note, String telefono);
+}

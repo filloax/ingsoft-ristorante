@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Fortuna: Prenotazione</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Prenotazione</h1>
+    <div>
+        <h2>Dati:</h2>
+
+        <div class="error" th:if="${error}" th:switch="${error}">
+            <p th:case="'err-data'">
+                Errore: prenotazioni disattivate nella data scelta
+            </p>
+            <p th:case="'err-database'">
+                Errore: connessione al Database fallita
+            </p>
+            <p th:case="*">
+                Errore sconosciuto
+            </p>
+        </div>
+
+        <div id="dati">
+            <form action="#" th:object="${datiPrenotazione}" method="POST">
+                <label>Data e Ora</label>
+                <input type="date" th:field="*{data}">
+                <input type="time" th:field="*{ora}">
+
+                <label>Telefono</label>
+                <input type="text" th:field="*{telefono}">
+
+                <label>Nome</label>
+                <input type="text" th:field="*{nome}"><br>
+                <label>Numero di persone</label>
+                <input type="number" th:field="*{numeroPersone}"><br>
+
+                <button name="conferma" value="true">Conferma e effettua la prenotazione</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
