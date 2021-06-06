@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -163,6 +164,20 @@ public class OrdinazioneServlet {
     @ModelAttribute("tuttiSconti")
     public List<Sconto> getSconti() {
         return ordinazione.getSconti();
+    }
+
+    @ModelAttribute("scontiProdotti")
+    public List<Sconto> getScontiProdotti() {
+        return ordinazione.getSconti().stream()
+            .filter(sconto -> sconto.getPerProdotti() != null && sconto.getPerProdotti().size() > 0)
+            .collect(Collectors.toList());
+    }
+
+    @ModelAttribute("scontiGen")
+    public List<Sconto> getScontiGen() {
+        return ordinazione.getSconti().stream()
+            .filter(sconto -> sconto.getPerProdotti() == null || sconto.getPerProdotti().size() == 0)
+            .collect(Collectors.toList());
     }
 
     @ModelAttribute("datiOrdine")
