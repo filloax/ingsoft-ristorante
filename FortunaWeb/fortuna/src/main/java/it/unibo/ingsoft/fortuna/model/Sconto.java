@@ -11,6 +11,7 @@ public class Sconto {
     private double quantita;
     private double quantitaPct;
     private double costoMinimo;
+    private int id; //generato dal db, impostato qua quando caricati dal db
 
     private Set<Prodotto> perProdotti;
 
@@ -102,6 +103,14 @@ public class Sconto {
         this.perProdotti = perProdotti;
     }
 
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     public Sconto inizio(LocalDateTime inizio) {
         setInizio(inizio);
@@ -132,7 +141,6 @@ public class Sconto {
         setPerProdotti(perProdotti);
         return this;
     }
-
 
     @Override
     public boolean equals(Object o) {

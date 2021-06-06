@@ -16,7 +16,8 @@ public class GestioneScontiMock implements IGestioneSconti {
         ArrayList<Sconto> listaSconti = new ArrayList<Sconto>();
         listaSconti.add(Sconto.of(LocalDateTime.of(2021, 06, 05, 0, 0), LocalDateTime.of(2021, 06, 30, 23, 59), 0, 0.1, 0));
         listaSconti.add(Sconto.of(LocalDateTime.of(2021, 05, 05, 0, 0), LocalDateTime.of(2021, 06, 10, 23, 59), 1, 0, 4.5));
-        listaSconti.add(Sconto.ofProdotti(LocalDateTime.of(2021, 06, 11, 0, 0), LocalDateTime.of(2021, 06, 12, 23, 59), 0, 0.6, 6, new Prodotto("Involtini", 102, 2.50)));
+        listaSconti.add(Sconto.ofProdotti(LocalDateTime.of(2021, 06, 11, 0, 0), LocalDateTime.of(2021, 06, 21, 23, 59), 0, 0.6, 6, new Prodotto("Involtini", 102, 2.50)));
+
         return listaSconti;
     }
 
