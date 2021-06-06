@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna.InterfacciaZonaConsegna;
+package it.unibo.ingsoft.fortuna.interfacciaZonaConsegna;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.List;

@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna.InterfacciaGestioneProdotti;
+package it.unibo.ingsoft.fortuna.interfacciaGestioneProdotti;
 
 import java.util.List;
 

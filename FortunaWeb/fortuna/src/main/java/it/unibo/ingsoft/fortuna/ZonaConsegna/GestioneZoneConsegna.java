@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna.ZonaConsegna;
+package it.unibo.ingsoft.fortuna.zonaConsegna;
 
 import java.util.HashSet;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import it.unibo.ingsoft.fortuna.Controller;
-import it.unibo.ingsoft.fortuna.InterfacciaZonaConsegna.IGestioneZoneConsegna;
+import it.unibo.ingsoft.fortuna.interfacciaZonaConsegna.IGestioneZoneConsegna;
 import it.unibo.ingsoft.fortuna.model.ZonaConsegnaPunti;
 
 public class GestioneZoneConsegna extends Controller implements IGestioneZoneConsegna {

@@ -1,11 +1,11 @@
-package it.unibo.ingsoft.fortuna.GestioneSconti;
+package it.unibo.ingsoft.fortuna.gestioneSconti;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 import it.unibo.ingsoft.fortuna.Controller;
-import it.unibo.ingsoft.fortuna.InterfacciaSconti.IGestioneSconti;
+import it.unibo.ingsoft.fortuna.interfacciaSconti.IGestioneSconti;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 import it.unibo.ingsoft.fortuna.model.Sconto;
 

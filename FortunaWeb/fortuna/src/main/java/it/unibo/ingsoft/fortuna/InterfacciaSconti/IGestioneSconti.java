@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna.InterfacciaSconti;
+package it.unibo.ingsoft.fortuna.interfacciaSconti;
 
 import java.time.LocalDateTime;
 import java.util.Set;

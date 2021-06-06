@@ -1,9 +1,9 @@
-package it.unibo.ingsoft.fortuna.GestioneProdotti;
+package it.unibo.ingsoft.fortuna.gestioneProdotti;
 
 import java.util.List;
 
 import it.unibo.ingsoft.fortuna.Controller;
-import it.unibo.ingsoft.fortuna.InterfacciaGestioneProdotti.IGestioneProdotti;
+import it.unibo.ingsoft.fortuna.interfacciaGestioneProdotti.IGestioneProdotti;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 
 public class GestioneProdotti extends Controller implements IGestioneProdotti {
