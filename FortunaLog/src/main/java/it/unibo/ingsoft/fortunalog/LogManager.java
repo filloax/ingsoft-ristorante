@@ -55,7 +55,7 @@ public class LogManager {
 
 	    try {
 	    	while (true) {
-	    		System.err.println("LogServer: in attesa di richieste...\n");
+	    		System.err.println("LogServer: in attesa di richieste su porta " + port + "...\n");
 
 	    		try {
 	    			clientSocket = serverSocket.accept();
