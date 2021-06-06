@@ -142,6 +142,12 @@ public class Sconto {
         return this;
     }
 
+    public Sconto id(int id) {
+        setId(id);
+        return this;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (o == this)

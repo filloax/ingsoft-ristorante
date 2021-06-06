@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -145,29 +146,24 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
 
         ordine.setTavolo(tavolo);
 
-        PreparedStatement preparedStmt = null; 
-
         try (Connection connection = getConnection()) {
             String query = "INSERT INTO ordini (nome, note, data_ora, tavolo) VALUES (?, ?, ?, ?)";
-            preparedStmt = connection.prepareStatement(query);
-            preparedStmt.setString(1, ordine.getNominativo());
-            preparedStmt.setString(2, ordine.getNote());
-            preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
-            preparedStmt.setString(4, ordine.getTavolo());
+            try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
+                preparedStmt.setString(1, ordine.getNominativo());
+                preparedStmt.setString(2, ordine.getNote());
+                preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
+                preparedStmt.setString(4, ordine.getTavolo());
+                
+                preparedStmt.executeUpdate();
+            }
 
-            //TODO: inserisci prodotti e sconti
-
-            preparedStmt.executeUpdate();
+            if (!inserisciProdottiScontiInDb(connection, ordine)) {
+                return "err-database";
+            }
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return "err-database";
-        } finally {
-            try {
-                if (preparedStmt != null) preparedStmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
 
         return "success";
@@ -199,31 +195,25 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         ordine.setIndirizzo(indirizzo);
         ordine.setTokenPagamento(tokenPagamento);
 
-
-        PreparedStatement preparedStmt = null; 
-
         try (Connection connection = getConnection()) {
             String query = "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo) VALUES (?, ?, ?, ?, ?)";
-            preparedStmt = connection.prepareStatement(query);
-            preparedStmt.setString(1, ordine.getNominativo());
-            preparedStmt.setString(2, ordine.getNote());
-            preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
-            preparedStmt.setString(4, ordine.getTelefono());
-            preparedStmt.setString(5, ordine.getIndirizzo());
-
-            //TODO: inserisci prodotti e sconti
-
-            preparedStmt.executeUpdate();
+            try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
+                preparedStmt.setString(1, ordine.getNominativo());
+                preparedStmt.setString(2, ordine.getNote());
+                preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
+                preparedStmt.setString(4, ordine.getTelefono());
+                preparedStmt.setString(5, ordine.getIndirizzo());
+    
+                preparedStmt.executeUpdate();
+            }
+            
+            if (!inserisciProdottiScontiInDb(connection, ordine)) {
+                return "err-database";
+            }
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return "err-database";
-        } finally {
-            try {
-                if (preparedStmt != null) preparedStmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
 
         return "success";
@@ -244,32 +234,82 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
 
         ordine.setTelefono(telefono);
 
-        PreparedStatement preparedStmt = null; 
-
         try (Connection connection = getConnection()) {
             String query = "INSERT INTO ordini (nome, note, data_ora, telefono) VALUES (?, ?, ?, ?)";
-            preparedStmt = connection.prepareStatement(query);
-            preparedStmt.setString(1, ordine.getNominativo());
-            preparedStmt.setString(2, ordine.getNote());
-            preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
-            preparedStmt.setString(4, ordine.getTelefono());
+            try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
+                preparedStmt.setString(1, ordine.getNominativo());
+                preparedStmt.setString(2, ordine.getNote());
+                preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
+                preparedStmt.setString(4, ordine.getTelefono());
 
-            //TODO: inserisci prodotti e sconti
+                preparedStmt.executeUpdate();
+            }
 
-            preparedStmt.executeUpdate();
+            if (!inserisciProdottiScontiInDb(connection, ordine)) {
+                return "err-database";
+            }
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return "err-database";
-        } finally {
-            try {
-                if (preparedStmt != null) preparedStmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
 
         return "success";
+    }
+
+    // TODO: rimuovi ordine se non va tutto a buon fine, oppure usa transazioni
+    private boolean inserisciProdottiScontiInDb(Connection connection, Ordine ordine) throws SQLException {
+        int id = -1;
+        String query = "SELECT LAST_INSERT_ID() AS last_id from ordini";
+        try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
+            ResultSet rs = preparedStmt.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("last_id");
+            }
+        }
+
+        if (id < 0)
+            return false;
+
+        StringJoiner sj = new StringJoiner(", ");
+        for (int i = 0; i < ordine.getProdotti().size(); i++) sj.add("(?, ?, 1)");
+
+        query = "INSERT INTO prodotti_ordinati (id_ordine, numero_prod, quantita) VALUES "
+        + sj.toString()
+        + " ON DUPLICATE KEY UPDATE quantita=quantita+1";
+
+        try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
+            int i = 1;
+            for (Prodotto prodotto : ordine.getProdotti()) {
+                preparedStmt.setInt(i, id);
+                i++;
+                preparedStmt.setInt(i, prodotto.getNumero());    
+                i++;        
+            }
+
+            preparedStmt.executeUpdate();
+        }
+
+        sj = new StringJoiner(", ");
+        for (int i = 0; i < ordine.getSconti().size(); i++) sj.add("(?, ?)");
+
+        query = "INSERT INTO sconti_applicati (id_ordine, id_sconto) VALUES"
+        + sj.toString();
+
+        try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
+            int i = 1;
+            for (Sconto sconto : ordine.getSconti()) {
+                preparedStmt.setInt(i, id);
+                i++;
+                preparedStmt.setInt(i, sconto.getId());
+                i++;
+            }
+            
+            preparedStmt.executeUpdate();
+        }
+
+
+        return true;
     }
 
     // Non utilizzato: mySql ha attributo auto_increment

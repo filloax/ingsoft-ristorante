@@ -66,6 +66,7 @@ CREATE TABLE prodotti_ordinati
 (
 	id_ordine INT unsigned NOT NULL,
     numero_prod INT unsigned NOT NULL,
+    quantita INT unsigned NOT NULL DEFAULT 1,
     PRIMARY KEY (id_ordine, numero_prod),
     FOREIGN KEY (id_ordine) REFERENCES ordini(id),
     FOREIGN KEY (numero_prod) REFERENCES prodotti(numero)
