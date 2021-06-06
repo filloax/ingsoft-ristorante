@@ -41,17 +41,71 @@
                 </table>
             </form>
         </div>
-    
+
+        <div id="sconti">
+            <h2>Sconti Disponibili</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Inizio</th>
+                        <th>Fine</th>
+                        <th>Quantità</th>
+                        <th>Spesa Minima</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="sconto : ${scontiGen}">
+                        <td th:text="${sconto.inizio.toLocalDate()}">2021-05-15</td>
+                        <td th:text="${sconto.fine.toLocalDate()}">2021-07-15</td>
+                        <td th:if="${sconto.quantita > 0}" th:text="${sconto.quantita + '€'}">1.50</td>
+                        <td th:unless="${sconto.quantita > 0}" th:text="${sconto.quantitaPct * 100 + '%'}">25%</td>
+                        <td th:text="${sconto.costoMinimo > 0 ? sconto.costoMinimo + '€' : ''}"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="font-size: xx-large">..........</td>
+                    </tr>        
+                </tbody>
+            </table>
+            
+            <h2>Sconti Disponibili su Prodotti</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Inizio</th>
+                        <th>Fine</th>
+                        <th>Prodotto</th>
+                        <th>Quantità</th>
+                        <th>Spesa Minima</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="sconto : ${scontiProdotti}">
+                        <span th:each="prodotto : ${sconto.perProdotti}">
+                            <td th:text="${sconto.inizio.toLocalDate()}">2021-05-15</td>
+                            <td th:text="${sconto.fine.toLocalDate()}">2021-07-15</td>
+                            <td th:if="${sconto.quantita > 0}" th:text="${sconto.quantita + '€'}">1.50</td>
+                            <td th:text="${prodotto.nome}">Involtini</td>
+                            <td th:unless="${sconto.quantita > 0}" th:text="${sconto.quantitaPct * 100 + '%'}">25%</td>
+                            <td th:text="${sconto.costoMinimo > 0 ? sconto.costoMinimo + '€' : ''}"></td>
+                        </span>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="font-size: xx-large">..........</td>
+                    </tr>        
+                </tbody>
+            </table>
+        </div>
+
         <div id="carrello">
             <h1>Carrello</h1>
             <form action="#" th:action="@{/ordine-prodotti}" method="POST">
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Numero</th>
                             <th>Nome</th>
                             <th>Prezzo</th>
-                            <th>Quatità</th>
+                            <th>Descrizione</th>
                             <th></th>
                         </tr>
                     </thead>
