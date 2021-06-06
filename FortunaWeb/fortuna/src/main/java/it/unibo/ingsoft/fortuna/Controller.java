@@ -6,11 +6,15 @@ import java.sql.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import it.unibo.ingsoft.fortuna.ConfigProps.DatabaseProps;
+import it.unibo.ingsoft.fortuna.log.ILogManager;
 
 public abstract class Controller {
 
     @Autowired
     private ConfigProps config;
+
+	@Autowired
+	private ILogManager log;
 
 	private Connection connessioneDB;
 
@@ -38,10 +42,12 @@ public abstract class Controller {
 
 	protected void scriviMessaggio(String msg) {
 		System.out.println("LOG: " + msg);
+		log.scriviMessaggio(msg);
 	}
 
 	protected void scriviOperazione(String ip, String operazione) {
 		System.out.println("LOG: " + ip + ": " + operazione);
+		log.scriviOperazione(ip, operazione);
 	}
 
 	//getter setter per permettere injection
@@ -52,4 +58,12 @@ public abstract class Controller {
     public void setConfig(ConfigProps config) {
         this.config = config;
     }
+
+	public ILogManager getLog() {
+		return this.log;
+	}
+
+	public void setLog(ILogManager log) {
+		this.log = log;
+	}
 }
