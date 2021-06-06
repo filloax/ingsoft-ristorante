@@ -80,7 +80,38 @@ CREATE TABLE sconti_applicati
     FOREIGN KEY (id_ordine) REFERENCES ordini(id),
     FOREIGN KEY (id_sconto) REFERENCES sconti(id)
 );
+
+CREATE TABLE periodi_disattivazione
+(
+	id INT unsigned NOT NULL AUTO_INCREMENT,
+	inizio DATETIME NOT NULL,
+	fine DATETIME NOT NULL,
+    tipo VARCHAR(32) NOT NULL,
+	numero_prod INT unsigned,
+	PRIMARY KEY (id),
+	FOREIGN KEY (numero_prod) REFERENCES prodotti(numero)
+);
+# Vedi note implementazione su drive
+CREATE TABLE zona_consegna
+(
+	id INT unsigned NOT NULL AUTO_INCREMENT,
+    prezzo_minimo DECIMAL NOT NULL DEFAULT 0.0,
+	PRIMARY KEY (id)
+);
+
+CREATE TABLE zona_consegna_punti
+(
+	id INT unsigned NOT NULL,
+	latitudine DECIMAL NOT NULL,
+    longitudine DECIMAL NOT NULL,
+    id_lista INT unsigned,
+    FOREIGN KEY (id) REFERENCES zona_consegna(id)
+);
+
+# Per fare le cose fatte bene bisognerebbe creare trigger per verificare on insert/update che ci siano almeno 3 punti, ma amen
+
 ##
+CREATE USER 'springuser' IDENTIFIED BY 'springpass!!??!!??';
 SHOW GRANTS FOR 'springuser'@localhost;
 GRANT UPDATE ON fortuna.* TO 'springuser'@localhost;
 GRANT INSERT ON fortuna.* TO 'springuser'@localhost;
