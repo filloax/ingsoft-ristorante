@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
  */
 public class ConfigProps {
     private DatabaseProps db;
+    private LogProps log;
 
     public DatabaseProps getDb() {
         return this.db;
@@ -20,6 +21,15 @@ public class ConfigProps {
     public void setDb(DatabaseProps db) {
         this.db = db;
     }
+
+    public LogProps getLog() {
+        return this.log;
+    }
+
+    public void setLog(LogProps log) {
+        this.log = log;
+    }
+
 
     public static class DatabaseProps {
         private String host;
@@ -84,6 +94,27 @@ public class ConfigProps {
     
         public void setName(String name) {
             this.name = name;
+        }
+    }
+
+    public static class LogProps { 
+        private String host;
+        private int port;
+
+        public String getHost() {
+            return this.host;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
+
+        public int getPort() {
+            return this.port;
+        }
+
+        public void setPort(int port) {
+            this.port = port;
         }
     }
 }

@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-FortunaApplication<fortuna>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "it.unibo.ingsoft.fortuna.FortunaApplication",
+            "projectName": "fortuna",
+            "args": ""
+        }
+    ]
+}
