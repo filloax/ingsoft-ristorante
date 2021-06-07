@@ -21,6 +21,7 @@ CREATE TABLE ordini
  telefono VARCHAR(50),
  indirizzo VARCHAR(255),
  tavolo VARCHAR(50),
+ pagamento VARCHAR(32),
  accettato CHAR(1),
  PRIMARY KEY (id)
 );

@@ -1,0 +1,12 @@
+.error {
+    color: red;
+}
+
+.discount-old {
+    text-decoration: line-through;
+    color: darkred;
+}
+
+.discount {
+    color: green;
+}

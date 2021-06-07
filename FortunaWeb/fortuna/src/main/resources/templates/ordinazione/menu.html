@@ -3,6 +3,7 @@
 <head> 
     <title>Fortuna: Ordinazione</title> 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Ordinazione</h1>
@@ -130,8 +131,8 @@
         </div>
 
         <div id="conferma">
-            <form action="#" th:action="${session.tipoOrdine == 'domicilio'} ? @{/ordine-indirizzo} : @{/ordine-dati}" method="GET">
-                <button th:text="${session.tipoOrdine == 'domicilio'} ? 'Scegli indirizzo' : 'Dati finali'"></button>
+            <form action="#" th:action="${session.tipoOrdine == 'ORDINAZ_DOMICILIO'} ? @{/ordine-indirizzo} : @{/ordine-dati}" method="GET">
+                <button th:text="${session.tipoOrdine == 'ORDINAZ_DOMICILIO'} ? 'Scegli indirizzo' : 'Dati finali'"></button>
             </form>
         </div>
     </div>

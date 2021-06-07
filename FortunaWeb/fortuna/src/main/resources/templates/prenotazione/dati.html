@@ -3,6 +3,7 @@
 <head> 
     <title>Fortuna: Prenotazione</title> 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Prenotazione</h1>
@@ -24,16 +25,16 @@
         <div id="dati">
             <form action="#" th:object="${datiPrenotazione}" method="POST">
                 <label>Data e Ora</label>
-                <input type="date" th:field="*{data}">
-                <input type="time" th:field="*{ora}">
+                <input required type="date" th:field="*{data}">
+                <input required type="time" th:field="*{ora}">
 
                 <label>Telefono</label>
-                <input type="text" th:field="*{telefono}">
+                <input required type="text" th:field="*{telefono}">
 
                 <label>Nome</label>
-                <input type="text" th:field="*{nome}"><br>
+                <input required type="text" th:field="*{nome}"><br>
                 <label>Numero di persone</label>
-                <input type="number" th:field="*{numeroPersone}"><br>
+                <input required type="number" th:field="*{numeroPersone}"><br>
 
                 <button name="conferma" value="true">Conferma e effettua la prenotazione</button>
             </form>
