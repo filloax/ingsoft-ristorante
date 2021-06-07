@@ -3,7 +3,8 @@ Progetto per Ingegneria del Software T (Unibo)
 
 ## Come usare
 - Per lanciare il server: lanciate FortunaWeb/lancia.bat, o il comando ivi scritto da dentro la cartella
-- Va avviato insieme anche FortunaLog/log.txt o il jar (equivalente), senza non andrò il log e farà molti errori il server (anche se funzionerà comunque)
+- Va avviato insieme anche FortunaLog/log.txt o il jar (equivalente), senza non andrà il log e farà molti errori il server (anche se funzionerà comunque)
+- Per database: sono inclusi comandi (*comandi_sql.sql*) per ottenere database con la struttura giusta, più il dump del db (*dati_database.sql*) che a quanto ho capito se lo esegui tutto ti ricrea il DB come il mio. Ho usato [MySQL](https://dev.mysql.com/downloads/installer/) come DBMS, e Spring è impostato per funzionare con le impostazioni di default di un DB hostato su localhost. Per creare l'utente che usa spring sono inclusi i comandi, e anche per dargli i permessi necessari.
 
 Occorre installare alcune estensioni di VSCode, per la precisione *"Spring Boot Dashboard", "Spring Boot Tools", "Spring Initalizr Java Support"*, e se non sono già installati *"Java Extension Pack"* e *"Java Test Runner", "Debugger for Java"*, se volete fare test.
 
