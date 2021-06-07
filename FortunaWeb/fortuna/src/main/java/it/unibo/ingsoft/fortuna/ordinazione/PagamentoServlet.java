@@ -24,7 +24,7 @@ import it.unibo.ingsoft.fortuna.model.Prodotto;
 
 @Controller
 public class PagamentoServlet {
-    @Value("${STRIPE_PUBLIC_KEY}")
+    @Value("${STRIPE_PUBLIC_KEY: null}")
     private String stripePublicKey;
     
     @Autowired
