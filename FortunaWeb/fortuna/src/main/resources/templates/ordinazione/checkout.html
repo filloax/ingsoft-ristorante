@@ -9,71 +9,60 @@
     <h1>Ordinazione</h1>
     <p th:text="'Ordinazione scelta: ' + ${session.tipoOrdine}" />
     <div>
-        <h2>Dati finali:</h2>
-        
-        <div id="indirizzo" th:if="${session.indirizzo}">
-            <h3>Indirizzo scelto:</h3>
-            <p th:text="${session.indirizzo}"></p>
-        </div>
+        <h2>Pagamento Online</h2>
 
-        <h3 class="error" th:if="${error}" th:text="${'Errore: ' + error}"></h3>
+        <p>
+            Inserisci sotto i dati del pagamento. Non verrà trasferito denaro finchè non viene accettato l'Ordine.
+            In caso di errore, dopo una settimana verrà annullata la transazione.
+        </p>
 
-        <div id="dati">
-            <h3>Dati ordine</h3>
-            <form action="#" th:object="${datiOrdine}" method="POST">
-                <fieldset th:if="${chiediData}">
-                    <label>Data e Ora</label>
-                    <input required type="date" th:field="*{data}">
-                    <input required type="time" th:field="*{ora}">
-                </fieldset>
-                <fieldset th:if="${chiediTelefono}">
-                    <label>Telefono</label>
-                    <input required type="text" th:field="*{telefono}">
-                </fieldset>
-                <fieldset th:if="${chiediTavolo}">
-                    <label>Tavolo</label>
-                    <input required type="text" th:field="*{tavolo}">
-                </fieldset>
-                <fieldset>
-                    <label>Nome</label>
-                    <input required type="text" th:field="*{nome}"><br>
-                    <label>Note</label>
-                    <textarea th:field="*{note}"></textarea><br>
-                </fieldset>
-                <button th:if="${chiediPagamentoOnline}" name="pagamento" value="true">Paga online ora</button>
-                <button name="conferma" value="true" th:text="${chiediPagamentoOnline ? 'Paga successivamente e conferma' : 'Conferma'}"></button>
-            </form>
-        </div>
+        <h3 th:if="${error != null}" th:text="${error}" class="error"></h3>
+
+        <form action='/pagamento' method='POST' id='checkout-form'>
+            <input type='hidden' th:value='${amount}' name='amount' />
+            <label th:if="${amount != amountOld}">Prezzo: <span class="discount-old" th:text='${amountOld/100}' /> <span class="discount" th:text='${amount/100}' /></label>
+            <label th:if="${amount == amountOld}">Prezzo: <span th:text='${amount/100.0}' /></label>
+            <script
+               src='https://checkout.stripe.com/checkout.js' 
+               class='stripe-button'
+               th:attr='data-key=${stripePublicKey}, 
+                 data-amount=${amount}, 
+                 data-currency=${currency}'
+               data-name='Fortuna'
+               data-description='Pagamento ordine'
+               data-image='logo-lowres.webp'
+               data-locale='auto'
+               data-zip-code='false'>
+           </script>
+        </form>
 
         <div id="carrello">
             <h3>Prodotti Scelti</h3>
-            <form action="#" th:action="@{/ordine-prodotti}" method="POST">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Prezzo</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="prodotto : ${session.prodotti}">
-                            <td th:text="${prodotto.numero}">101</td>
-                            <td th:text="${prodotto.nome}">Involtini Primavera</td>
-                            <td th:text="${prodotto.prezzo}">1.50</td>
-                            <td th:text="${prodotto.desc}">-</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4">--------</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Totale</td>
-                            <td colspan="2" th:text="${totale}">19.60</td>
-                        </tr>
-                    </tbody>
-                </table>  
-            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Prezzo</th>
+                        <th>Descrizione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="prodotto : ${session.prodotti}">
+                        <td th:text="${prodotto.numero}">101</td>
+                        <td th:text="${prodotto.nome}">Involtini Primavera</td>
+                        <td th:text="${prodotto.prezzo}">1.50</td>
+                        <td th:text="${prodotto.desc}">-</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">--------</td>
+                    </tr>
+                    <!-- <tr>
+                        <td colspan="2">Totale</td>
+                        <td colspan="2" th:text="${totale}">19.60</td>
+                    </tr> -->
+                </tbody>
+            </table>  
         </div>
 
         <div id="sconti">
@@ -129,7 +118,6 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 </body>
 </html>

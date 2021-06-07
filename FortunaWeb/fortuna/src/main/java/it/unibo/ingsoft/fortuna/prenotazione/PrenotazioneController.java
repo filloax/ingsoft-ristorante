@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import it.unibo.ingsoft.fortuna.Controller;
 import it.unibo.ingsoft.fortuna.PeriodiController;
@@ -20,7 +20,7 @@ import it.unibo.ingsoft.fortuna.model.attivazione.PeriodoDisattivazione;
 import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
 import it.unibo.ingsoft.fortuna.model.richiesta.Prenotazione;
 
-@Component
+@Service
 public class PrenotazioneController extends Controller implements IPrenotazioneController {
     private PeriodiController periodiDisattivazione;
 

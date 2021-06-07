@@ -1,5 +1,6 @@
 package it.unibo.ingsoft.fortuna.ordinazione;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,13 +10,16 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import it.unibo.ingsoft.fortuna.Controller;
 import it.unibo.ingsoft.fortuna.PeriodiController;
@@ -31,7 +35,7 @@ import it.unibo.ingsoft.fortuna.prodotti.IGestioneProdotti;
 import it.unibo.ingsoft.fortuna.sconti.IGestioneSconti;
 import it.unibo.ingsoft.fortuna.zoneconsegna.IGestioneZoneConsegna;
 
-@Component
+@Service
 public class OrdinazioneController extends Controller implements IOrdinazioneController {
     private PeriodiController periodiDisattivazione;
 
@@ -45,6 +49,9 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
 
     @Autowired
     private IGestioneZoneConsegna gestioneZoneConsegna;
+
+    @Autowired
+    private IPagamentoOnline pagamentoOnline;
 
     public OrdinazioneController() {
         periodiDisattivazione = PeriodiController.getInstance();
@@ -86,6 +93,49 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         return false;
     }
 
+    @Override
+    public List<Sconto> getScontiApplicabili(List<Prodotto> prodotti, Optional<LocalDateTime> dataOra) {
+        List<Sconto> scontiApplicabili = new ArrayList<>();
+        
+        if (dataOra.isPresent()) {
+            scontiApplicabili.addAll(gestioneSconti.listaSconti(dataOra.get(), calcolaTotale(prodotti)));
+            for (Prodotto prodotto : prodotti) {
+                scontiApplicabili.addAll(gestioneSconti.listaSconti(dataOra.get(), calcolaTotale(prodotti), prodotto));
+            }
+        } else {
+            scontiApplicabili.addAll(gestioneSconti.listaScontiTotali().stream()
+                .filter(sconto -> sconto.getPerProdotti() == null || sconto.getPerProdotti().isEmpty())
+                .collect(Collectors.toList()));
+            for (Prodotto prodotto : prodotti) {
+                scontiApplicabili.addAll(gestioneSconti.listaScontiTotali().stream()
+                    .filter(sconto -> sconto.getPerProdotti() != null || sconto.getPerProdotti().contains(prodotto))
+                    .collect(Collectors.toList()));
+            }
+    
+        }
+
+        return scontiApplicabili;
+    }
+
+    @Override
+    public double calcolaTotaleScontato(List<Prodotto> prodotti, LocalDateTime dataOra) {
+        // Agisci creando ordine e facendo calcolare a lui, visto che ha già la logica
+        // Al tavolo è arbitrario, visto che Ordine è astratta come classe
+        Ordine tempOrdine = new OrdineAlTavolo()
+            .dataOra(dataOra)
+            .prodotti(prodotti)
+            .sconti(getScontiApplicabili(prodotti, Optional.of(dataOra)));
+
+        return tempOrdine.calcolaCostoScontato();
+    }
+
+    @Override
+    public double calcolaTotale(List<Prodotto> prodotti) {
+        if (prodotti.isEmpty())
+            return 0.;
+        return prodotti.stream().map(p -> p.getPrezzo()).reduce((a, b) -> a + b).get();
+    }
+
     private void impostaOrdine(Ordine ordine, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note) {
         ordine.nominativo(nome)
             .prodotti(prodotti)
@@ -102,12 +152,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         //     return false;
         // }
 
-        List<Sconto> scontiApplicabili = new ArrayList<>();
-        scontiApplicabili.addAll(gestioneSconti.listaSconti(dataOra, ordine.calcolaCostoTotale()));
-        for (Prodotto prodotto : prodotti) {
-            scontiApplicabili.addAll(gestioneSconti.listaSconti(dataOra, ordine.calcolaCostoTotale(), prodotto));
-        }
-        ordine.setSconti(scontiApplicabili);
+        ordine.setSconti(getScontiApplicabili(prodotti, Optional.of(dataOra)));
     }
 
     private boolean verificaTipo(TipoDisattivazione tipo) {
@@ -115,13 +160,22 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
     }
 
     // Controlla che nessuno degli ordini richiesti sia disabilitato o inesistente
+    /**
+     * @param prodotti
+     * @return prodotti invalidi
+     */
     private boolean verificaProdotti(List<Prodotto> prodotti) {
-        boolean contieneDisabilitato = prodotti.stream()
-            .anyMatch(prodotto -> getProdottiDisabilitati().contains(prodotto));
+        return getProdottiInvalidi(prodotti).isEmpty();
+    }
 
-        boolean contieneInesistente = !getMenu().containsAll(prodotti);
+    private List<Prodotto> getProdottiInvalidi(List<Prodotto> prodotti) {
+        Stream<Prodotto> disabilitati = prodotti.stream()
+            .filter(prodotto -> getProdottiDisabilitati().contains(prodotto));
 
-        return !contieneDisabilitato && !contieneInesistente;
+        Stream<Prodotto> inesistenti = prodotti.stream()
+            .filter(prodotto -> !getMenu().contains(prodotto));
+
+        return Stream.concat(disabilitati, inesistenti).collect(Collectors.toList());
     }
 
     private boolean verificaTavolo(String tavolo) {
@@ -130,16 +184,16 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
     }
 
     @Override
-    public String creaOrdineTavolo(HttpServletRequest request, String nome, List<Prodotto> prodotti, String note,
-            String tavolo) {
+    public OrdineAlTavolo creaOrdineTavolo(HttpServletRequest request, String nome, List<Prodotto> prodotti, String note,
+            String tavolo) throws IOException {
         scriviOperazione(request.getRemoteAddr(), String.format("creaOrdineTavolo(tavolo: %s)", tavolo));
 
         if (!verificaTipo(TipoDisattivazione.ORDINAZ_TAVOLO))
-            return "err-tipo";
+            throw new IllegalStateException(String.format("Tipo ordinazione non attivo: %s!", TipoDisattivazione.ORDINAZ_TAVOLO));
         if (!verificaProdotti(prodotti))
-            return "err-prodotti";
+            throw new IllegalArgumentException(String.format("Non tutti i prodotti sono validi: %s!", getProdottiInvalidi(prodotti)));
         if (!verificaTavolo(tavolo))
-            return "err-tavolo";
+            throw new IllegalArgumentException(String.format("Tavolo non valido: %s!", tavolo));
 
         OrdineAlTavolo ordine = new OrdineAlTavolo();
         impostaOrdine(ordine, nome, prodotti, LocalDateTime.now(), note);
@@ -158,76 +212,89 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             }
 
             if (!inserisciProdottiScontiInDb(connection, ordine)) {
-                return "err-database";
+                throw new IOException("Accesso al database fallito");
             }
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-            return "err-database";
+            throw new IOException("Accesso al database fallito");
         }
 
-        return "success";
+        return ordine;
     }
 
     @Override
-    public String creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
-            String telefono, String indirizzo) {
+    public OrdineDomicilio creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
+            String telefono, String indirizzo) throws IOException {
         return creaOrdineDomicilio(request, nome, prodotti, dataOra, note, telefono, indirizzo, "");
     }
 
     @Override
-    public String creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
-            String telefono, String indirizzo, String tokenPagamento) {
+    public OrdineDomicilio creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
+            String telefono, String indirizzo, String tokenPagamento) throws IOException {
         scriviOperazione(request.getRemoteAddr(), String.format("creaOrdineDomicilio(dataOra: %s, pagamento: %s)", dataOra.toString(), tokenPagamento));
 
         if (!verificaTipo(TipoDisattivazione.ORDINAZ_DOMICILIO))
-            return "err-tipo";
+            throw new IllegalStateException(String.format("Tipo ordinazione non attivo: %s", TipoDisattivazione.ORDINAZ_DOMICILIO));
         if (!verificaProdotti(prodotti))
-            return "err-prodotti";
-    
+            throw new IllegalArgumentException(String.format("Non tutti i prodotti sono validi: %s", getProdottiInvalidi(prodotti)));
+
         OrdineDomicilio ordine = new OrdineDomicilio();
         impostaOrdine(ordine, nome, prodotti, dataOra, note);
 
         if (!verificaZonaConsegna(indirizzo, ordine.calcolaCostoTotale()))
-            return "err-zona";
+            throw new IllegalArgumentException(String.format("Indirizzo non valido (a questa fascia di prezzo?): %s", indirizzo));
     
         ordine.setTelefono(telefono);
         ordine.setIndirizzo(indirizzo);
         ordine.setTokenPagamento(tokenPagamento);
+    
+        boolean pagamentoValido = false;
+        try {
+            pagamentoValido = tokenPagamento.isEmpty() || pagamentoOnline.verificaAutorizzazione(ordine);
+        } catch (PaymentException e) {
+            throw new IOException("Errore di comunicazione con servizio di pagamento", e);
+        }
+        if (!pagamentoValido)
+            throw new IllegalArgumentException("Token pagamento non valido!");
 
         try (Connection connection = getConnection()) {
-            String query = "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo) VALUES (?, ?, ?, ?, ?)";
+            String query = tokenPagamento.isEmpty() 
+                ? "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo) VALUES (?, ?, ?, ?, ?)"
+                : "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo, pagamento) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
                 preparedStmt.setString(1, ordine.getNominativo());
                 preparedStmt.setString(2, ordine.getNote());
                 preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
                 preparedStmt.setString(4, ordine.getTelefono());
                 preparedStmt.setString(5, ordine.getIndirizzo());
-    
+                if (!tokenPagamento.isEmpty())
+                    preparedStmt.setString(6, tokenPagamento);
+
                 preparedStmt.executeUpdate();
             }
             
             if (!inserisciProdottiScontiInDb(connection, ordine)) {
-                return "err-database";
+                throw new IOException("Accesso al database fallito");
             }
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-            return "err-database";
+            throw new IOException("Accesso al database fallito");
         }
 
-        return "success";
+        return ordine;
     }
 
     @Override
-    public String creaOrdineAsporto(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
-            String telefono) {
+    public OrdineTakeAway creaOrdineAsporto(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
+            String telefono) throws IOException {
         scriviOperazione(request.getRemoteAddr(), String.format("creaOrdineAsporto(dataOra: %s)", dataOra.toString()));
 
         if (!verificaTipo(TipoDisattivazione.ORDINAZ_ASPORTO))
-            return "err-tipo";
+            throw new IllegalStateException(String.format("Tipo ordinazione non attivo: %s!", TipoDisattivazione.ORDINAZ_ASPORTO));
         if (!verificaProdotti(prodotti))
-            return "err-prodotti";
+            throw new IllegalArgumentException(String.format("Non tutti i prodotti sono validi: %s!", getProdottiInvalidi(prodotti)));
 
         OrdineTakeAway ordine = new OrdineTakeAway();
         impostaOrdine(ordine, nome, prodotti, dataOra, note);
@@ -246,15 +313,15 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             }
 
             if (!inserisciProdottiScontiInDb(connection, ordine)) {
-                return "err-database";
+                throw new IOException("Accesso al database fallito");
             }
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-            return "err-database";
+            throw new IOException("Accesso al database fallito");
         }
 
-        return "success";
+        return ordine;
     }
 
     // TODO: rimuovi ordine se non va tutto a buon fine, oppure usa transazioni
@@ -312,44 +379,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         return true;
     }
 
-    // Non utilizzato: mySql ha attributo auto_increment
-    // che si occupa di generare ID unico quando viene
-    // inserito un nuovo elemento alla tabella
-    @SuppressWarnings("unused")
-    private String generaId() throws SQLException, Exception {
-        PreparedStatement statement = null;
-        Connection connection = null;
-        int id = -1;
-
-        try {
-            connection = getConnection();
-            String query = "SELECT(NEXTVAL FOR ordine_id_seq) INTO newId";
-            statement = connection.prepareStatement(query);
-            ResultSet result = statement.executeQuery();
-
-            if (result.next())
-                id = result.getInt("newId");
-            else
-                throw new Exception("ID invalido"); //opzionalmente sostituire con eccezione più appropriata
-        } catch (SQLException e) {
-            throw e; //opzionalmente sostituire con eccezione più appropriata
-        } finally {
-            try {
-                if (statement != null) statement.close();
-                if (connection != null) connection.close();
-            } catch(SQLException e) {
-                throw e; //opzionalmente sostituire con eccezione più appropriata
-            }
-        }
-
-        if (id >= 0) {
-            return "O" + String.format("%5d", id);
-        } else {
-            throw new Exception("ID invalido"); //opzionalmente sostituire con eccezione più appropriata
-        }
-    }
-
-
+    
     public PeriodiController getPeriodiDisattivazione() {
         return this.periodiDisattivazione;
     }

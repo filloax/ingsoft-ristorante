@@ -3,6 +3,7 @@
 <head> 
     <title>Fortuna: Ordinazione</title> 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Ordinazione</h1>
@@ -11,11 +12,11 @@
 
         <form action="#" th:action="@{/ordine-prodotti}" method="POST">
             <button th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_ASPORTO)}" 
-                name="tipoOrdine" type="submit" value="takeAway" >Take Away</button>
+                name="tipoOrdine" type="submit" value="ORDINAZ_ASPORTO" >Take Away</button>
             <button th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_DOMICILIO)}"
-                name="tipoOrdine" type="submit" value="domicilio" >Domicilio</button>
+                name="tipoOrdine" type="submit" value="ORDINAZ_DOMICILIO" >Domicilio</button>
             <button th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_TAVOLO)}"
-                name="tipoOrdine" type="submit" value="tavolo" >Al Tavolo</button>
+                name="tipoOrdine" type="submit" value="ORDINAZ_TAVOLO" >Al Tavolo</button>
         </form>
     </div>
 </body>

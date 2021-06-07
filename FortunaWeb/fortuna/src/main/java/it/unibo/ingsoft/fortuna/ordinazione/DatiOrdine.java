@@ -13,6 +13,7 @@ public class DatiOrdine {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate data;
     private LocalTime ora;
+    private String indirizzo;
 
 
     public String getNome() {
@@ -61,5 +62,13 @@ public class DatiOrdine {
 
     public void setOra(LocalTime ora) {
         this.ora = ora;
+    }
+
+    public String getIndirizzo() {
+        return this.indirizzo;
+    }
+
+    public void setIndirizzo(String indirizzo) {
+        this.indirizzo = indirizzo;
     }
 }

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Fortuna: Ordinazione</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Ordinazione</h1>
+    <div>
+        <h2>Revisiona dati</h2>
+
+        <div th:if='${session.tokenPagamento}'>
+            <h3 style='color: green;'>Pagamento autorizzato! Verrà effettuato all'accettazione dell'ordine da parte del personale.</h3>
+        </div>
+
+        <p>Controlla se i dati sono corretti, oppure torna indietro.</p>
+
+        <form action="#" method="POST">
+            <button name="conferma" value="true">Conferma e effettua ordine</button>
+        </form>
+
+        <div id="riassuntoOrdine">
+            <h2>Ordine svolto</h2>
+            <table>
+                <tr>
+                    <td>Nome: </td>
+                    <td colspan="3" th:text="${datiOrdine.nome}"></td>
+                </tr>
+                <tr>
+                    <td>Data: </td>
+                    <td th:text="${datiOrdine.data}"></td>
+                    <td>Ora: </td>
+                    <td th:text="${datiOrdine.ora}"></td>
+                </tr>
+                <tr>
+                    <td>Totale: </td>
+                    <td th:unless="${totaleScontato}" th:text="${totale}"></td>
+                    <td th:if="${totaleScontato}">
+                        <span class="discount-old" th:text="${totale}"></span> <span class="discount" th:text="${totaleScontato}"></span>
+                    </td>
+                </tr>
+            </table>   
+        </div>
+    </div>
+</body>
+</html>
