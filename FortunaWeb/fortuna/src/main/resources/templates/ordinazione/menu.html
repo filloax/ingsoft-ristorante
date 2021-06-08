@@ -43,6 +43,45 @@
             </form>
         </div>
 
+        <div id="carrello">
+            <h1>Carrello</h1>
+            <form action="#" th:action="@{/ordine-prodotti}" method="POST">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Numero</th>
+                            <th>Nome</th>
+                            <th>Prezzo</th>
+                            <th>Descrizione</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="prodotto : ${session.prodotti}">
+                            <td th:text="${prodotto.numero}">101</td>
+                            <td th:text="${prodotto.nome}">Involtini Primavera</td>
+                            <td th:text="${prodotto.prezzo}">1.50</td>
+                            <td th:text="${prodotto.desc}">-</td>
+                            <td><button type="submit" name="remove" th:value="${prodottoStat.index}">Rimuovi</button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">--------</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Totale</td>
+                            <td colspan="2" th:text="${totale}"></td>
+                        </tr>
+                    </tbody>
+                </table>  
+            </form>
+        </div>
+
+        <div id="conferma">
+            <form action="#" th:action="${session.tipoOrdine == 'ORDINAZ_DOMICILIO'} ? @{/ordine-indirizzo} : @{/ordine-dati}" method="GET">
+                <button th:text="${session.tipoOrdine == 'ORDINAZ_DOMICILIO'} ? 'Scegli indirizzo' : 'Dati finali'"></button>
+            </form>
+        </div>
+
         <div id="sconti">
             <h2>Sconti Disponibili</h2>
             <table>
@@ -95,45 +134,6 @@
                     </tr>        
                 </tbody>
             </table>
-        </div>
-
-        <div id="carrello">
-            <h1>Carrello</h1>
-            <form action="#" th:action="@{/ordine-prodotti}" method="POST">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Numero</th>
-                            <th>Nome</th>
-                            <th>Prezzo</th>
-                            <th>Descrizione</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="prodotto : ${session.prodotti}">
-                            <td th:text="${prodotto.numero}">101</td>
-                            <td th:text="${prodotto.nome}">Involtini Primavera</td>
-                            <td th:text="${prodotto.prezzo}">1.50</td>
-                            <td th:text="${prodotto.desc}">-</td>
-                            <td><button type="submit" name="remove" th:value="${prodottoStat.index}">Rimuovi</button></td>
-                        </tr>
-                        <tr>
-                            <td colspan="5">--------</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">Totale</td>
-                            <td colspan="2" th:text="${totale}"></td>
-                        </tr>
-                    </tbody>
-                </table>  
-            </form>
-        </div>
-
-        <div id="conferma">
-            <form action="#" th:action="${session.tipoOrdine == 'ORDINAZ_DOMICILIO'} ? @{/ordine-indirizzo} : @{/ordine-dati}" method="GET">
-                <button th:text="${session.tipoOrdine == 'ORDINAZ_DOMICILIO'} ? 'Scegli indirizzo' : 'Dati finali'"></button>
-            </form>
         </div>
     </div>
 </body>

@@ -17,6 +17,11 @@
         </div>
 
         <h3 class="error" th:if="${error}" th:text="${'Errore: ' + error}"></h3>
+        <p th:if="${errorZonaconsegna}">
+            C'è stato un errore interno nella verifica dell'indirizzo. <strong>Prosegui liberamente a comporre l'ordine,</strong>
+            il tuo indirizzo verrà verificato dal personale durante l'elaborazione dell'ordine, che potrebbe essere
+            rifiutato in caso di indirizzi non raggiungibili.
+        </p>
 
         <div id="dati">
             <h3>Dati ordine</h3>

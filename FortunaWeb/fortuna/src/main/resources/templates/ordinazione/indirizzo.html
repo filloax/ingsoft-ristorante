@@ -10,7 +10,9 @@
     <div>
         <h2>Indirizzo:</h2>
 
-        <p class="error" th:if="${indirizzoSbagliato}">Non possiamo fare consegne a domicilio a queste distanze, in questa fascia di prezzo.</p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <p>Formato: <em>Via Numero, Città</em> dove città se non specificato è Bologna.</p>
 
         <form action="#" th:action="@{/ordine-indirizzo}" method="POST">
             <label>Indirizzo</label>
