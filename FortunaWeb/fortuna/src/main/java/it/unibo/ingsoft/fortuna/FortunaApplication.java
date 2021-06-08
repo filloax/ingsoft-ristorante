@@ -1,19 +1,12 @@
 package it.unibo.ingsoft.fortuna;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.GeoApiContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 
 import it.unibo.ingsoft.fortuna.log.ILogManager;
