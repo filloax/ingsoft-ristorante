@@ -2,7 +2,7 @@ package it.unibo.ingsoft.fortuna.model.richiesta;
 
 import java.time.LocalDateTime;
 
-import org.springframework.validation.ObjectError;
+//import org.springframework.validation.ObjectError;
 
 public abstract class Richiesta {
     private String nominativo;
