@@ -1,0 +1,3 @@
+2021-06-07T15:46:31.8431445 - 127.0.0.1: creaOrdineDomicilio(dataOra: 2021-06-08T15:46, pagamento: ch_1IzimgC9JTYu94Xd2m83QhwB)
+2021-06-07T15:56:19.9733899 - 127.0.0.1: creaOrdineDomicilio(dataOra: 2021-06-18T15:55, pagamento: ch_1IziwAC9JTYu94Xd7HtF1qX1)
+2021-06-07T16:02:05.7542622 - 127.0.0.1: creaOrdineDomicilio(dataOra: 2021-06-08T15:59, pagamento: ch_1Izj1jC9JTYu94Xdu51iYKcm)

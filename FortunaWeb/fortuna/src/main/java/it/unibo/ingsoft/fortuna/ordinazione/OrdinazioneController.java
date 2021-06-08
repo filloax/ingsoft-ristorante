@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
 import org.springframework.stereotype.Service;
 
 import it.unibo.ingsoft.fortuna.Controller;
@@ -31,6 +32,8 @@ import it.unibo.ingsoft.fortuna.model.richiesta.OrdineAlTavolo;
 import it.unibo.ingsoft.fortuna.model.richiesta.OrdineDomicilio;
 import it.unibo.ingsoft.fortuna.model.richiesta.OrdineTakeAway;
 import it.unibo.ingsoft.fortuna.model.zonaconsegna.IZonaConsegna;
+import it.unibo.ingsoft.fortuna.model.zonaconsegna.IndirizzoSconosciutoException;
+import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaException;
 import it.unibo.ingsoft.fortuna.prodotti.IGestioneProdotti;
 import it.unibo.ingsoft.fortuna.sconti.IGestioneSconti;
 import it.unibo.ingsoft.fortuna.zoneconsegna.IGestioneZoneConsegna;
@@ -81,7 +84,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
     }
 
     @Override
-    public boolean verificaZonaConsegna(String indirizzo, double costo) {
+    public boolean verificaZonaConsegna(String indirizzo, double costo) throws ZonaConsegnaException {
         List<IZonaConsegna> zoneConsegna = gestioneZoneConsegna.listaZoneConsegna();
 
         for (IZonaConsegna zonaConsegna : zoneConsegna) {
@@ -242,9 +245,28 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
         OrdineDomicilio ordine = new OrdineDomicilio();
         impostaOrdine(ordine, nome, prodotti, dataOra, note);
 
-        if (!verificaZonaConsegna(indirizzo, ordine.calcolaCostoTotale()))
+        boolean indirizzoValido = false;
+        boolean verificaManuale = false;
+
+        try {
+            indirizzoValido = verificaZonaConsegna(indirizzo, ordine.calcolaCostoTotale());
+        } catch (ZonaConsegnaException | InvalidConfigurationPropertyValueException e) {
+            if (e instanceof IndirizzoSconosciutoException) {
+                throw new IllegalArgumentException(String.format("Indirizzo sconosciuto: %s", indirizzo));
+            } else {
+                // Consenti proseguimento, verrà verificato a mano
+                indirizzoValido = true;
+                verificaManuale = true;
+                scriviMessaggio("creaOrdineDomicilio: errore in verifica indirizzo in zona consegna, necessaria verifica manuale.");
+            }
+        }
+
+        if (!indirizzoValido)
             throw new IllegalArgumentException(String.format("Indirizzo non valido (a questa fascia di prezzo?): %s", indirizzo));
     
+        if (verificaManuale)
+            indirizzo = "VERIFICA: " + indirizzo;
+
         ordine.setTelefono(telefono);
         ordine.setIndirizzo(indirizzo);
         ordine.setTokenPagamento(tokenPagamento);
