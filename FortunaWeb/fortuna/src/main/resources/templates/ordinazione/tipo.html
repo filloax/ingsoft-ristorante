@@ -2,22 +2,36 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head> 
     <title>Fortuna: Ordinazione</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="style.css">
+    <!--/*/ <th:block th:insert="fragments/general.html :: headerfiles">
+    </th:block> /*/-->
 </head>
 <body>
-    <h1>Ordinazione</h1>
-    <div>
+    <header th:insert="fragments/general.html :: header"> </header>
+    <div class="w3-center w3-main w3-content w3-padding">
+        <h1>Ordinazione</h1>
         <h2>Scegli il tipo di ordine:</h2>
 
         <form action="#" th:action="@{/ordine-prodotti}" method="POST">
-            <button th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_ASPORTO)}" 
-                name="tipoOrdine" type="submit" value="ORDINAZ_ASPORTO" >Take Away</button>
-            <button th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_DOMICILIO)}"
-                name="tipoOrdine" type="submit" value="ORDINAZ_DOMICILIO" >Domicilio</button>
-            <button th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_TAVOLO)}"
-                name="tipoOrdine" type="submit" value="ORDINAZ_TAVOLO" >Al Tavolo</button>
+            <button 
+                th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_ASPORTO)}" 
+                class="w3-btn w3-ripple w3-red w3-margin w3-xlarge w3-round"
+                name="tipoOrdine" type="submit" 
+                value="ORDINAZ_ASPORTO" 
+            >Take Away</button>
+            <button 
+                th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_DOMICILIO)}" 
+                class="w3-btn w3-ripple w3-red w3-margin w3-xlarge w3-round"
+                name="tipoOrdine" type="submit" 
+                value="ORDINAZ_DOMICILIO" 
+            >A Domicilio</button>
+            <button 
+                th:unless="${#sets.contains(tipiDisabilitati, T(it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione).ORDINAZ_TAVOLO)}" 
+                class="w3-btn w3-ripple w3-red w3-margin w3-xlarge w3-round"
+                name="tipoOrdine" type="submit" 
+                value="ORDINAZ_TAVOLO" 
+            >Al Tavolo</button>
         </form>
     </div>
+    <div th:replace="fragments/general.html :: footer"></div> 
 </body>
 </html>

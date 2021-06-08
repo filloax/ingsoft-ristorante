@@ -90,6 +90,11 @@ public class OrdinazioneServlet {
             @RequestParam(value = "indirizzo", required = false) String indirizzo) {
         
         if (indirizzo != null) {
+            if (indirizzo.isEmpty()) {
+                model.addAttribute("error", "Indirizzo vuoto.");
+                return "ordinazione/indirizzo";
+            }
+
             @SuppressWarnings("unchecked")
             List<Prodotto> prodotti = (List<Prodotto>) session.getAttribute("prodotti");
             // Zona consegna scelta in base a totale, non totale scontato
@@ -105,7 +110,7 @@ public class OrdinazioneServlet {
                     model.addAttribute("error", "Non possiamo fare consegne a domicilio a queste distanze, in questa fascia di prezzo.");
                     return "ordinazione/indirizzo";
                 }
-            } catch (ZonaConsegnaException | InvalidConfigurationPropertyValueException e) {
+            } catch (ZonaConsegnaException | InvalidConfigurationPropertyValueException | IllegalStateException e) {
                 if (e instanceof ZonaConsegnaException)
                     e.printStackTrace();
                 else

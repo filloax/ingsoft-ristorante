@@ -2,10 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head> 
     <title>Fortuna: Ordinazione</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="style.css">
+    <!--/*/ <th:block th:insert="fragments/general.html :: headerfiles">
+    </th:block> /*/-->
 </head>
 <body>
+    <header th:insert="fragments/general.html :: header"> </header>
     <h1>Ordinazione</h1>
     <div>
         <h2>Concluso!</h2>
@@ -31,5 +32,6 @@
 
         <p>Torna all'<a th:href="@{/}">inizio</a></p>
     </div>
+    <div th:replace="fragments/general.html :: footer"></div> 
 </body>
 </html>
