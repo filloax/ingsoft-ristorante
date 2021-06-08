@@ -17,6 +17,8 @@ import it.unibo.ingsoft.fortuna.log.ILogManager;
 @SpringBootApplication
 public class FortunaApplication {
 
+	// Variabile di ambiente esterna per sicurezza (mai salvare key in chiaro su repository), 
+	// API key di google maps Geocoding ottenuta da google cloud
     @Value("${GEOCODING_KEY: null}")
     private String mapsApiKey;
 

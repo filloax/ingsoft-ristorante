@@ -23,6 +23,10 @@ import it.unibo.ingsoft.fortuna.model.Prodotto;
 
 @Controller
 public class PagamentoServlet {
+    // Variabile di ambiente esterna per sicurezza (mai salvare key in chiaro su repository), 
+	// chiave pubblica per Stripe da account, in realtà questa potrebbe anche venire impostata
+    // qua ma tanto se la chiave privata va impostata esternamente tanto vale impostare così
+    // anche quella pubblica associata
     @Value("${STRIPE_PUBLIC_KEY: null}")
     private String stripePublicKey;
     
