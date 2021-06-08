@@ -148,11 +148,12 @@ public class OrdinazioneServlet {
                 if ("ORDINAZ_TAVOLO".equals(session.getAttribute("tipoOrdine"))) {
                     datiOrdine.setData(LocalDate.now());
                     datiOrdine.setOra(LocalTime.now());
+                }
                     session.setAttribute("datiOrdine", datiOrdine);
+
                     return "redirect:/ordine-finale";
                 }
             }
-        } 
 
         return "ordinazione/dati";
     }
@@ -162,7 +163,7 @@ public class OrdinazioneServlet {
         DatiOrdine datiOrdine = (DatiOrdine) session.getAttribute("datiOrdine");
 
         if (datiOrdine == null)
-            return "redirect:/ordinazione/dati";
+            return "redirect:/ordine-dati";
 
         @SuppressWarnings("unchecked")
         List<Prodotto> prodotti = (List<Prodotto>) session.getAttribute("prodotti");
