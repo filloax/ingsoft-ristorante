@@ -15,12 +15,10 @@ import com.google.maps.model.AddressComponentType;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
 
 import it.unibo.ingsoft.fortuna.SpringContext;
 import it.unibo.ingsoft.fortuna.log.ILogManager;
-import lombok.Setter;
 
 
 public class ZonaConsegna implements IZonaConsegna {
