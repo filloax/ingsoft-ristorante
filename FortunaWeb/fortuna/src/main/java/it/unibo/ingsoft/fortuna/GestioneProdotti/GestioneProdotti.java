@@ -1,5 +1,6 @@
 package it.unibo.ingsoft.fortuna.gestioneProdotti;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.unibo.ingsoft.fortuna.Controller;
@@ -9,6 +10,11 @@ import it.unibo.ingsoft.fortuna.model.Prodotto;
 public class GestioneProdotti extends Controller implements IGestioneProdotti {
 
     private List<Prodotto> menu;
+
+    public GestioneProdotti() {
+        menu = new ArrayList<>();
+        //scaricare menu da Database
+    }
 
     @Override
     public void aggiungProdotto(String nome, int numero, double prezzo, String descrizione, String immagine) {

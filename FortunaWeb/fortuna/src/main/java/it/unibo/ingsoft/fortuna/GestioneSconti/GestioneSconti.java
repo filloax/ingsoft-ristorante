@@ -15,6 +15,7 @@ public class GestioneSconti extends Controller implements IGestioneSconti {
 
     public GestioneSconti() {
         sconti = new HashSet<Sconto>();
+        //scarica "sconti" da database
     }
 
     @Override

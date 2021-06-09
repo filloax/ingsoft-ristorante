@@ -15,6 +15,7 @@ public class GestioneZoneConsegna extends Controller implements IGestioneZoneCon
 
     public GestioneZoneConsegna() {
         zone = new HashSet<ZonaConsegnaPunti>();
+        //scarica zona di consegna da database
     }
 
     @Override
