@@ -33,9 +33,9 @@ public class ZonaConsegna implements IZonaConsegna {
     private ILogManager log;
 
     private double prezzoMinimo;
-    private List<DoublePair> punti;
+    private List<Vector> punti;
 
-    public ZonaConsegna(double prezzoMinimo, List<DoublePair> punti) {
+    public ZonaConsegna(double prezzoMinimo, List<Vector> punti) {
         log = SpringContext.getBean(ILogManager.class);
         geoApiContext = SpringContext.getBean(GeoApiContext.class);
 
@@ -52,17 +52,23 @@ public class ZonaConsegna implements IZonaConsegna {
     }
 
     @Override
-    public boolean include(DoublePair coordinata, double prezzo) throws ZonaConsegnaException {
+    public boolean include(Vector coordinata, double prezzo) throws ZonaConsegnaException {
         if (prezzo < prezzoMinimo)
             return false;
 
         boolean result = false;
         for (int i = 0, j = punti.size() - 1; i < punti.size(); j = i++) {
-            if ((punti.get(i).getY() > coordinata.getY()) != (punti.get(j).getY() > coordinata.getY()) 
-              && (coordinata.getX() < (punti.get(j).getX() - punti.get(i).getX()) 
-                * (coordinata.getY() - punti.get(i).getY()) / (punti.get(j).getY() - punti.get(i).getY()) + punti.get(i).getX())) {
+            if (coordinata.equals(punti.get(i)))
+                return true;
+
+            if ((punti.get(i).getY() >= coordinata.getY()) != (punti.get(j).getY() > coordinata.getY())) {
+                double pendenza = (coordinata.getX() - punti.get(i).getX()) * (punti.get(j).getY() - punti.get(i).getY()) 
+                    - (punti.get(j).getX() - punti.get(i).getX()) * (coordinata.getY() - punti.get(i).getY());
                 
-                result = !result;
+                if (pendenza == 0) //lato
+                    return true;
+                if ((pendenza < 0) != (punti.get(j).getY() < punti.get(i).getY()))
+                    result = !result;
             }
         }
         return result;    
@@ -76,7 +82,7 @@ public class ZonaConsegna implements IZonaConsegna {
         return include(coordDaIndirizzo(indirizzo), prezzo);
     }
     
-    private DoublePair coordDaIndirizzo(String indirizzo) throws ZonaConsegnaException {
+    private Vector coordDaIndirizzo(String indirizzo) throws ZonaConsegnaException {
         if (geoApiContext == null)
             throw new InvalidConfigurationPropertyValueException("GEOCODING_KEY", "null", "API Key per Google Maps Geocoding non impostata!");
 
@@ -123,7 +129,7 @@ public class ZonaConsegna implements IZonaConsegna {
 
         log.scriviMessaggio(String.format("Richiesta geocoding riuscita: risultato (%f, %f)", coords.lat, coords.lng));
 
-        return new DoublePair(coords.lat, coords.lng);
+        return new Vector(coords.lat, coords.lng);
     }
 
     private String getLocality(GeocodingResult geocodingResult) {
@@ -144,11 +150,11 @@ public class ZonaConsegna implements IZonaConsegna {
         this.prezzoMinimo = prezzoMinimo;
     }
 
-    public List<DoublePair> getPunti() {
+    public List<Vector> getPunti() {
         return this.punti;
     }
 
-    public void setPunti(List<DoublePair> punti) {
+    public void setPunti(List<Vector> punti) {
         this.punti = punti;
     }
 

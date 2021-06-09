@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+    <link th:href="style.css" rel="stylesheet">
+    <style>
+        body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+        .w3-bar-block .w3-bar-item {padding:20px}
+    </style>
+</head>
+<body>
+    <div th:fragment="carrello" id="carrello">
+        <h1>Carrello</h1>
+        <form action="#" th:action="@{/ordine-prodotti}" method="POST">
+            <table class="w3-table w3-striped">
+                <thead>
+                    <tr>
+                        <th>Numero</th>
+                        <th>Nome</th>
+                        <th>Prezzo</th>
+                        <th th:unless="${noRemove}"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td th:colspan="${noRemove} ? 3 : 4">
+                        <div class="carrello-body">
+                            <table class="w3-table w3-striped">
+                                <tr th:each="prodotto : ${session.prodotti}">
+                                    <td th:text="${prodotto.numero}">101</td>
+                                    <td th:text="${prodotto.nome}">Involtini Primavera</td>
+                                    <td th:text="${prodotto.prezzo + '€'}">1.50</td>
+                                    <td th:unless="${noRemove}"><button type="submit" name="remove" th:value="${prodottoStat.index}"
+                                        class="w3-btn w3-ripple w3-white w3-border w3-round">Rimuovi</button></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td></tr>
+                    <tr>
+                        <td colspan="3">Totale</td>
+                        <td th:colspan="${noRemove} ? 1 : 2" th:text="${totale}"></td>
+                    </tr>
+                </tbody>
+            </table>  
+        </form>
+    </div>
+</body>
+</html>

@@ -3,7 +3,7 @@ package it.unibo.ingsoft.fortuna.model.zonaconsegna;
 public class ZonaConsegnaMock implements IZonaConsegna {
 
     @Override
-    public boolean include(DoublePair coordinata, double prezzo) {
+    public boolean include(Vector coordinata, double prezzo) {
         return true;
     }
 

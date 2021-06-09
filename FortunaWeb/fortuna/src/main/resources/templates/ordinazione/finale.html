@@ -2,20 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head> 
     <title>Fortuna: Ordinazione</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="style.css">
+    <!--/*/ <th:block th:insert="fragments/general.html :: headerfiles">
+    </th:block> /*/-->
 </head>
 <body>
-    <h1>Ordinazione</h1>
-    <div>
+    <header th:insert="fragments/general.html :: header"> </header>
+    <div class="w3-center w3-main w3-content">
+        <h1>Ordinazione</h1>
         <h2>Concluso!</h2>
 
         <p>Il tuo ordine verrà elaborato al momento richiesto, riceverai un SMS di conferma quando il personale lo avrà preso in carico.
         Puoi annullare l'ordine telefonando al numero del ristorante +39 123456789.</p>
 
-        <div id="riassuntoOrdine">
+        <div id="riassuntoOrdine" style="width: 75%; margin-left: auto; margin-right: auto;">
             <h2>Ordine svolto</h2>
-            <table>
+            <table class="w3-table w3-striped">
                 <tr>
                     <td>Nome: </td>
                     <td colspan="3" th:text="${ordineEseguito.nominativo}"></td>
@@ -29,7 +30,8 @@
             </table>   
         </div>
 
-        <p>Torna all'<a th:href="@{/}">inizio</a></p>
+        <p>Torna all'<a th:href="@{/}">inizio</a>.</p>
     </div>
+    <div th:replace="fragments/general.html :: footer"></div> 
 </body>
 </html>

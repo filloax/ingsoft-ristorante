@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="headerfiles">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+    <link th:href="style.css" rel="stylesheet">
+    <style>
+        body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+        .w3-bar-block .w3-bar-item {padding:20px}
+    </style>
+</head>
+<body>
+    <div class="w3-top">
+        <div class="w3-khaki" th:fragment="header" style="max-width:1200px; margin:auto">
+            <div class="w3-center w3-xlarge w3-padding-16"><h1>Ristorante Fortuna</h1></div>
+        </div>
+    </div>
+
+    <footer class="w3-row-padding w3-padding-32" th:fragment="footer">
+        <div class="w3-center">Footer (link vari)</div>
+    </footer>
+</body>
+</html>
