@@ -108,7 +108,7 @@ public class ZonaConsegna implements IZonaConsegna {
             }
 
             if (result == null && results.length > 0)
-                result = results.getX();
+                result = results[0];
         } catch (ApiException | InterruptedException | IOException e) {
             log.scriviMessaggio(String.format("Richiesta geocoding '%s' fallita: %s", indirizzo, e.getMessage()));
             throw new ZonaConsegnaException("Errore in connessione a API Google Maps!", e);

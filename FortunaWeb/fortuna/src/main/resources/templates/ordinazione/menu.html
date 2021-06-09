@@ -7,7 +7,7 @@
 </head>
 <body>
     <header th:insert="fragments/general.html :: header"> </header>
-    <div class="w3-center w3-main w3-content" style="max-width:1200px">
+    <div class="w3-center w3-main w3-content">
         <h1>Ordinazione</h1>
         <p th:text="'Ordinazione scelta: ' + ${session.tipoOrdine}" />
 
@@ -45,39 +45,7 @@
                 </form>
             </div>
     
-            <div class="w3-third" id="carrello">
-                <h1>Carrello</h1>
-                <form action="#" th:action="@{/ordine-prodotti}" method="POST">
-                    <table class="w3-table w3-striped">
-                        <thead>
-                            <tr>
-                                <th>Numero</th>
-                                <th>Nome</th>
-                                <th>Prezzo</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td colspan="4">
-                                <div class="carrello-body">
-                                    <table>
-                                        <tr th:each="prodotto : ${session.prodotti}">
-                                            <td th:text="${prodotto.numero}">101</td>
-                                            <td th:text="${prodotto.nome}">Involtini Primavera</td>
-                                            <td th:text="${prodotto.prezzo + '€'}">1.50</td>
-                                            <td><button type="submit" name="remove" th:value="${prodottoStat.index}"
-                                                class="w3-btn w3-ripple w3-white w3-border w3-round">Rimuovi</button></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </td></tr>
-                            <tr>
-                                <td colspan="3">Totale</td>
-                                <td colspan="2" th:text="${totale}"></td>
-                            </tr>
-                        </tbody>
-                    </table>  
-                </form>
+            <div class="w3-third" th:insert="fragments/carrello.html :: carrello">
             </div>
         </div>
         <div class="w3-row-padding">
@@ -88,55 +56,7 @@
                 </form>
             </div>
         </div>
-        <div class="w3-row-row-padding">
-            <div id="sconti" class="w3-half">
-                <h2>Sconti Disponibili</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Inizio</th>
-                            <th>Fine</th>
-                            <th>Quantità</th>
-                            <th>Spesa Minima</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="sconto : ${scontiGen}">
-                            <td th:text="${sconto.inizio.toLocalDate()}">2021-05-15</td>
-                            <td th:text="${sconto.fine.toLocalDate()}">2021-07-15</td>
-                            <td th:if="${sconto.quantita > 0}" th:text="${sconto.quantita + '€'}">1.50</td>
-                            <td th:unless="${sconto.quantita > 0}" th:text="${sconto.quantitaPct * 100 + '%'}">25%</td>
-                            <td th:text="${sconto.costoMinimo > 0 ? sconto.costoMinimo + '€' : ''}"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="sconti-prodotti" class="w3-half">
-                <h2>Sconti Disponibili su Prodotti</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Inizio</th>
-                            <th>Fine</th>
-                            <th>Prodotto</th>
-                            <th>Quantità</th>
-                            <th>Spesa Minima</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="sconto : ${scontiProdotti}">
-                            <span th:each="prodotto : ${sconto.perProdotti}">
-                                <td th:text="${sconto.inizio.toLocalDate()}">2021-05-15</td>
-                                <td th:text="${sconto.fine.toLocalDate()}">2021-07-15</td>
-                                <td th:if="${sconto.quantita > 0}" th:text="${sconto.quantita + '€'}">1.50</td>
-                                <td th:text="${prodotto.nome}">Involtini</td>
-                                <td th:unless="${sconto.quantita > 0}" th:text="${sconto.quantitaPct * 100 + '%'}">25%</td>
-                                <td th:text="${sconto.costoMinimo > 0 ? sconto.costoMinimo + '€' : ''}"></td>
-                            </span>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div th:insert="fragments/sconti.html :: sconti(hori = true)">
         </div>
     </div>
     <div th:replace="fragments/general.html :: footer"></div> 

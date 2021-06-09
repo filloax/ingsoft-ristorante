@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="headerfiles">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+    <link th:href="style.css" rel="stylesheet">
+    <style>
+        body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+        .w3-bar-block .w3-bar-item {padding:20px}
+    </style>
+</head>
+<body>
+    <div id="sconti" th:fragment="sconti (hori)" th:classappend="${hori} ? w3-row : ''">
+        <div th:classappend="${hori} ? w3-half : ''">
+            <h2>Sconti Disponibili</h2>
+            <table class="w3-table w3-striped">
+                <thead>
+                    <tr>
+                        <th>Inizio</th>
+                        <th>Fine</th>
+                        <th>Quantità</th>
+                        <th>Spesa Minima</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="sconto : ${scontiGen}">
+                        <td th:text="${sconto.inizio.toLocalDate()}">2021-05-15</td>
+                        <td th:text="${sconto.fine.toLocalDate()}">2021-07-15</td>
+                        <td th:if="${sconto.quantita > 0}" th:text="${sconto.quantita + '€'}">1.50</td>
+                        <td th:unless="${sconto.quantita > 0}" th:text="${sconto.quantitaPct * 100 + '%'}">25%</td>
+                        <td th:text="${sconto.costoMinimo > 0 ? sconto.costoMinimo + '€' : ''}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:classappend="${hori} ? w3-half : ''">
+            <h2>Sconti Disponibili su Prodotti</h2>
+            <table class="w3-table w3-striped">
+                <thead>
+                    <tr>
+                        <th>Inizio</th>
+                        <th>Fine</th>
+                        <th>Prodotto</th>
+                        <th>Quantità</th>
+                        <th>Spesa Minima</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="sconto : ${scontiProdotti}">
+                        <span th:each="prodotto : ${sconto.perProdotti}">
+                            <td th:text="${sconto.inizio.toLocalDate()}">2021-05-15</td>
+                            <td th:text="${sconto.fine.toLocalDate()}">2021-07-15</td>
+                            <td th:if="${sconto.quantita > 0}" th:text="${sconto.quantita + '€'}">1.50</td>
+                            <td th:text="${prodotto.nome}">Involtini</td>
+                            <td th:unless="${sconto.quantita > 0}" th:text="${sconto.quantitaPct * 100 + '%'}">25%</td>
+                            <td th:text="${sconto.costoMinimo > 0 ? sconto.costoMinimo + '€' : ''}"></td>
+                        </span>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
