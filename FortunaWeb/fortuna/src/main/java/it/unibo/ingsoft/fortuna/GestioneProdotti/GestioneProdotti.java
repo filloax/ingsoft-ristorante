@@ -12,12 +12,12 @@ public class GestioneProdotti extends Controller implements IGestioneProdotti {
     private List<Prodotto> menu;
 
     public GestioneProdotti() {
-        menu = new ArrayList<>();
+        menu = new ArrayList<>(); //ArrayList generico?
         //scaricare menu da Database
     }
 
     @Override
-    public void aggiungProdotto(String nome, int numero, double prezzo, String descrizione, String immagine) {
+    public void aggiungiProdotto(String nome, int numero, double prezzo, String descrizione, String immagine) {
         Prodotto toAdd;
         toAdd = new Prodotto(nome, numero, prezzo, descrizione, immagine);
         menu.add(toAdd);
