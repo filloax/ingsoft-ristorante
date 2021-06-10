@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class StripeService {
 
+	// Variabile di ambiente esterna per sicurezza (mai salvare key in chiaro su repository), 
+	// chiave privata per Stripe da account
     @Value("${STRIPE_SECRET_KEY: null}")
     private String secretKey;
     

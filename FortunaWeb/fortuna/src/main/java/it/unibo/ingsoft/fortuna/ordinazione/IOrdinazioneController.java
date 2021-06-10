@@ -11,12 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import it.unibo.ingsoft.fortuna.model.*;
 import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
 import it.unibo.ingsoft.fortuna.model.richiesta.*;
+import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaException;
 
 public interface IOrdinazioneController {
     public Set<TipoDisattivazione> getTipoOrdiniDisabilitati();
     public Set<Prodotto> getProdottiDisabilitati();
 
-    public boolean verificaZonaConsegna(String indirizzo, double costo);
+    public boolean verificaZonaConsegna(String indirizzo, double costo) throws ZonaConsegnaException;
 
     public List<Prodotto> getMenu();
     public List<Sconto> getSconti();

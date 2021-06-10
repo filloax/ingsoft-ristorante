@@ -2,46 +2,53 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head> 
     <title>Fortuna: Ordinazione</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="style.css">
+    <!--/*/ <th:block th:insert="fragments/general.html :: headerfiles">
+    </th:block> /*/-->
 </head>
 <body>
-    <h1>Ordinazione</h1>
-    <div>
+    <header th:insert="fragments/general.html :: header"> </header>
+    <div class="w3-center w3-main w3-content">
+        <h1>Ordinazione</h1>
+
         <h2>Revisiona dati</h2>
 
-        <div th:if='${session.tokenPagamento}'>
-            <h3 style='color: green;'>Pagamento autorizzato! Verrà effettuato all'accettazione dell'ordine da parte del personale.</h3>
+        <div th:if='${session.tokenPagamento}' class="w3-panel w3-green">
+            <h3>Pagamento autorizzato! Verrà effettuato all'accettazione dell'ordine da parte del personale.</h3>
         </div>
 
         <p>Controlla se i dati sono corretti, oppure torna indietro.</p>
 
         <form action="#" method="POST">
-            <button name="conferma" value="true">Conferma e effettua ordine</button>
+            <button name="conferma" value="true" class="w3-btn w3-ripple w3-amber w3-xlarge w3-round w3-margin">
+                Conferma e effettua ordine
+            </button>
         </form>
 
         <div id="riassuntoOrdine">
             <h2>Ordine svolto</h2>
-            <table>
+            <table class="w3-table w3-striped" style="width: 75%; margin-left: auto; margin-right: auto;">
                 <tr>
-                    <td>Nome: </td>
+                    <td><strong>Nome: </strong></td>
                     <td colspan="3" th:text="${datiOrdine.nome}"></td>
                 </tr>
                 <tr>
-                    <td>Data: </td>
+                    <td><strong>Data: </strong></td>
                     <td th:text="${datiOrdine.data}"></td>
-                    <td>Ora: </td>
+                    <td><strong>Ora: </strong></td>
                     <td th:text="${datiOrdine.ora}"></td>
                 </tr>
                 <tr>
-                    <td>Totale: </td>
+                    <td><strong>Totale: </strong></td>
                     <td th:unless="${totaleScontato}" th:text="${totale}"></td>
                     <td th:if="${totaleScontato}">
                         <span class="discount-old" th:text="${totale}"></span> <span class="discount" th:text="${totaleScontato}"></span>
                     </td>
                 </tr>
-            </table>   
+            </table>  
+            
+            <div th:insert="fragments/carrello.html :: carrello(noRemove = true)" style="width: 75%; margin-left: auto; margin-right: auto;"></div>
         </div>
     </div>
+    <div th:replace="fragments/general.html :: footer"></div> 
 </body>
 </html>

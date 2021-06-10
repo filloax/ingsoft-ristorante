@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import it.unibo.ingsoft.fortuna.model.*;
 import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
 import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
+import it.unibo.ingsoft.fortuna.model.zonaconsegna.IndirizzoSconosciutoException;
+import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaException;
 
 @Controller
 public class OrdinazioneServlet {
@@ -33,6 +36,7 @@ public class OrdinazioneServlet {
 
     @RequestMapping({"/ordine"})
     public String scegliTipo(HttpServletRequest request) {
+
         return "ordinazione/tipo";
     }
 
@@ -82,10 +86,15 @@ public class OrdinazioneServlet {
     }
 
     @PostMapping({"/ordine-indirizzo"})
-    public String scegliIndirizzoPost(Model model, HttpServletRequest request, HttpSession session,
+    public String scegliIndirizzoPost(Model model, HttpServletRequest request, HttpSession session, RedirectAttributes rAttributes,
             @RequestParam(value = "indirizzo", required = false) String indirizzo) {
         
         if (indirizzo != null) {
+            if (indirizzo.isEmpty()) {
+                model.addAttribute("error", "Indirizzo vuoto.");
+                return "ordinazione/indirizzo";
+            }
+
             @SuppressWarnings("unchecked")
             List<Prodotto> prodotti = (List<Prodotto>) session.getAttribute("prodotti");
             // Zona consegna scelta in base a totale, non totale scontato
@@ -93,12 +102,31 @@ public class OrdinazioneServlet {
                 .map(prodotto -> prodotto.getPrezzo())
                 .reduce(0., (a, b) -> a + b);
 
-            if (ordinazione.verificaZonaConsegna(indirizzo, costo)) {
-                session.setAttribute("indirizzo", indirizzo);
-                return "redirect:/ordine-dati";
-            } else {
-                model.addAttribute("indirizzoSbagliato", true);
-                return "ordinazione/indirizzo";
+            try {
+                if (ordinazione.verificaZonaConsegna(indirizzo, costo)) {
+                    session.setAttribute("indirizzo", indirizzo);
+                    return "redirect:/ordine-dati";
+                } else {
+                    model.addAttribute("error", "Non possiamo fare consegne a domicilio a queste distanze, in questa fascia di prezzo.");
+                    return "ordinazione/indirizzo";
+                }
+            } catch (ZonaConsegnaException | InvalidConfigurationPropertyValueException | IllegalStateException e) {
+                if (e instanceof ZonaConsegnaException)
+                    e.printStackTrace();
+                else
+                    System.err.println("scegliIndirizzoPost(): " + e.getMessage());
+                    
+                if (e instanceof IndirizzoSconosciutoException) {
+                    model.addAttribute("error", "Indirizzo sconosciuto.");
+                    return "ordinazione/indirizzo";
+                } else {
+                    // Se non funzionano i servizi di localizzazione, allora 
+                    // fai andare avanti l'ordinazione, e lascia lo smistamento
+                    // al titolare
+                    session.setAttribute("indirizzo", indirizzo);
+                    rAttributes.addFlashAttribute("errorZonaconsegna", true);
+                    return "redirect:/ordine-dati";
+                }
             }
 
 
@@ -148,9 +176,10 @@ public class OrdinazioneServlet {
                 if ("ORDINAZ_TAVOLO".equals(session.getAttribute("tipoOrdine"))) {
                     datiOrdine.setData(LocalDate.now());
                     datiOrdine.setOra(LocalTime.now());
-                    session.setAttribute("datiOrdine", datiOrdine);
-                    return "redirect:/ordine-finale";
                 }
+                session.setAttribute("datiOrdine", datiOrdine);
+
+                return "redirect:/ordine-finale";
             }
         } 
 
@@ -162,7 +191,7 @@ public class OrdinazioneServlet {
         DatiOrdine datiOrdine = (DatiOrdine) session.getAttribute("datiOrdine");
 
         if (datiOrdine == null)
-            return "redirect:/ordinazione/dati";
+            return "redirect:/ordine-dati";
 
         @SuppressWarnings("unchecked")
         List<Prodotto> prodotti = (List<Prodotto>) session.getAttribute("prodotti");

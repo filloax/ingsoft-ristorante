@@ -2,21 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head> 
     <title>Fortuna: Ordinazione</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="style.css">
+    <!--/*/ <th:block th:insert="fragments/general.html :: headerfiles">
+    </th:block> /*/-->
 </head>
 <body>
-    <h1>Ordinazione</h1>
-    <div>
+    <header th:insert="fragments/general.html :: header"> </header>
+    <div class="w3-main w3-content">
+        <h1>Ordinazione</h1>
         <h2>Indirizzo:</h2>
 
-        <p class="error" th:if="${indirizzoSbagliato}">Non possiamo fare consegne a domicilio a queste distanze, in questa fascia di prezzo.</p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <p>Formato: <em>Via Numero, Città</em> dove città se non specificato è Bologna.</p>
 
         <form action="#" th:action="@{/ordine-indirizzo}" method="POST">
-            <label>Indirizzo</label>
-            <input type="text" name="indirizzo" th:value="${session.indirizzo}"> 
-            <button>Conferma</button>
+            <label><strong>Indirizzo</strong></label>
+            <input type="text" name="indirizzo" style="width: 65%" th:value="${session.indirizzo}"> 
+            <button class="w3-btn w3-ripple w3-amber w3-large w3-round">Conferma</button>
         </form>
     </div>
+    <div th:replace="fragments/general.html :: footer"></div> 
 </body>
 </html>

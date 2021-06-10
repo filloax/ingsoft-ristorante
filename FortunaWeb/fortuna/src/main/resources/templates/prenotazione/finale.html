@@ -2,17 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head> 
     <title>Fortuna: Prenotazione</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="style.css">
+    <!--/*/ <th:block th:insert="fragments/general.html :: headerfiles">
+    </th:block> /*/-->
 </head>
 <body>
-    <h1>Prenotazione</h1>
-    <div>
+    <header th:insert="fragments/general.html :: header"> </header>
+    <div class="w3-center w3-main w3-content">
+        <h1>Prenotazione</h1>
         <h2>Concluso!</h2>
-        <p>La tua prenotazione verrà elaborata al momento richiesto, riceverai un SMS di conferma quando il personale la avrà presa in carico.
+        <p class="w3-panel">La tua prenotazione verrà elaborata al momento richiesto, riceverai un SMS di conferma quando il personale la avrà presa in carico.
         Puoi annullare la prenotazione telefonando al numero del ristorante +39 123456789.</p>
     
         <p>Torna all'<a th:href="@{/}">inizio</a></p>
     </div>
+    <div th:replace="fragments/general.html :: footer"></div> 
 </body>
 </html>
