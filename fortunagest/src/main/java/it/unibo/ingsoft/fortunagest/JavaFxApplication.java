@@ -1,15 +1,12 @@
 package it.unibo.ingsoft.fortunagest;
 
-import org.apache.catalina.core.ApplicationContext;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.event.ApplicationContextInitializedEvent;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
 import javafx.application.Application;
-import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
@@ -25,8 +22,8 @@ public class JavaFxApplication extends Application {
 			public void initialize(GenericApplicationContext applicationContext) {
 
 				applicationContext.registerBean(Application.class, () -> JavaFxApplication.this);
-				//applicationContext.registerBean(Parameters.class);
-				//applicationContext.registerBean(HostServices.class);
+				// applicationContext.registerBean(Parameters.class);
+				// applicationContext.registerBean(HostServices.class);
 
 				// applicationContext.registerBean(Parameters.class, () ->
 				// Parameters.getParameters );
@@ -35,8 +32,8 @@ public class JavaFxApplication extends Application {
 			}
 		};
 
-		this.context = new SpringApplicationBuilder().sources(SpringLauncher.class)
-				.initializers(initializer).run(getParameters().getRaw().toArray(new String[0]));
+		this.context = new SpringApplicationBuilder().sources(SpringLauncher.class).initializers(initializer)
+				.run(getParameters().getRaw().toArray(new String[0]));
 	}
 
 	@Override
