@@ -1,7 +1,8 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.project.sourcePaths": [
-        "FortunaLog/src/main/java"
+        "FortunaLog/src/main/java",
+        "fortunagest/src/main/java"
     ],
     "maven.view": "hierarchical",
     "java.checkstyle.configuration": "/sun_checks.xml"
