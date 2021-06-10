@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "vscjava.vscode-java-debug",
+        "sohibe.java-generate-setters-getters",
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-java-test",
+        "gabrielbb.vscode-lombok",
+        "redhat.java",
+        "vscjava.vscode-maven",
+        "vscjava.vscode-java-dependency",
+        "vscjava.vscode-spring-boot-dashboard",
+        "pivotal.vscode-spring-boot",
+        "vscjava.vscode-spring-initializr"
+    ]
+}
