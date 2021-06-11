@@ -23,15 +23,15 @@ public class CodaRichiesteTest {
         listaRichieste1 = new ArrayList<Richiesta>();
 
         Richiesta richiesta1 = new OrdineTakeAway();
-        richiesta1.setIdRichiesta("richiesta1");
+        richiesta1.setIdRichiesta(1);
         Richiesta richiesta2 = new OrdineAlTavolo();
-        richiesta2.setIdRichiesta("richiesta2");
+        richiesta2.setIdRichiesta(2);
         Richiesta richiesta3 = new OrdineDomicilio();
-        richiesta3.setIdRichiesta("richiesta3");
+        richiesta3.setIdRichiesta(3);
         Richiesta richiesta4 = new Prenotazione();
-        richiesta4.setIdRichiesta("richiesta4");
+        richiesta4.setIdRichiesta(4);
         Richiesta richiesta5 = new OrdineAlTavolo();
-        richiesta5.setIdRichiesta("richiesta5");
+        richiesta5.setIdRichiesta(5);
 
         listaRichieste1.add(richiesta1);
         listaRichieste1.add(richiesta2);

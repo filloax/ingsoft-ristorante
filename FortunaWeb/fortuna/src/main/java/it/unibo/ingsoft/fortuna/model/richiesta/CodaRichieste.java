@@ -33,7 +33,7 @@ public class CodaRichieste {
         }
     }
 
-    public boolean accetta(String idRichiesta) {
+    public boolean accetta(Integer idRichiesta) {
         int index = -1;
 
         for (int i = 0; i < inAttesa.size() && index < 0; i++) {
@@ -53,7 +53,7 @@ public class CodaRichieste {
         return inAttesa.remove(richiesta) || accettati.remove(richiesta);
     }
 
-    public boolean cancella(String idRichiesta) {
+    public boolean cancella(Integer idRichiesta) {
         Richiesta richiesta = null;
 
         for (int i = 0; i < inAttesa.size() && richiesta == null; i++) {
