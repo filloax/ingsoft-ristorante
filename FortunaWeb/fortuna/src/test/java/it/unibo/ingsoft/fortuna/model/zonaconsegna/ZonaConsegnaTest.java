@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class ZonaConsegnaTest {
-    private ZonaConsegna zonaConsegna1;
-    private ZonaConsegna zonaConsegna2;
+    private ZonaConsegnaPunti zonaConsegna1;
+    private ZonaConsegnaPunti zonaConsegna2;
     private List<Vector> puntiRettangolo;
     private List<Vector> puntiTrapezio;
 
@@ -21,8 +21,8 @@ public class ZonaConsegnaTest {
         puntiTrapezio= List.of(new Vector(0, 0), new Vector(5, 0), new Vector(2, 3), new Vector(0, 2));
 
         
-        zonaConsegna1 = new ZonaConsegna(0.0, puntiRettangolo);
-        zonaConsegna2 = new ZonaConsegna(5.0, puntiTrapezio);
+        zonaConsegna1 = new ZonaConsegnaPunti(0.0, puntiRettangolo);
+        zonaConsegna2 = new ZonaConsegnaPunti(5.0, puntiTrapezio);
     }
 
     @Test

@@ -45,6 +45,11 @@ public class StripeService {
         charge.capture();
     }
 
+    public void cancelCharge(String token) throws AuthenticationException, InvalidRequestException, APIConnectionException, CardException, APIException {
+        Charge charge = Charge.retrieve(token);
+        charge.refund();
+    }
+
     public boolean isPaid(String token) throws AuthenticationException, InvalidRequestException, APIConnectionException, CardException, APIException {
         Charge charge = Charge.retrieve(token);
         return charge.getCaptured();
@@ -53,7 +58,7 @@ public class StripeService {
     public boolean isAuthorized(String token) throws AuthenticationException, APIConnectionException, CardException, APIException {
         try {
             Charge charge = Charge.retrieve(token);
-            return charge.getPaid();
+            return charge.getPaid() && !charge.getRefunded();
         } catch (InvalidRequestException e) { //token non valido
             return false;
         }

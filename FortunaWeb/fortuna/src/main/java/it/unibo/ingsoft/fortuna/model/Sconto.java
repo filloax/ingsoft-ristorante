@@ -38,6 +38,15 @@ public class Sconto {
             .perProdotti(prodotti);
     }
 
+    public boolean isInTempo(LocalDateTime tempo) {
+        return (tempo.isAfter(inizio) || tempo.isEqual(inizio)) && tempo.isBefore(fine);
+    }
+
+    public boolean overlapsTempo(LocalDateTime iniziop, LocalDateTime finep) {
+        return (fine.isAfter(iniziop) && fine.isBefore(finep)) 
+        || (inizio.isAfter(iniziop) && inizio.isBefore(finep));
+    }
+
     public boolean isAttivo(LocalDateTime tempo, Prodotto prodotto, double costoTotale)
     {
         return isDateCostGood(tempo, costoTotale) && (perProdotti != null && perProdotti.contains(prodotto));
@@ -50,9 +59,8 @@ public class Sconto {
 
     private boolean isDateCostGood(LocalDateTime tempo, double costoTotale)
     {
-        return (tempo.isAfter(inizio) || tempo.isEqual(inizio)) && tempo.isBefore(fine) && costoTotale >= costoMinimo;
+        return isInTempo(tempo) && costoTotale >= costoMinimo;
     }
-
 
 
     public LocalDateTime getInizio() {

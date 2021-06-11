@@ -23,7 +23,7 @@ public class PagamentoOnline implements IPagamentoOnline {
             return pagamentoStripe.isPaid(ordine.getTokenPagamento());
         } catch (AuthenticationException | InvalidRequestException | APIConnectionException | CardException
                 | APIException e) {
-            throw new PaymentException("Errore nell controllo pagamento!", e);
+            throw new PaymentException("Errore nel controllo pagamento!", e);
         }
     }
 
@@ -33,7 +33,17 @@ public class PagamentoOnline implements IPagamentoOnline {
             pagamentoStripe.charge(ordine.getTokenPagamento());
         } catch (AuthenticationException | InvalidRequestException | APIConnectionException | CardException
                 | APIException e) {
-            throw new PaymentException("Errore nell controllo pagamento!", e);
+            throw new PaymentException("Errore nel pagamento!", e);
+        }
+    }
+
+    @Override
+    public void annullaPagamento(OrdineDomicilio ordine) throws PaymentException {
+        try {
+            pagamentoStripe.cancelCharge(ordine.getTokenPagamento());
+        } catch (AuthenticationException | InvalidRequestException | APIConnectionException | CardException
+                | APIException e) {
+            throw new PaymentException("Errore nel risarcimento!", e);
         }
     }
 
@@ -43,7 +53,7 @@ public class PagamentoOnline implements IPagamentoOnline {
             return pagamentoStripe.isAuthorized(ordine.getTokenPagamento());
         } catch (AuthenticationException | APIConnectionException | CardException
                 | APIException e) {
-            throw new PaymentException("Errore nell controllo pagamento!", e);
+            throw new PaymentException("Errore nel controllo autorizzazione!", e);
         }
     }
 

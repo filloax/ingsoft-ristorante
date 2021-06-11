@@ -4,12 +4,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 import it.unibo.ingsoft.fortuna.model.Sconto;
 
 @Component
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class GestioneScontiMock implements IGestioneSconti {
     @Override
     public List<Sconto> listaScontiTotali() {
@@ -20,7 +23,6 @@ public class GestioneScontiMock implements IGestioneSconti {
 
         return listaSconti;
     }
-
 
     @Override
     public List<Sconto> listaSconti(LocalDateTime tempo) {
@@ -69,5 +71,12 @@ public class GestioneScontiMock implements IGestioneSconti {
     @Override
     public boolean rimuoviSconto(Sconto sconto) {
         return false;
+    }
+
+
+    @Override
+    public List<Sconto> listaSconti(LocalDateTime inizioPeriodo, LocalDateTime finePeriodo) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
