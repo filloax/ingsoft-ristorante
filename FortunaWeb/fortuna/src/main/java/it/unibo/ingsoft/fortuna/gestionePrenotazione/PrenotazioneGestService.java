@@ -18,6 +18,16 @@ public class PrenotazioneGestService {
         return repo.findAll();
     }
 
+    public List<Prenotazione> listInAttesa() {
+
+        return repo.findInAttesa();
+    }
+
+    public List<Prenotazione> listAccettati() {
+
+        return repo.findAccettati();
+    }
+
     public void save(Prenotazione prenotazione) {
         repo.save(prenotazione);
     }
@@ -29,5 +39,7 @@ public class PrenotazioneGestService {
     public void delete(Integer id) {
         repo.deleteById(id);
     }
+
+    
 
 }

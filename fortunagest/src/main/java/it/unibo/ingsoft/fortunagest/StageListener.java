@@ -42,7 +42,7 @@ public class StageListener implements ApplicationListener<StageReadyEvent> {
                 public void handle(ActionEvent event) {
                     System.out.println("Hello World!");
                     RestTemplate template = new RestTemplate();
-                    String fooResourceUrl = "http://localhost:8080/prenotazioni";
+                    String fooResourceUrl = "http://localhost:8080/gest-prenotazioni";
                     ResponseEntity<String> response = template.getForEntity(fooResourceUrl+"/1", String.class);
                     System.out.println(response.getStatusCode());
                     System.out.println("JSON");

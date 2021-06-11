@@ -29,6 +29,15 @@ public class PrenotazioneGestController {
         return service.listAll();
     }
 
+    @GetMapping(value = "attesa")
+    public List<Prenotazione> listInAttesa() {
+        return service.listInAttesa();
+    }
+    @GetMapping(value = "accettati")
+    public List<Prenotazione> listAccettati() {
+        return service.listAccettati();
+    }
+
     @GetMapping(value = "{id}")
     public ResponseEntity<Prenotazione> get(@PathVariable Integer id) {
         try {
