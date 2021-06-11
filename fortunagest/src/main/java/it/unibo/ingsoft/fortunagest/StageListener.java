@@ -15,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
@@ -32,41 +34,46 @@ public class StageListener implements ApplicationListener<StageReadyEvent> {
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
         try {
-            Stage stage = event.getStage();
-            stage.setTitle(this.applicationTitle);
-            Button btn = new Button();
-            btn.setText("Say 'Hello World'");
-            btn.setOnAction((EventHandler<ActionEvent>) new EventHandler<ActionEvent>() {
+            Stage window = event.getStage();
+            window.setTitle(this.applicationTitle);
+            Parent root = FXMLLoader.load(getClass().getResource("HomeTitolare.fxml"));
+            Scene scene1 = new Scene(root);
+            window.setScene(scene1);
+            window.show();
 
-                @Override
-                public void handle(ActionEvent event) {
-                    System.out.println("Hello World!");
-                    RestTemplate template = new RestTemplate();
-                    String fooResourceUrl = "http://localhost:8080/gest-prenotazioni";
-                    ResponseEntity<String> response = template.getForEntity(fooResourceUrl+"/1", String.class);
-                    System.out.println(response.getStatusCode());
-                    System.out.println("JSON");
-                    System.out.println(response.getBody());
-                    try {
-                        ObjectMapper mapper = new ObjectMapper();
-                        JsonNode root;
-                        root = mapper.readTree(response.getBody());
-                        JsonNode nominativo = root.path("nominativo");
+            // Button btn = new Button();
+            // btn.setText("Say 'Hello World'");
+            // btn.setOnAction((EventHandler<ActionEvent>) new EventHandler<ActionEvent>() {
 
-                    } catch (JsonMappingException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (JsonProcessingException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            });
+            //     @Override
+            //     public void handle(ActionEvent event) {
+            //         System.out.println("Hello World!");
+            //         RestTemplate template = new RestTemplate();
+            //         String fooResourceUrl = "http://localhost:8080/gest-prenotazioni";
+            //         ResponseEntity<String> response = template.getForEntity(fooResourceUrl+"/1", String.class);
+            //         System.out.println(response.getStatusCode());
+            //         System.out.println("JSON");
+            //         System.out.println(response.getBody());
+            //         try {
+            //             ObjectMapper mapper = new ObjectMapper();
+            //             JsonNode root;
+            //             root = mapper.readTree(response.getBody());
+            //             JsonNode nominativo = root.path("nominativo");
 
-            StackPane root = new StackPane();
-            root.getChildren().add(btn);
-            stage.setScene(new Scene(root, 300, 250));
-            stage.show();
+            //         } catch (JsonMappingException e) {
+            //             // TODO Auto-generated catch block
+            //             e.printStackTrace();
+            //         } catch (JsonProcessingException e) {
+            //             // TODO Auto-generated catch block
+            //             e.printStackTrace();
+            //         }
+            //     }
+            // });
+
+            // StackPane root = new StackPane();
+            // root.getChildren().add(btn);
+            // window.setScene(new Scene(root, 300, 250));
+            // window.show();
 
         } catch (Exception e) {
             e.printStackTrace();
