@@ -1,4 +1,4 @@
-package main.java.viewGestioneSconti;
+package it.unibo.ingsoft.fortunagest.zonaconsegna;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContextInitializer;
@@ -10,6 +10,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
-public class GestioneScontiView extends Application {
-    
+public class ImpostazioneZonaConsegnaView {
+
 }

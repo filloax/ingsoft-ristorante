@@ -1,4 +1,4 @@
-package main.java.viewModificaProdotti;
+package it.unibo.ingsoft.fortunagest.sconti;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContextInitializer;
@@ -10,6 +10,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
-public class ModificaProdottiView extends Application {
-    
+public class GestioneScontiView {
+
 }
