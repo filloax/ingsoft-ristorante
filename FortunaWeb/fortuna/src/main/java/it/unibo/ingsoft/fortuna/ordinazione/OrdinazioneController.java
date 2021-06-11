@@ -36,7 +36,7 @@ import it.unibo.ingsoft.fortuna.model.zonaconsegna.IndirizzoSconosciutoException
 import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaException;
 import it.unibo.ingsoft.fortuna.prodotti.IGestioneProdotti;
 import it.unibo.ingsoft.fortuna.sconti.IGestioneSconti;
-import it.unibo.ingsoft.fortuna.zoneconsegna.IGestioneZoneConsegna;
+import it.unibo.ingsoft.fortuna.zoneconsegna.IListaZoneConsegna;
 
 @Service
 public class OrdinazioneController extends Controller implements IOrdinazioneController {
@@ -51,7 +51,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
     private IGestioneSconti gestioneSconti;
 
     @Autowired
-    private IGestioneZoneConsegna gestioneZoneConsegna;
+    private IListaZoneConsegna listaZoneConsegna;
 
     @Autowired
     private IPagamentoOnline pagamentoOnline;
@@ -85,7 +85,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
 
     @Override
     public boolean verificaZonaConsegna(String indirizzo, double costo) throws ZonaConsegnaException {
-        List<IZonaConsegna> zoneConsegna = gestioneZoneConsegna.listaZoneConsegna();
+        List<IZonaConsegna> zoneConsegna = listaZoneConsegna.listaZoneConsegna();
 
         for (IZonaConsegna zonaConsegna : zoneConsegna) {
             if (zonaConsegna.include(indirizzo, costo)) {
@@ -399,38 +399,5 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
 
 
         return true;
-    }
-
-    
-    public PeriodiController getPeriodiDisattivazione() {
-        return this.periodiDisattivazione;
-    }
-
-    public void setPeriodiDisattivazione(PeriodiController periodiDisattivazione) {
-        this.periodiDisattivazione = periodiDisattivazione;
-    }
-
-    public IGestioneProdotti getGestioneProdotti() {
-        return this.gestioneProdotti;
-    }
-
-    public void setGestioneProdotti(IGestioneProdotti gestioneProdotti) {
-        this.gestioneProdotti = gestioneProdotti;
-    }
-
-    public IGestioneSconti getGestioneSconti() {
-        return this.gestioneSconti;
-    }
-
-    public void setGestioneSconti(IGestioneSconti gestioneSconti) {
-        this.gestioneSconti = gestioneSconti;
-    }
-
-    public IGestioneZoneConsegna getGestioneZoneConsegna() {
-        return this.gestioneZoneConsegna;
-    }
-
-    public void setGestioneZoneConsegna(IGestioneZoneConsegna gestioneZoneConsegna) {
-        this.gestioneZoneConsegna = gestioneZoneConsegna;
     }
 }

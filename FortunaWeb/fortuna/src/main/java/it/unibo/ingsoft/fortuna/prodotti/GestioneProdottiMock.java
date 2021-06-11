@@ -3,11 +3,14 @@ package it.unibo.ingsoft.fortuna.prodotti;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 
 @Component
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class GestioneProdottiMock implements IGestioneProdotti {
 
     @Override

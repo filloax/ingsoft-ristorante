@@ -1,33 +1,39 @@
-package it.unibo.ingsoft.fortuna.gestioneProdotti;
+package it.unibo.ingsoft.fortuna.prodotti;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import it.unibo.ingsoft.fortuna.Controller;
-import it.unibo.ingsoft.fortuna.interfacciaGestioneProdotti.IGestioneProdotti;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 
+@Component
 public class GestioneProdotti extends Controller implements IGestioneProdotti {
 
     private List<Prodotto> menu;
 
     public GestioneProdotti() {
-        menu = new ArrayList<>(); //ArrayList generico?
+        menu = new ArrayList<>();
         //scaricare menu da Database
     }
 
     @Override
-    public void aggiungiProdotto(String nome, int numero, double prezzo, String descrizione, String immagine) {
+    public Prodotto aggiungiProdotto(String nome, int numero, double prezzo, String descrizione, String immagine) {
         Prodotto toAdd;
         toAdd = new Prodotto(nome, numero, prezzo, descrizione, immagine);
         menu.add(toAdd);
         //Query per aggiungere toAdd al DB
+
+        return toAdd;
     }
 
     @Override
-    public void rimuoviProdotto(Prodotto prod) {
+    public boolean rimuoviProdotto(Prodotto prod) {
         menu.remove(prod);
-        //Query per rimuover prod dal DB      
+        //Query per rimuover prod dal DB   
+        
+        return true;
     }
 
     @Override
