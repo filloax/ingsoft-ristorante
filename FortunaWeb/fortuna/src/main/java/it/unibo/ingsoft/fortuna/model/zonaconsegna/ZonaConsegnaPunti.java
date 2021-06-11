@@ -21,7 +21,7 @@ import it.unibo.ingsoft.fortuna.SpringContext;
 import it.unibo.ingsoft.fortuna.log.ILogManager;
 
 
-public class ZonaConsegna implements IZonaConsegna {
+public class ZonaConsegnaPunti implements IZonaConsegna {
     // Usati da API di google per impostare la preferenza di ricerca
     // non restrittivi, rappresentano solo una preferenza
     public static final LatLng BOUNDS_BOLOGNA_SW = new LatLng( 44.461555, 11.262151 );
@@ -35,7 +35,7 @@ public class ZonaConsegna implements IZonaConsegna {
     private double prezzoMinimo;
     private List<Vector> punti;
 
-    public ZonaConsegna(double prezzoMinimo, List<Vector> punti) {
+    public ZonaConsegnaPunti(double prezzoMinimo, List<Vector> punti) {
         log = SpringContext.getBean(ILogManager.class);
         geoApiContext = SpringContext.getBean(GeoApiContext.class);
 
@@ -43,7 +43,7 @@ public class ZonaConsegna implements IZonaConsegna {
         this.punti = punti;
     }
 
-    public ZonaConsegna(double prezzoMinimo) {
+    public ZonaConsegnaPunti(double prezzoMinimo) {
         this(prezzoMinimo, new ArrayList<>());
     }
 

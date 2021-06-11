@@ -6,4 +6,5 @@ public interface IPagamentoOnline {
     public boolean verificaAutorizzazione(OrdineDomicilio ordine) throws PaymentException;
     public boolean verificaPagamento(OrdineDomicilio ordine) throws PaymentException;
     public void effettuaPagamento(OrdineDomicilio ordine) throws PaymentException;
+    public void annullaPagamento(OrdineDomicilio ordine) throws PaymentException;
 }
