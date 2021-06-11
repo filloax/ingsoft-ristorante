@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import it.unibo.ingsoft.fortuna.Controller;
@@ -13,6 +14,7 @@ import it.unibo.ingsoft.fortuna.model.Prodotto;
 import it.unibo.ingsoft.fortuna.model.Sconto;
 
 @Component
+@Primary
 public class GestioneSconti extends Controller implements IGestioneSconti {
 
     private Set<Sconto> sconti;

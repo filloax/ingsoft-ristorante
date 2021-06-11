@@ -39,7 +39,7 @@ public class Sconto {
     }
 
     public boolean isInTempo(LocalDateTime tempo) {
-        return (tempo.isAfter(inizio) || tempo.isEqual(inizio)) && tempo.isBefore(fine)
+        return (tempo.isAfter(inizio) || tempo.isEqual(inizio)) && tempo.isBefore(fine);
     }
 
     public boolean overlapsTempo(LocalDateTime iniziop, LocalDateTime finep) {

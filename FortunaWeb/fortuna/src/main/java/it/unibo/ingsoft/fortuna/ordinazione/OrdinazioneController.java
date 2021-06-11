@@ -87,6 +87,9 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
     public boolean verificaZonaConsegna(String indirizzo, double costo) throws ZonaConsegnaException {
         List<IZonaConsegna> zoneConsegna = listaZoneConsegna.listaZoneConsegna();
 
+        if (zoneConsegna.isEmpty())
+            return true;
+
         for (IZonaConsegna zonaConsegna : zoneConsegna) {
             if (zonaConsegna.include(indirizzo, costo)) {
                 return true;
@@ -168,7 +171,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
      * @return prodotti invalidi
      */
     private boolean verificaProdotti(List<Prodotto> prodotti) {
-        return getProdottiInvalidi(prodotti).isEmpty();
+        return !prodotti.isEmpty() && getProdottiInvalidi(prodotti).isEmpty();
     }
 
     private List<Prodotto> getProdottiInvalidi(List<Prodotto> prodotti) {
@@ -379,25 +382,27 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
             preparedStmt.executeUpdate();
         }
 
-        sj = new StringJoiner(", ");
-        for (int i = 0; i < ordine.getSconti().size(); i++) sj.add("(?, ?)");
-
-        query = "INSERT INTO sconti_applicati (id_ordine, id_sconto) VALUES"
-        + sj.toString();
-
-        try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
-            int i = 1;
-            for (Sconto sconto : ordine.getSconti()) {
-                preparedStmt.setInt(i, id);
-                i++;
-                preparedStmt.setInt(i, sconto.getId());
-                i++;
+        if (ordine.getSconti().size() > 0) {
+            sj = new StringJoiner(", ");
+            for (int i = 0; i < ordine.getSconti().size(); i++) sj.add("(?, ?)");
+    
+            query = "INSERT INTO sconti_applicati (id_ordine, id_sconto) VALUES"
+            + sj.toString();
+    
+            try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
+                int i = 1;
+                for (Sconto sconto : ordine.getSconti()) {
+                    preparedStmt.setInt(i, id);
+                    i++;
+                    preparedStmt.setInt(i, sconto.getId());
+                    i++;
+                }
+                
+                preparedStmt.executeUpdate();
             }
-            
-            preparedStmt.executeUpdate();
         }
-
-
+            
+    
         return true;
     }
 }

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import it.unibo.ingsoft.fortuna.Controller;
@@ -12,6 +13,7 @@ import it.unibo.ingsoft.fortuna.model.zonaconsegna.Vector;
 import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaPunti;
 
 @Component
+@Primary
 public class GestioneZoneConsegna extends Controller implements IGestioneZoneConsegna, IListaZoneConsegna {
 
     private Set<ZonaConsegnaPunti> zone;
