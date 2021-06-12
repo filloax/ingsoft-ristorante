@@ -1,25 +1,12 @@
 package it.unibo.ingsoft.fortunagest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.io.File;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-import org.springframework.web.client.RestTemplate;
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 @Component
@@ -34,9 +21,11 @@ public class StageListener implements ApplicationListener<StageReadyEvent> {
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
         try {
+            // File newfile = new File("." + File.separator + "newFile.txt");
+            // newfile.createNewFile();
             Stage window = event.getStage();
             window.setTitle(this.applicationTitle);
-            Parent root = FXMLLoader.load(getClass().getResource("HomeTitolare.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource(File.separator+"HomeTitolare.fxml"));
             Scene scene1 = new Scene(root);
             window.setScene(scene1);
             window.show();
