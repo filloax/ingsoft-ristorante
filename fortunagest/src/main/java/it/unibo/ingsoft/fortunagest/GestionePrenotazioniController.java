@@ -21,14 +21,16 @@ public class GestionePrenotazioniController extends StageController {
 
         RestTemplate template = new RestTemplate();
         String UrlInAttesa = "http://localhost:8080/gest-prenotazioni/attesa";
-        String UrlAccettate = "http://localhost:8080/gest-prenotazioni/accettati";
-
+        
         ResponseEntity<PrenotazioneDati[]> response =
-                template.getForEntity(UrlInAttesa, PrenotazioneDati[].class);
+        template.getForEntity(UrlInAttesa, PrenotazioneDati[].class);
         PrenotazioneDati[] prenotazioniInAttesa = response.getBody();
         observableInAttesaList.addAll(prenotazioniInAttesa);
         prenotazioniInAttesaList.setItems(observableInAttesaList);
+        
 
+        
+        String UrlAccettate = "http://localhost:8080/gest-prenotazioni/accettati";
         response =
                 template.getForEntity(UrlAccettate, PrenotazioneDati[].class);
         PrenotazioneDati[] prenotazioniAccettate = response.getBody();

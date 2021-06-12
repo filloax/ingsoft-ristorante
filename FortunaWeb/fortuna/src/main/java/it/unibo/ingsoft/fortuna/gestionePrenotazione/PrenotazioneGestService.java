@@ -1,7 +1,7 @@
 package it.unibo.ingsoft.fortuna.gestionePrenotazione;
 
 import java.util.List;
-
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,10 +36,18 @@ public class PrenotazioneGestService {
         return repo.findById(id).get();
     }
 
+
+    // Definire il servizio Transactional per "validare" l'operazione a hybernate/jpa, senza di
+    // questo il metodo non ha permesso a eseguire aggiornamenti alle tabelle, provocando eccezioni
+    @Transactional
+    public int accetta(Integer id) {
+        return repo.accetta(id);
+    }
+
     public void delete(Integer id) {
         repo.deleteById(id);
     }
 
-    
+
 
 }

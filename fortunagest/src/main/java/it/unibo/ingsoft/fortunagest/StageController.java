@@ -39,6 +39,16 @@ public class StageController {
         stage.show();
     }
 
+    public void switchToRicezionePrenotazioni(ActionEvent event) throws IOException{
+        root = FXMLLoader.load(getClass().getResource(File.separator+"RicezionePrenotazioni.fxml"));
+        stage =(Stage) ((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        
+        
+        stage.setScene(scene);
+        stage.show();
+    }
+
 
     
 
