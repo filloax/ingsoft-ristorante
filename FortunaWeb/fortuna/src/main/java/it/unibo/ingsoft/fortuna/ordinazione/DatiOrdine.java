@@ -14,8 +14,9 @@ public class DatiOrdine {
     private String note;
     private String telefono;
     private String tavolo;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate data;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime ora;
     private String indirizzo;
 }
