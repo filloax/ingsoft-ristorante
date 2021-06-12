@@ -21,7 +21,7 @@ CREATE TABLE ordini
  telefono VARCHAR(50),
  indirizzo VARCHAR(255),
  tavolo VARCHAR(50),
- pagamento VARCHAR(32),
+ pagamento VARCHAR(32),sconti
  accettato CHAR(1),
  PRIMARY KEY (id)
 );
@@ -31,7 +31,7 @@ CREATE TABLE prodotti
 	numero INT unsigned NOT NULL,
     nome VARCHAR(50) NOT NULL UNIQUE,
     descrizione VARCHAR(1023) NOT NULL,
-    prezzo DECIMAL NOT NULL,
+    prezzo DECIMAL(10,2) NOT NULL,
     immagine VARCHAR(255),
     PRIMARY KEY (numero)
 );
@@ -41,12 +41,10 @@ CREATE TABLE sconti
  id INT unsigned NOT NULL AUTO_INCREMENT,
  inizio DATETIME NOT NULL,
  fine DATETIME NOT NULL,
- numeroProdotto INT unsigned,
- quantita DECIMAL,
- quantitaPct DECIMAL,
- costoMinimo DECIMAL,
- PRIMARY KEY (id),
- FOREIGN KEY (numeroProdotto) REFERENCES prodotti(numero)
+ quantita DECIMAL(10,2),
+ quantitaPct DECIMAL(10,2),
+ costoMinimo DECIMAL(10,2),
+ PRIMARY KEY (id)
 );
 
 SHOW TRIGGERS;
@@ -62,6 +60,15 @@ BEGIN
     END IF;
 END;//
 DELIMITER ;
+
+CREATE TABLE prodotti_sconti
+(
+    id_sconto INT unsigned NOT NULL,
+    numero_prod INT unsigned NOT NULL,
+    PRIMARY KEY (id_sconto, numero_prod),
+    FOREIGN KEY (numero_prod) REFERENCES prodotti(numero),
+    FOREIGN KEY (id_sconto) REFERENCES sconti(id)
+);
 
 CREATE TABLE prodotti_ordinati
 (
@@ -96,15 +103,15 @@ CREATE TABLE periodi_disattivazione
 CREATE TABLE zona_consegna
 (
 	id INT unsigned NOT NULL AUTO_INCREMENT,
-    prezzo_minimo DECIMAL NOT NULL DEFAULT 0.0,
+    prezzo_minimo DECIMAL(10,2) NOT NULL DEFAULT 0.0,
 	PRIMARY KEY (id)
 );
 
 CREATE TABLE zona_consegna_punti
 (
 	id INT unsigned NOT NULL,
-	latitudine DECIMAL NOT NULL,
-    longitudine DECIMAL NOT NULL,
+	latitudine DECIMAL(10,2) NOT NULL,
+    longitudine DECIMAL(10,2) NOT NULL,
     id_lista INT unsigned,
     FOREIGN KEY (id) REFERENCES zona_consegna(id)
 );
