@@ -102,7 +102,7 @@
                 <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
               </textFill>
             </Label>
-                  <Button layoutX="32.0" layoutY="110.0" mnemonicParsing="false" text="Ricezione Prenotazioni" />
+                  <Button layoutX="32.0" layoutY="110.0" mnemonicParsing="false" text="Ricezione Prenotazioni"  onAction="#switchToRicezionePrenotazioni"/>
                   <Button layoutX="22.0" layoutY="218.0" mnemonicParsing="false" text="Abilitazione Prenotazioni" />
                   <Button layoutX="18.0" layoutY="377.0" mnemonicParsing="false" text="Cancellazione Prenotazioni" />
           </children>
