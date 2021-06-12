@@ -110,8 +110,8 @@ CREATE TABLE zona_consegna
 CREATE TABLE zona_consegna_punti
 (
 	id INT unsigned NOT NULL,
-	latitudine DECIMAL(10,2) NOT NULL,
-    longitudine DECIMAL(10,2) NOT NULL,
+	latitudine DECIMAL(10,8) NOT NULL,
+    longitudine DECIMAL(11,8) NOT NULL,
     id_lista INT unsigned,
     FOREIGN KEY (id) REFERENCES zona_consegna(id)
 );

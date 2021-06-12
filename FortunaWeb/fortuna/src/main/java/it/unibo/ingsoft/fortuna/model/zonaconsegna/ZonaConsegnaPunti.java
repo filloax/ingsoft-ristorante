@@ -19,8 +19,9 @@ import org.springframework.boot.context.properties.source.InvalidConfigurationPr
 
 import it.unibo.ingsoft.fortuna.SpringContext;
 import it.unibo.ingsoft.fortuna.log.ILogManager;
+import lombok.Data;
 
-
+@Data
 public class ZonaConsegnaPunti implements IZonaConsegna {
     // Usati da API di google per impostare la preferenza di ricerca
     // non restrittivi, rappresentano solo una preferenza
@@ -34,21 +35,17 @@ public class ZonaConsegnaPunti implements IZonaConsegna {
 
     private double prezzoMinimo;
     private List<Vector> punti;
+    private int id;
+
+    public ZonaConsegnaPunti() {};
 
     public ZonaConsegnaPunti(double prezzoMinimo, List<Vector> punti) {
-        log = SpringContext.getBean(ILogManager.class);
-        geoApiContext = SpringContext.getBean(GeoApiContext.class);
-
         this.prezzoMinimo = prezzoMinimo;
         this.punti = punti;
     }
 
     public ZonaConsegnaPunti(double prezzoMinimo) {
         this(prezzoMinimo, new ArrayList<>());
-    }
-
-    @PostConstruct
-    public void init() {
     }
 
     @Override
@@ -83,7 +80,7 @@ public class ZonaConsegnaPunti implements IZonaConsegna {
     }
     
     private Vector coordDaIndirizzo(String indirizzo) throws ZonaConsegnaException {
-        if (geoApiContext == null)
+        if (getGeoApiContext() == null)
             throw new InvalidConfigurationPropertyValueException("GEOCODING_KEY", "null", "API Key per Google Maps Geocoding non impostata!");
 
         // String urlAddress = new URLEncoder().encode(indirizzo, Charset.defaultCharset());
@@ -93,9 +90,9 @@ public class ZonaConsegnaPunti implements IZonaConsegna {
         
         GeocodingResult result = null;
         try {
-            log.scriviMessaggio(String.format("Richiesta a API Google per Geocoding di '%s'...", indirizzo));
+            getLog().scriviMessaggio(String.format("Richiesta a API Google per Geocoding di '%s'...", indirizzo));
 
-            GeocodingResult[] results =  GeocodingApi.geocode(geoApiContext, indirizzo)
+            GeocodingResult[] results =  GeocodingApi.geocode(getGeoApiContext(), indirizzo)
                 .region(region) //preferenza, non restrittivo
                 .bounds(BOUNDS_BOLOGNA_SW, BOUNDS_BOLOGNA_NE) //preferenza, non restrittivo
                 .await();
@@ -110,24 +107,24 @@ public class ZonaConsegnaPunti implements IZonaConsegna {
             if (result == null && results.length > 0)
                 result = results[0];
         } catch (ApiException | InterruptedException | IOException e) {
-            log.scriviMessaggio(String.format("Richiesta geocoding '%s' fallita: %s", indirizzo, e.getMessage()));
+            getLog().scriviMessaggio(String.format("Richiesta geocoding '%s' fallita: %s", indirizzo, e.getMessage()));
             throw new ZonaConsegnaException("Errore in connessione a API Google Maps!", e);
         }
 
         if (result == null) {
-            log.scriviMessaggio(String.format("Richiesta geocoding '%s' fallita per indirizzo sconosciuto", indirizzo));
+            getLog().scriviMessaggio(String.format("Richiesta geocoding '%s' fallita per indirizzo sconosciuto", indirizzo));
             throw new IndirizzoSconosciutoException("Indirizzo sconosciuto: " + indirizzo);
         }
 
         String locality = getLocality(result);
 
         if (!locality.equals(PREFER_CITY)) {
-            log.scriviMessaggio(String.format("Richiesta geocoding per '%s' ricevuta da fuori città, possibile spam?", indirizzo));
+            getLog().scriviMessaggio(String.format("Richiesta geocoding per '%s' ricevuta da fuori città, possibile spam?", indirizzo));
         }
 
         LatLng coords = result.geometry.location;
 
-        log.scriviMessaggio(String.format("Richiesta geocoding riuscita: risultato (%f, %f)", coords.lat, coords.lng));
+        getLog().scriviMessaggio(String.format("Richiesta geocoding riuscita: risultato (%f, %f)", coords.lat, coords.lng));
 
         return new Vector(coords.lat, coords.lng);
     }
@@ -142,20 +139,32 @@ public class ZonaConsegnaPunti implements IZonaConsegna {
         return city;
     }
 
-    public double getPrezzoMinimo() {
-        return this.prezzoMinimo;
+    public ZonaConsegnaPunti prezzoMinimo(double prezzoMinimo) {
+        setPrezzoMinimo(prezzoMinimo);
+        return this;
     }
 
-    public void setPrezzoMinimo(double prezzoMinimo) {
-        this.prezzoMinimo = prezzoMinimo;
+    public ZonaConsegnaPunti punti(List<Vector> punti) {
+        setPunti(punti);
+        return this;
     }
 
-    public List<Vector> getPunti() {
-        return this.punti;
+    public ZonaConsegnaPunti id(int id) {
+        setId(id);
+        return this;
     }
 
-    public void setPunti(List<Vector> punti) {
-        this.punti = punti;
+    private ILogManager getLog() { 
+        if (log == null)
+            log = SpringContext.getBean(ILogManager.class);
+
+        return log;
     }
 
+    private GeoApiContext getGeoApiContext() {
+        if (geoApiContext == null)
+            geoApiContext = SpringContext.getBean(GeoApiContext.class);
+
+        return geoApiContext;
+    }
 }
