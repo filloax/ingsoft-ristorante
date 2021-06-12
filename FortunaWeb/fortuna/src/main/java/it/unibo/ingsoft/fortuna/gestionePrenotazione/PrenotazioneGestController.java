@@ -29,6 +29,16 @@ public class PrenotazioneGestController {
         return service.listAll();
     }
 
+    @GetMapping(value = "attesa")
+    public List<Prenotazione> listInAttesa() {
+        return service.listInAttesa();
+    }
+
+    @GetMapping(value = "accettati")
+    public List<Prenotazione> listAccettati() {
+        return service.listAccettati();
+    }
+
     @GetMapping(value = "{id}")
     public ResponseEntity<Prenotazione> get(@PathVariable Integer id) {
         try {
@@ -43,24 +53,61 @@ public class PrenotazioneGestController {
     @PostMapping
     public void add(@RequestBody Prenotazione prenotazione) {
         service.save(prenotazione);
+        // TODO:
+        // Log
+        // NotificaSMS
     }
+
+    // // RequestBody per serializzazione
+    // // PathVariable per prendere dal URI quello tra parentesi e castarlo nella
+    // // variabile dichiata dopo
+    // @PutMapping(value = "{id}")
+    // public ResponseEntity<?> update(@RequestBody Prenotazione prenotazione, @PathVariable Integer
+    // id) {
+    // // controllo che la prenotazione esiste in database
+    // /*
+    // * è implicito il fatto che se passo dal URI ~/10, l'oggetto json che passo ha
+    // * id 10, non si sa perchè non c'è un controllo su questo (potenzialmente uno
+    // * può fare una richiesta ad ~/10 e aggiornare l'oggetto con id 9)
+    // *
+    // */
+
+    // // TODO:
+    // //Log
+    // //NotificaSMS
+    // try {
+
+    // Prenotazione validPrenotazione = service.get(id);
+    // service.save(prenotazione);
+    // return new ResponseEntity<>(HttpStatus.OK);
+
+    // } catch (NoSuchElementException e) {
+    // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    // }
+
+    // }
+
 
     // RequestBody per serializzazione
     // PathVariable per prendere dal URI quello tra parentesi e castarlo nella
     // variabile dichiata dopo
     @PutMapping(value = "{id}")
-    public ResponseEntity<?> update(@RequestBody Prenotazione prenotazione, @PathVariable Integer id) {
+    public ResponseEntity<?> accetta(@PathVariable Integer id) {
         // controllo che la prenotazione esiste in database
         /*
-         * è implicito il fatto che se passo dal URI ~/10, l'oggetto json che passo ha
-         * id 10, non si sa perchè non c'è un controllo su questo (potenzialmente uno
-         * può fare una richiesta ad ~/10 e aggiornare l'oggetto con id 9)
+         * è implicito il fatto che se passo dal URI ~/10, l'oggetto json che passo ha id 10, non si
+         * sa perchè non c'è un controllo su questo (potenzialmente uno può fare una richiesta ad
+         * ~/10 e aggiornare l'oggetto con id 9)
          * 
          */
+
+        // TODO:
+        // Log
+        // NotificaSMS
         try {
 
             Prenotazione validPrenotazione = service.get(id);
-            service.save(prenotazione);
+            service.accetta(id);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (NoSuchElementException e) {
@@ -69,8 +116,13 @@ public class PrenotazioneGestController {
 
     }
 
+
     @DeleteMapping(value = "{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
+
+        // TODO:
+        // Log
+        // NotificaSMS
         try {
 
             Prenotazione validPrenotazione = service.get(id);
