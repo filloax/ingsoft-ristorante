@@ -48,6 +48,16 @@ public class StageController {
         stage.setScene(scene);
         stage.show();
     }
+    public void switchToCancellazionePrenotazioni(ActionEvent event) throws IOException{
+        root = FXMLLoader.load(getClass().getResource(File.separator+"CancellazionePrenotazioni.fxml"));
+        stage =(Stage) ((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        
+        
+        stage.setScene(scene);
+        stage.show();
+    }
+
 
 
     
