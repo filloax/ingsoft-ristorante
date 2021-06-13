@@ -41,12 +41,10 @@ public abstract class Controller {
 	}
 
 	protected void scriviMessaggio(String msg) {
-		System.out.println("LOG: " + msg);
 		log.scriviMessaggio(msg);
 	}
 
 	protected void scriviOperazione(String ip, String operazione) {
-		System.out.println("LOG: " + ip + ": " + operazione);
 		log.scriviOperazione(ip, operazione);
 	}
 

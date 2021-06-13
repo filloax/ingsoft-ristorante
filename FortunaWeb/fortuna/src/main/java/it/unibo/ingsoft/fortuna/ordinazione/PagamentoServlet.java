@@ -10,7 +10,6 @@ import com.stripe.exception.*;
 import com.stripe.model.Charge;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,22 +18,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import it.unibo.ingsoft.fortuna.ConfigProps;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 
 @Controller
 public class PagamentoServlet {
-    // Variabile di ambiente esterna per sicurezza (mai salvare key in chiaro su repository), 
-	// chiave pubblica per Stripe da account, in realtà questa potrebbe anche venire impostata
-    // qua ma tanto se la chiave privata va impostata esternamente tanto vale impostare così
-    // anche quella pubblica associata
-    @Value("${STRIPE_PUBLIC_KEY: null}")
-    private String stripePublicKey;
-    
     @Autowired
     private StripeService pagamentoStripe;
 
     @Autowired
     IOrdinazioneController ordinazione;
+
+    @Autowired
+    ConfigProps cfg;
 
     @RequestMapping("/checkout")
     public String checkout(Model model, HttpSession session, HttpServletRequest request) {
@@ -50,7 +46,7 @@ public class PagamentoServlet {
 
         model.addAttribute("amountOld", (int) Math.floor(totale * 100)); // in centesimi
         model.addAttribute("amount", (int) Math.floor(totaleScontato * 100)); // in centesimi
-        model.addAttribute("stripePublicKey", stripePublicKey);
+        model.addAttribute("stripePublicKey", cfg.getKeys().getStripePub());
         model.addAttribute("currency", ChargeRequest.Currency.EUR);
 
         return "ordinazione/checkout";

@@ -396,6 +396,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
                     i++;
                     preparedStmt.setInt(i, sconto.getId());
                     i++;
+                    System.out.println("Adding: " + id + ", " + sconto.getId());
                 }
 
                 preparedStmt.executeUpdate();

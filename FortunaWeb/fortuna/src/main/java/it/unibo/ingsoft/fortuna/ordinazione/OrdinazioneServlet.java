@@ -1,9 +1,11 @@
 package it.unibo.ingsoft.fortuna.ordinazione;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -11,6 +13,13 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.AddressComponent;
+import com.google.maps.model.AddressComponentType;
+import com.google.maps.model.GeocodingResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
@@ -23,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import it.unibo.ingsoft.fortuna.ConfigProps;
 import it.unibo.ingsoft.fortuna.model.*;
 import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
 import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
@@ -33,6 +43,12 @@ import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaException;
 public class OrdinazioneServlet {
     @Autowired
     IOrdinazioneController ordinazione;
+
+    @Autowired
+    GeoApiContext geoApiContext;
+
+    @Autowired
+    ConfigProps cfg;
 
     @RequestMapping({"/ordine"})
     public String scegliTipo(HttpServletRequest request) {
@@ -85,6 +101,36 @@ public class OrdinazioneServlet {
         return "ordinazione/indirizzo";
     }
 
+    private String getFullAddress(String baseAddress) throws ApiException, InterruptedException, IOException, IllegalArgumentException {
+        GeocodingResult[] results = GeocodingApi.geocode(geoApiContext, baseAddress)
+            .region(cfg.getGeo().getRegion()) //preferenza, non restrittivo
+            .bounds(cfg.getGeo().getGapiBounds().southwest, cfg.getGeo().getGapiBounds().northeast) //preferenza, non restrittivo
+            .await();
+            
+        GeocodingResult bestResult = null;
+
+        for (GeocodingResult result : results) {
+            for (AddressComponent addComp : result.addressComponents) {
+                if (Arrays.asList(addComp.types).contains(AddressComponentType.LOCALITY)) {
+                    String city = addComp.longName;
+                    if (city.equals(cfg.getGeo().getPreferCity())) {
+                        bestResult = result;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (bestResult == null && results.length > 0)
+            bestResult = results[0];
+
+        if (bestResult == null) {
+            throw new IllegalArgumentException("Indirizzo non trovato!");
+        }
+
+        return bestResult.formattedAddress;
+    }
+
     @PostMapping({"/ordine-indirizzo"})
     public String scegliIndirizzoPost(Model model, HttpServletRequest request, HttpSession session, RedirectAttributes rAttributes,
             @RequestParam(value = "indirizzo", required = false) String indirizzo) {
@@ -104,7 +150,17 @@ public class OrdinazioneServlet {
 
             try {
                 if (ordinazione.verificaZonaConsegna(indirizzo, costo)) {
-                    session.setAttribute("indirizzo", indirizzo);
+                    // Indirizzo completato da google maps API
+                    String indirizzoCompleto = null;
+                    try {
+                        indirizzoCompleto = getFullAddress(indirizzo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        model.addAttribute("error", "Indirizzo non valido, ricontrolla");
+                        return "ordinazione/indirizzo";    
+                    }
+
+                    session.setAttribute("indirizzo", indirizzoCompleto);
                     return "redirect:/ordine-dati";
                 } else {
                     model.addAttribute("error", "Non possiamo fare consegne a domicilio a queste distanze, in questa fascia di prezzo.");

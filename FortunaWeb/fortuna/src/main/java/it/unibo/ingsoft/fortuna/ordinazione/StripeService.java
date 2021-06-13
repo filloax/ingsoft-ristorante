@@ -9,20 +9,19 @@ import com.stripe.Stripe;
 import com.stripe.exception.*;
 import com.stripe.model.Charge;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import it.unibo.ingsoft.fortuna.ConfigProps;
 
 @Service
 public class StripeService {
-
-	// Variabile di ambiente esterna per sicurezza (mai salvare key in chiaro su repository), 
-	// chiave privata per Stripe da account
-    @Value("${STRIPE_SECRET_KEY: null}")
-    private String secretKey;
+    @Autowired
+    ConfigProps cfg;
     
     @PostConstruct
     public void init() {
-        Stripe.apiKey = secretKey;
+        Stripe.apiKey = cfg.getKeys().getStripe();
     }
 
     public Charge authorize(ChargeRequest chargeRequest) 

@@ -25,6 +25,11 @@ public class LogManagerSender implements ILogManager {
 
     @Override
     public void scriviMessaggio(String msg) {
+        if (config.getLog().isLocalLog()) {
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            System.out.println(String.format("%s: [LOG] %s", timestamp, msg));
+        }
+
         try {
             DataOutputStream dos = new DataOutputStream(getSocket().getOutputStream());
 
@@ -32,9 +37,11 @@ public class LogManagerSender implements ILogManager {
             dos.writeUTF(msg);
 
         } catch (IOException e) {
-            e.printStackTrace();
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            System.err.println(String.format("%s: Tentativo di log remoto fallito! Messaggio era: %s", timestamp, msg));
+            if (!config.getLog().isLocalLog()) {
+                e.printStackTrace();
+                String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                System.err.println(String.format("%s: Tentativo di log remoto fallito! Messaggio era: %s", timestamp, msg));
+            }
         }
     }
 
