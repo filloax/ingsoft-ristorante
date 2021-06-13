@@ -4,6 +4,6 @@
         "FortunaLog/src/main/java",
         "fortunagest/src/main/java"
     ],
-    "maven.view": "hierarchical",
-    "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
+    "maven.view": "hierarchical"
+    // "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
 }

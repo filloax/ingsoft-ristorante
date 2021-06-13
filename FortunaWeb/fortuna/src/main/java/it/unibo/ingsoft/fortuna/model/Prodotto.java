@@ -2,12 +2,19 @@ package it.unibo.ingsoft.fortuna.model;
 
 import java.util.Objects;
 
+import lombok.Data;
+
+@Data
 public class Prodotto {
     private int numero;
     private String nome;
     private double prezzo;
     private String desc;
     private String img;
+
+    public Prodotto() {
+
+    }
 
     public Prodotto(String nome, int numero, double prezzo, String desc, String img) {
         this.numero = numero;
@@ -26,60 +33,28 @@ public class Prodotto {
     }
 
 
-    public int getNumero() {
-        return this.numero;
+    public Prodotto numero(int numero) {
+        setNumero(numero);
+        return this;
     }
 
-    public void setNumero(int numero) {
-        this.numero = numero;
+    public Prodotto nome(String nome) {
+        setNome(nome);
+        return this;
     }
 
-    public String getNome() {
-        return this.nome;
+    public Prodotto prezzo(double prezzo) {
+        setPrezzo(prezzo);
+        return this;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public Prodotto desc(String desc) {
+        setDesc(desc);
+        return this;
     }
 
-    public double getPrezzo() {
-        return this.prezzo;
-    }
-
-    public void setPrezzo(double prezzo) {
-        this.prezzo = prezzo;
-    }
-
-    public String getDesc() {
-        return this.desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public String getImg() {
-        return this.img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof Prodotto)) {
-            return false;
-        }
-        Prodotto prodotto = (Prodotto) o;
-        return numero == prodotto.numero && Objects.equals(nome, prodotto.nome) && prezzo == prodotto.prezzo && Objects.equals(desc, prodotto.desc) && Objects.equals(img, prodotto.img);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(numero, nome, prezzo, desc, img);
+    public Prodotto img(String img) {
+        setImg(img);
+        return this;
     }
 }

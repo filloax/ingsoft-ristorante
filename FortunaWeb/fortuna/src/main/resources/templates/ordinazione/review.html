@@ -12,7 +12,7 @@
 
         <h2>Revisiona dati</h2>
 
-        <div th:if='${session.tokenPagamento}' class="w3-panel w3-green">
+        <div th:if='${session.tokenPagamento != null && session.tokenPagamento != ""}' class="w3-panel w3-green">
             <h3>Pagamento autorizzato! Verrà effettuato all'accettazione dell'ordine da parte del personale.</h3>
         </div>
 

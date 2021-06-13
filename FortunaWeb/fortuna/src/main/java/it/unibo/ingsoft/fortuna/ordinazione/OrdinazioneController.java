@@ -213,7 +213,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
                 preparedStmt.setString(2, ordine.getNote());
                 preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
                 preparedStmt.setString(4, ordine.getTavolo());
-                
+
                 preparedStmt.executeUpdate();
             }
 
@@ -397,7 +397,7 @@ public class OrdinazioneController extends Controller implements IOrdinazioneCon
                     preparedStmt.setInt(i, sconto.getId());
                     i++;
                 }
-                
+
                 preparedStmt.executeUpdate();
             }
         }

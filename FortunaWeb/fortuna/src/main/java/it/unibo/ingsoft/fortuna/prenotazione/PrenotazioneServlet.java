@@ -25,7 +25,7 @@ public class PrenotazioneServlet {
             @ModelAttribute("datiPrenotazione") DatiPrenotazione datiPrenotazione,
             @RequestParam(value = "conferma", defaultValue = "false") String conferma) {
         if (request.getMethod().equals("POST") && "true".equals(conferma)) {
-            LocalDateTime dataOra =  LocalDateTime.of(datiPrenotazione.getData(), datiPrenotazione.getOra());
+            LocalDateTime dataOra = LocalDateTime.of(datiPrenotazione.getData(), datiPrenotazione.getOra());
 
             String status = "err-unknown";
 
