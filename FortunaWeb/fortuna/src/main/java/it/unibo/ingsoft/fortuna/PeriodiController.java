@@ -2,6 +2,7 @@ package it.unibo.ingsoft.fortuna;
 
 import it.unibo.ingsoft.fortuna.model.attivazione.InsiemePeriodiDisattivazione;
 
+
 public class PeriodiController {
     private InsiemePeriodiDisattivazione periodi;
 

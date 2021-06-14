@@ -1,15 +1,27 @@
 package it.unibo.ingsoft.fortuna.model;
 
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Data;
 
 @Data
+@Entity
+@Table(name = "prodotti")
+
 public class Prodotto {
-    private int numero;
+    @Id
+    @Column(name = "numero")
+    private Integer numero;
+    @Column(name = "nome")
     private String nome;
+    @Column(name = "prezzo")
     private double prezzo;
+    @Column(name = "descrizione")
     private String desc;
+    @Column(name = "immagine")
     private String img;
 
     public Prodotto() {
@@ -31,7 +43,6 @@ public class Prodotto {
         this.desc = "";
         this.img = "";
     }
-
 
     public Prodotto numero(int numero) {
         setNumero(numero);
@@ -57,4 +68,9 @@ public class Prodotto {
         setImg(img);
         return this;
     }
+
+    public Integer getNumero() {
+        return this.numero;
+    }
+
 }

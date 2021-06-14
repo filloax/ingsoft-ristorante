@@ -9,26 +9,28 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="prenotazioni")
-@AttributeOverrides({ @AttributeOverride(name="iDRichiesta",column = @Column(name="id")), @AttributeOverride(name="dataOra", column = @Column(name="data_ora"))
-     
+@Table(name = "prenotazioni")
+@AttributeOverrides({ @AttributeOverride(name = "iDRichiesta", column = @Column(name = "id")),
+        @AttributeOverride(name = "dataOra", column = @Column(name = "data_ora"))
+
 })
 public class Prenotazione extends Richiesta {
-    @Column(name="numero_persone")
+    @Column(name = "numero_persone")
     private int numeroPersone;
-    @Column(name="telefono")
+    @Column(name = "telefono")
     private String telefono;
 
-    public Prenotazione(String nominativo, LocalDateTime dataOra, String telefono, int numeroPersone){
+    public Prenotazione(String nominativo, LocalDateTime dataOra, String telefono, int numeroPersone) {
         super(nominativo, dataOra);
-        this.numeroPersone=numeroPersone;
-        this.telefono=telefono;
+        this.numeroPersone = numeroPersone;
+        this.telefono = telefono;
 
     }
-    
-    public Prenotazione(){
+
+    public Prenotazione() {
 
     }
+
     public int getNumeroPersone() {
         return numeroPersone;
     }
