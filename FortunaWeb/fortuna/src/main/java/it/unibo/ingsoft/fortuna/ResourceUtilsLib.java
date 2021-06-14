@@ -1,21 +1,27 @@
 package it.unibo.ingsoft.fortuna;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+/**
+ * Carica file come stringa da 
+ * resources/static/*
+ */
 public class ResourceUtilsLib {
     public static String loadResourceToString(String resourcePath) throws IOException {
-        Resource resource = new ClassPathResource(resourcePath);
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+        Resource resource = new ClassPathResource("static/" + resourcePath);
         StringBuffer sb = new StringBuffer();
-        String str;
-        while((str = reader.readLine()) != null){
-           sb.append(str);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(resource.getFile(), Charset.forName("UTF-8")))) {
+            String str;
+            while((str = reader.readLine()) != null){
+               sb.append(str);
+            }
         }
 
         return sb.toString();

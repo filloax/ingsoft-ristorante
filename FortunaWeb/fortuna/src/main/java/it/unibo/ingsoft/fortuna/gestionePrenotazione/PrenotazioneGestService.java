@@ -1,6 +1,8 @@
 package it.unibo.ingsoft.fortuna.gestionePrenotazione;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +55,10 @@ public class PrenotazioneGestService extends AbstractService implements IGestion
         if (rowsUpdated == 1) {
             Prenotazione prenotazione = get(id);
 
-            String msgTemplate = ResourceUtilsLib.loadResourceToString("classpath:sms/prenot-accettata.txt");
-            sms.inviaSMS(prenotazione.getTelefono(), String.format(msgTemplate, prenotazione.getDataOra(), id));
+            String msgTemplate = ResourceUtilsLib.loadResourceToString("sms/prenot-accettata.txt");
+            sms.inviaSMS(prenotazione.getTelefono(), String.format(msgTemplate, 
+                prenotazione.getDataOra().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), 
+                id));
         } else {
             throw new DatabaseException("Aggiornato un numero inaspettato di righe con l'accettazione: " + id);
         }
@@ -67,8 +71,11 @@ public class PrenotazioneGestService extends AbstractService implements IGestion
 
         repo.deleteById(id);
 
-        String msgTemplate = ResourceUtilsLib.loadResourceToString("classpath:sms/prenot-cancellata.txt");
-        sms.inviaSMS(prenotazione.getTelefono(), String.format(msgTemplate, ragione, prenotazione.getDataOra(), id));
+        String msgTemplate = ResourceUtilsLib.loadResourceToString("sms/prenot-cancellata.txt");
+        sms.inviaSMS(prenotazione.getTelefono(), String.format(msgTemplate, 
+            ragione, 
+            prenotazione.getDataOra().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), 
+            id));
     }
 
 }
