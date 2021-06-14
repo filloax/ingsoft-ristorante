@@ -158,11 +158,11 @@ public class GestioneSconti extends Controller implements IGestioneSconti {
                 if (resultSet.getBigDecimal("quantita") != null) {
                     sconto.setQuantita(resultSet.getBigDecimal("quantita").doubleValue());
                 }
-                if (resultSet.getBigDecimal("quantitaPct") != null) {
-                    sconto.setQuantita(resultSet.getBigDecimal("quantitaPct").doubleValue());
+                if (resultSet.getBigDecimal("quantita_pct") != null) {
+                    sconto.setQuantita(resultSet.getBigDecimal("quantita_pct").doubleValue());
                 }
-                if (resultSet.getBigDecimal("costoMinimo") != null) {
-                    sconto.setCostoMinimo(resultSet.getBigDecimal("costoMinimo").doubleValue());
+                if (resultSet.getBigDecimal("costo_minimo") != null) {
+                    sconto.setCostoMinimo(resultSet.getBigDecimal("costo_minimo").doubleValue());
                 }
 
                 String productsQuery = "SELECT numero_prod FROM prodotti_sconti WHERE id_sconto = " + id;

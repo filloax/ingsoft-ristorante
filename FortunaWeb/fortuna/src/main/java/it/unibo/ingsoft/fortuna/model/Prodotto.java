@@ -7,12 +7,16 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "prodotti")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "prodottoOrdines" })
 
 public class Prodotto {
     @Id

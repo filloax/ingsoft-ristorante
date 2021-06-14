@@ -12,8 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import lombok.Data;
 
+@JsonInclude(Include.NON_NULL)
 @Entity
 @Table(name = "sconti")
 @Data
@@ -23,17 +28,18 @@ public class Sconto {
     @Column(name = "fine")
     private LocalDateTime fine;
     @Column(name = "quantita")
-    private double quantita;
-    @Column(name = "quantitaPct")
-    private double quantitaPct;
-    @Column(name = "costoMinimo")
-    private double costoMinimo;
+    private Double quantita;
+    @Column(name = "quantita_pct")
+    private Double quantitaPct;
+    @Column(name = "costo_minimo")
+    private Double costoMinimo;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id; // generato dal db, impostato qua quando caricati dal db
 
     @ManyToMany
+    @JoinTable(name = "prodotti_sconti", joinColumns = @JoinColumn(name = "id_sconto"), inverseJoinColumns = @JoinColumn(name = "numero_prod"))
     private Set<Prodotto> perProdotti;
 
     public Sconto() {
