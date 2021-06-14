@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch SpringLauncher",
+            "request": "launch",
+            "mainClass": "it.unibo.ingsoft.fortunagest.SpringLauncher",
+            "projectName": "fortunagest"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-FortunaApplication<fortuna>",
             "request": "launch",
             "cwd": "${workspaceFolder}",

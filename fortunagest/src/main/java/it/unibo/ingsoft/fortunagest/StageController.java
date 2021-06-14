@@ -20,7 +20,7 @@ public class StageController {
     public void switchToGestionePrenotazioni(ActionEvent event) throws IOException{
         // il path relativo di default per getResource a quanto pare è  src/resources
         // quindi mettendo /nomefile.fxml mi va a cercare il file nella cartella resources
-        root = FXMLLoader.load(getClass().getResource(File.separator+"GestionePrenotazioni.fxml"));
+        root = FXMLLoader.load(getClass().getResource("/GestionePrenotazioni.fxml"));
         stage =(Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         
@@ -30,7 +30,7 @@ public class StageController {
     }
 
     public void switchToHomeTitolare(ActionEvent event) throws IOException{
-        root = FXMLLoader.load(getClass().getResource(File.separator+"HomeTitolare.fxml"));
+        root = FXMLLoader.load(getClass().getResource("/HomeTitolare.fxml"));
         stage =(Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         
@@ -40,7 +40,7 @@ public class StageController {
     }
 
     public void switchToRicezionePrenotazioni(ActionEvent event) throws IOException{
-        root = FXMLLoader.load(getClass().getResource(File.separator+"RicezionePrenotazioni.fxml"));
+        root = FXMLLoader.load(getClass().getResource("/RicezionePrenotazioni.fxml"));
         stage =(Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         
@@ -49,7 +49,7 @@ public class StageController {
         stage.show();
     }
     public void switchToCancellazionePrenotazioni(ActionEvent event) throws IOException{
-        root = FXMLLoader.load(getClass().getResource(File.separator+"CancellazionePrenotazioni.fxml"));
+        root = FXMLLoader.load(getClass().getResource("/CancellazionePrenotazioni.fxml"));
         stage =(Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         
