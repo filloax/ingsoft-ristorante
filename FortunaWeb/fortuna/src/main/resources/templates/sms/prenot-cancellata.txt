@@ -1,0 +1,2 @@
+Abbiamo dovuto cancellare la sua prenotazione per le %s per le seguenti ragioni: %s. Il codice della prenotazione era %d.
+Se vuole ulteriori informazioni, può chiamarci al numero +39 32323232.
