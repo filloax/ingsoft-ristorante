@@ -1,68 +1,50 @@
 package it.unibo.ingsoft.fortuna.gestionePrenotazione;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import it.unibo.ingsoft.fortuna.AbstractService;
 import it.unibo.ingsoft.fortuna.PeriodiController;
 import it.unibo.ingsoft.fortuna.model.attivazione.PeriodoDisattivazione;
 import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
 
 @Service
-public class DisabilitaPrenotazioneService {
-
-    @Autowired
-    private DisabilitaPrenotazioniRepository repo;
-
+public class DisabilitaPrenotazioneService extends AbstractService implements IDisabilitazionePrenotazioni {
     private PeriodiController periodiController;
 
     public DisabilitaPrenotazioneService() {
-
-        // il repo non è ancora pronto, shit
     }
 
     @PostConstruct
     private void init() {
-        // TODO è giusto inizializzare il singlethon delle disabilitazioni così??
         periodiController = PeriodiController.getInstance();
-        periodiController.getPeriodi().setAll(this.listAll());
-
     }
 
-    public List<PeriodoDisattivazione> listAll() {
-        return repo.findAll();
+    public List<PeriodoDisattivazione> listaPeriodiDisattivazione() {
+        return periodiController.getPeriodi().getPeriodi().stream()
+            .filter(periodo -> periodo.getTipo() == TipoDisattivazione.PRENOTAZIONE)
+            .collect(Collectors.toList());
     }
 
-    public List<PeriodoDisattivazione> getPeriodi() {
-        return periodiController.getPeriodi().getPeriodi();
+    public List<PeriodoDisattivazione> listaPeriodiDisattivazione(LocalDateTime time) {
+        return periodiController.getPeriodi().getPeriodi().stream()
+            .filter(periodo -> periodo.getTipo() == TipoDisattivazione.PRENOTAZIONE && periodo.contieneTempo(time))
+            .collect(Collectors.toList());
     }
 
-    public List<PeriodoDisattivazione> getDisabilitazionePrenotazioni() {
-        ArrayList<PeriodoDisattivazione> disabilitaPrenotazioni = new ArrayList<PeriodoDisattivazione>();
-        for (PeriodoDisattivazione item : periodiController.getPeriodi().getPeriodi()) {
-            if (item.getTipo().equals(TipoDisattivazione.PRENOTAZIONE))
-                disabilitaPrenotazioni.add(item);
-        }
+    public void disabilitaPrenotazioni(LocalDateTime inizio, LocalDateTime fine) {
+        PeriodoDisattivazione periodo = new PeriodoDisattivazione().inizio(inizio).fine(fine);
+        periodo.setTipo(TipoDisattivazione.PRENOTAZIONE);
 
-        return disabilitaPrenotazioni;
+        periodiController.getPeriodi().add(periodo);
     }
 
-    public void save(PeriodoDisattivazione periodo) {
-        repo.save(periodo);
-        this.periodiController.getPeriodi().add(periodo);
+    public void riabilitaPrenotazioni(Integer id) {
+        periodiController.getPeriodi().removeById(id);
     }
-
-    public void delete(Integer id) {
-        repo.deleteById(id);
-        this.periodiController.getPeriodi().removeById(id);
-    }
-
-    public PeriodoDisattivazione get(Integer id) {
-        return repo.getById(id);
-    }
-
 }

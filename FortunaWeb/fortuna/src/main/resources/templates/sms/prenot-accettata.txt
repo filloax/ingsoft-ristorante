@@ -1,0 +1,2 @@
+La sua prenotazione è stata accettata per le %s. Il codice della sua prenotazione è %d. 
+Può contattarci al numero +39 32323232 se vuole disdire la prenotazione, o per ulteriori informazioni.

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,45 +17,37 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.unibo.ingsoft.fortuna.AbstractController;
 import it.unibo.ingsoft.fortuna.model.attivazione.PeriodoDisattivazione;
-import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
 
 @RestController
 @RequestMapping("/disa-prenotazioni")
-public class DisabilitaPrenotazioneController {
+public class DisabilitaPrenotazioneController extends AbstractController {
     @Autowired
-    private DisabilitaPrenotazioneService service;
+    private IDisabilitazionePrenotazioni service;
 
     @GetMapping
     public List<PeriodoDisattivazione> listDisabilitazionePrenotazioni() {
-
-        return service.getDisabilitazionePrenotazioni();
+        return service.listaPeriodiDisattivazione();
     }
 
     @PostMapping
-    public void add(@RequestBody PeriodoDisattivazione periodo) {
-        periodo.setTipo(TipoDisattivazione.PRENOTAZIONE);
-        service.save(periodo);
+    public void add(HttpServletRequest request, @RequestBody LocalDateTime inizio, @RequestBody LocalDateTime fine) {
+        scriviOperazione(request.getRemoteAddr(), String.format("addPeriodoDisattivazionePrenotazioni(da: %s, a: %s)", inizio, fine));
+        service.disabilitaPrenotazioni(inizio, fine);
     }
 
     @PostMapping(value = "test")
     public void addDefault() {
-        PeriodoDisattivazione periodo = new PeriodoDisattivazione();
-        periodo.setInizio(LocalDateTime.now());
-        periodo.setFine(LocalDateTime.of(2021, 7, 5, 13, 33));
-        periodo.setTipo(TipoDisattivazione.PRENOTAZIONE);
-        service.save(periodo);
+        service.disabilitaPrenotazioni(LocalDateTime.now(), LocalDateTime.of(2021, 7, 5, 13, 33));
     }
 
     @DeleteMapping(value = "{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
+    public ResponseEntity<?> delete(HttpServletRequest request, @PathVariable Integer id) {
+        scriviOperazione(request.getRemoteAddr(), String.format("deletePeriodoDisattivazionePrenotazioni(id: %d)", id));
 
-        // TODO:
-        // Log
         try {
-
-            PeriodoDisattivazione validPeriodo = service.get(id);
-            service.delete(id);
+            service.riabilitaPrenotazioni(id);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (NoSuchElementException e) {

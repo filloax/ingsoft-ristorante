@@ -1,0 +1,2 @@
+Abbiamo dovuto cancellare il suo ordine per le %s per le seguenti ragioni: %s. Il codice dell'ordine era %d.
+Se vuole ulteriori informazioni, può chiamarci al numero +39 32323232.

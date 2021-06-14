@@ -1,410 +1,404 @@
 package it.unibo.ingsoft.fortuna.ordinazione;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.StringJoiner;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.AddressComponent;
+import com.google.maps.model.AddressComponentType;
+import com.google.maps.model.GeocodingResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import it.unibo.ingsoft.fortuna.Controller;
-import it.unibo.ingsoft.fortuna.PeriodiController;
-import it.unibo.ingsoft.fortuna.model.Prodotto;
-import it.unibo.ingsoft.fortuna.model.Sconto;
+import it.unibo.ingsoft.fortuna.AbstractController;
+import it.unibo.ingsoft.fortuna.ConfigProps;
+import it.unibo.ingsoft.fortuna.model.*;
 import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
 import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
-import it.unibo.ingsoft.fortuna.model.richiesta.OrdineAlTavolo;
-import it.unibo.ingsoft.fortuna.model.richiesta.OrdineDomicilio;
-import it.unibo.ingsoft.fortuna.model.richiesta.OrdineTakeAway;
-import it.unibo.ingsoft.fortuna.model.zonaconsegna.IZonaConsegna;
 import it.unibo.ingsoft.fortuna.model.zonaconsegna.IndirizzoSconosciutoException;
 import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaException;
-import it.unibo.ingsoft.fortuna.prodotti.IGestioneProdotti;
-import it.unibo.ingsoft.fortuna.sconti.IGestioneSconti;
-import it.unibo.ingsoft.fortuna.zoneconsegna.IListaZoneConsegna;
 
-@Service
-public class OrdinazioneController extends Controller implements IOrdinazioneController {
-    private PeriodiController periodiDisattivazione;
-
-    // Campi Autowired inseriti automaticamente da Spring Boot a partire da classi
-    // marcate con @Component del tipo corrispondente
+@Controller
+public class OrdinazioneController extends AbstractController {
     @Autowired
-    private IGestioneProdotti gestioneProdotti;
+    IOrdinazioneService ordinazione;
 
     @Autowired
-    private IGestioneSconti gestioneSconti;
+    GeoApiContext geoApiContext;
 
     @Autowired
-    private IListaZoneConsegna listaZoneConsegna;
+    ConfigProps cfg;
 
-    @Autowired
-    private IPagamentoOnline pagamentoOnline;
+    @RequestMapping({"/ordine"})
+    public String scegliTipo(HttpServletRequest request) {
 
-    public OrdinazioneController() {
-        periodiDisattivazione = PeriodiController.getInstance();
+        return "ordinazione/tipo";
     }
 
-    @Override
-    public Set<TipoDisattivazione> getTipoOrdiniDisabilitati() {
-        Set<TipoDisattivazione> tipiDisattivati = periodiDisattivazione.getPeriodi().getTipiDisattivati(LocalDateTime.now());
-        tipiDisattivati.remove(TipoDisattivazione.PRENOTAZIONE);
-        tipiDisattivati.remove(TipoDisattivazione.PRODOTTO);
-        return tipiDisattivati;
-    }
+    @RequestMapping({"/ordine-prodotti"})
+    public String scegliProdotti(Model model, HttpServletRequest request, HttpSession session,
+            @RequestParam(value = "tipoOrdine", required = false) String tipoOrdine, 
+            @RequestParam(value = "add", required = false) String toAddNumero, 
+            @RequestParam(value = "remove", required = false) String toRemoveIndex) {
 
-    @Override
-    public Set<Prodotto> getProdottiDisabilitati() {
-        return periodiDisattivazione.getPeriodi().getProdottiDisattivati(LocalDateTime.now());
-    }
+        if (tipoOrdine != null)
+            session.setAttribute("tipoOrdine", tipoOrdine);
+        else if (session.getAttribute("tipoOrdine") == null)
+            return "redirect:/ordine";
 
-    @Override
-    public List<Prodotto> getMenu() {
-        return gestioneProdotti.listaProdotti();
-    }
+        @SuppressWarnings("unchecked")
+        List<Prodotto> prodotti = (List<Prodotto>) session.getAttribute("prodotti");
 
-    @Override
-    public List<Sconto> getSconti() {
-        return gestioneSconti.listaScontiTotali();
-    }
-
-    @Override
-    public boolean verificaZonaConsegna(String indirizzo, double costo) throws ZonaConsegnaException {
-        List<IZonaConsegna> zoneConsegna = listaZoneConsegna.listaZoneConsegna();
-
-        if (zoneConsegna.isEmpty())
-            return true;
-
-        for (IZonaConsegna zonaConsegna : zoneConsegna) {
-            if (zonaConsegna.include(indirizzo, costo)) {
-                return true;
-            }
+        if (prodotti == null) {
+            prodotti = new ArrayList<>();
+            session.setAttribute("prodotti", prodotti);
         }
 
-        return false;
-    }
-
-    @Override
-    public List<Sconto> getScontiApplicabili(List<Prodotto> prodotti, Optional<LocalDateTime> dataOra) {
-        List<Sconto> scontiApplicabili = new ArrayList<>();
-        
-        if (dataOra.isPresent()) {
-            scontiApplicabili.addAll(gestioneSconti.listaSconti(dataOra.get(), calcolaTotale(prodotti)));
-            for (Prodotto prodotto : prodotti) {
-                scontiApplicabili.addAll(gestioneSconti.listaSconti(dataOra.get(), calcolaTotale(prodotti), prodotto));
-            }
-        } else {
-            scontiApplicabili.addAll(gestioneSconti.listaScontiTotali().stream()
-                .filter(sconto -> sconto.getPerProdotti() == null || sconto.getPerProdotti().isEmpty())
-                .collect(Collectors.toList()));
-            for (Prodotto prodotto : prodotti) {
-                scontiApplicabili.addAll(gestioneSconti.listaScontiTotali().stream()
-                    .filter(sconto -> sconto.getPerProdotti() != null || sconto.getPerProdotti().contains(prodotto))
-                    .collect(Collectors.toList()));
-            }
-    
+        if (toAddNumero != null) {
+            int numero = Integer.parseInt(toAddNumero);
+            Prodotto prodotto = getMenu().stream()
+                .filter(prod -> prod.getNumero() == numero)
+                .findFirst().get();
+            prodotti.add(prodotto);
         }
 
-        return scontiApplicabili;
-    }
-
-    @Override
-    public double calcolaTotaleScontato(List<Prodotto> prodotti, LocalDateTime dataOra) {
-        // Agisci creando ordine e facendo calcolare a lui, visto che ha già la logica
-        // Al tavolo è arbitrario, visto che Ordine è astratta come classe
-        Ordine tempOrdine = new OrdineAlTavolo()
-            .dataOra(dataOra)
-            .prodotti(prodotti)
-            .sconti(getScontiApplicabili(prodotti, Optional.of(dataOra)));
-
-        return tempOrdine.calcolaCostoScontato();
-    }
-
-    @Override
-    public double calcolaTotale(List<Prodotto> prodotti) {
-        if (prodotti.isEmpty())
-            return 0.;
-        return prodotti.stream().map(p -> p.getPrezzo()).reduce((a, b) -> a + b).get();
-    }
-
-    private void impostaOrdine(Ordine ordine, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note) {
-        ordine.nominativo(nome)
-            .prodotti(prodotti)
-            .dataOra(dataOra)
-            .note(note);
-        
-        // try {
-        //     ordine.setIdRichiesta(generaId());
-        // } catch (SQLException e) {
-        //     e.printStackTrace();
-        //     return false;
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        //     return false;
-        // }
-
-        ordine.setSconti(getScontiApplicabili(prodotti, Optional.of(dataOra)));
-    }
-
-    private boolean verificaTipo(TipoDisattivazione tipo) {
-        return !getTipoOrdiniDisabilitati().contains(tipo);
-    }
-
-    // Controlla che nessuno degli ordini richiesti sia disabilitato o inesistente
-    /**
-     * @param prodotti
-     * @return prodotti invalidi
-     */
-    private boolean verificaProdotti(List<Prodotto> prodotti) {
-        return !prodotti.isEmpty() && getProdottiInvalidi(prodotti).isEmpty();
-    }
-
-    private List<Prodotto> getProdottiInvalidi(List<Prodotto> prodotti) {
-        Stream<Prodotto> disabilitati = prodotti.stream()
-            .filter(prodotto -> getProdottiDisabilitati().contains(prodotto));
-
-        Stream<Prodotto> inesistenti = prodotti.stream()
-            .filter(prodotto -> !getMenu().contains(prodotto));
-
-        return Stream.concat(disabilitati, inesistenti).collect(Collectors.toList());
-    }
-
-    private boolean verificaTavolo(String tavolo) {
-        // TODO: controllare se tavolo esiste, è valido, ecc, funzionalità aggiuntiva probabilmente
-        return true;
-    }
-
-    @Override
-    public OrdineAlTavolo creaOrdineTavolo(HttpServletRequest request, String nome, List<Prodotto> prodotti, String note,
-            String tavolo) throws IOException {
-        scriviOperazione(request.getRemoteAddr(), String.format("creaOrdineTavolo(tavolo: %s)", tavolo));
-
-        if (!verificaTipo(TipoDisattivazione.ORDINAZ_TAVOLO))
-            throw new IllegalStateException(String.format("Tipo ordinazione non attivo: %s!", TipoDisattivazione.ORDINAZ_TAVOLO));
-        if (!verificaProdotti(prodotti))
-            throw new IllegalArgumentException(String.format("Non tutti i prodotti sono validi: %s!", getProdottiInvalidi(prodotti)));
-        if (!verificaTavolo(tavolo))
-            throw new IllegalArgumentException(String.format("Tavolo non valido: %s!", tavolo));
-
-        OrdineAlTavolo ordine = new OrdineAlTavolo();
-        impostaOrdine(ordine, nome, prodotti, LocalDateTime.now(), note);
-
-        ordine.setTavolo(tavolo);
-
-        try (Connection connection = getConnection()) {
-            String query = "INSERT INTO ordini (nome, note, data_ora, tavolo) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
-                preparedStmt.setString(1, ordine.getNominativo());
-                preparedStmt.setString(2, ordine.getNote());
-                preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
-                preparedStmt.setString(4, ordine.getTavolo());
-
-                preparedStmt.executeUpdate();
-            }
-
-            if (!inserisciProdottiScontiInDb(connection, ordine)) {
-                throw new IOException("Accesso al database fallito");
-            }
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-            throw new IOException("Accesso al database fallito");
+        if (toRemoveIndex != null) {
+            int i = Integer.parseInt(toRemoveIndex);
+            prodotti.remove(i);
         }
 
-        return ordine;
+        model.addAttribute("totale", prodotti.stream()
+            .map(prodotto -> prodotto.getPrezzo())
+            .reduce(0., (a, b) -> a + b));
+
+        return "ordinazione/menu";
     }
 
-    @Override
-    public OrdineDomicilio creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
-            String telefono, String indirizzo) throws IOException {
-        return creaOrdineDomicilio(request, nome, prodotti, dataOra, note, telefono, indirizzo, "");
+    @GetMapping({"/ordine-indirizzo"})
+    public String scegliIndirizzoGet(Model model, HttpServletRequest request, HttpSession session) {
+        model.addAttribute("indirizzoSbagliato", false);
+        return "ordinazione/indirizzo";
     }
 
-    @Override
-    public OrdineDomicilio creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
-            String telefono, String indirizzo, String tokenPagamento) throws IOException {
-        scriviOperazione(request.getRemoteAddr(), String.format("creaOrdineDomicilio(dataOra: %s, pagamento: %s)", dataOra.toString(), tokenPagamento));
-
-        if (!verificaTipo(TipoDisattivazione.ORDINAZ_DOMICILIO))
-            throw new IllegalStateException(String.format("Tipo ordinazione non attivo: %s", TipoDisattivazione.ORDINAZ_DOMICILIO));
-        if (!verificaProdotti(prodotti))
-            throw new IllegalArgumentException(String.format("Non tutti i prodotti sono validi: %s", getProdottiInvalidi(prodotti)));
-
-        OrdineDomicilio ordine = new OrdineDomicilio();
-        impostaOrdine(ordine, nome, prodotti, dataOra, note);
-
-        boolean indirizzoValido = false;
-        boolean verificaManuale = false;
-
-        try {
-            indirizzoValido = verificaZonaConsegna(indirizzo, ordine.calcolaCostoTotale());
-        } catch (ZonaConsegnaException | InvalidConfigurationPropertyValueException e) {
-            if (e instanceof IndirizzoSconosciutoException) {
-                throw new IllegalArgumentException(String.format("Indirizzo sconosciuto: %s", indirizzo));
-            } else {
-                // Consenti proseguimento, verrà verificato a mano
-                indirizzoValido = true;
-                verificaManuale = true;
-                scriviMessaggio("creaOrdineDomicilio: errore in verifica indirizzo in zona consegna, necessaria verifica manuale.");
-            }
-        }
-
-        if (!indirizzoValido)
-            throw new IllegalArgumentException(String.format("Indirizzo non valido (a questa fascia di prezzo?): %s", indirizzo));
-    
-        if (verificaManuale)
-            indirizzo = "VERIFICA: " + indirizzo;
-
-        ordine.setTelefono(telefono);
-        ordine.setIndirizzo(indirizzo);
-        ordine.setTokenPagamento(tokenPagamento);
-    
-        boolean pagamentoValido = false;
-        try {
-            pagamentoValido = tokenPagamento.isEmpty() || pagamentoOnline.verificaAutorizzazione(ordine);
-        } catch (PaymentException e) {
-            throw new IOException("Errore di comunicazione con servizio di pagamento", e);
-        }
-        if (!pagamentoValido)
-            throw new IllegalArgumentException("Token pagamento non valido!");
-
-        try (Connection connection = getConnection()) {
-            String query = tokenPagamento.isEmpty() 
-                ? "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo) VALUES (?, ?, ?, ?, ?)"
-                : "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo, pagamento) VALUES (?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
-                preparedStmt.setString(1, ordine.getNominativo());
-                preparedStmt.setString(2, ordine.getNote());
-                preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
-                preparedStmt.setString(4, ordine.getTelefono());
-                preparedStmt.setString(5, ordine.getIndirizzo());
-                if (!tokenPagamento.isEmpty())
-                    preparedStmt.setString(6, tokenPagamento);
-
-                preparedStmt.executeUpdate();
-            }
+    private String getFullAddress(String baseAddress) throws ApiException, InterruptedException, IOException, IllegalArgumentException {
+        GeocodingResult[] results = GeocodingApi.geocode(geoApiContext, baseAddress)
+            .region(cfg.getGeo().getRegion()) //preferenza, non restrittivo
+            .bounds(cfg.getGeo().getGapiBounds().southwest, cfg.getGeo().getGapiBounds().northeast) //preferenza, non restrittivo
+            .await();
             
-            if (!inserisciProdottiScontiInDb(connection, ordine)) {
-                throw new IOException("Accesso al database fallito");
-            }
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-            throw new IOException("Accesso al database fallito");
-        }
+        GeocodingResult bestResult = null;
 
-        return ordine;
-    }
-
-    @Override
-    public OrdineTakeAway creaOrdineAsporto(HttpServletRequest request, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
-            String telefono) throws IOException {
-        scriviOperazione(request.getRemoteAddr(), String.format("creaOrdineAsporto(dataOra: %s)", dataOra.toString()));
-
-        if (!verificaTipo(TipoDisattivazione.ORDINAZ_ASPORTO))
-            throw new IllegalStateException(String.format("Tipo ordinazione non attivo: %s!", TipoDisattivazione.ORDINAZ_ASPORTO));
-        if (!verificaProdotti(prodotti))
-            throw new IllegalArgumentException(String.format("Non tutti i prodotti sono validi: %s!", getProdottiInvalidi(prodotti)));
-
-        OrdineTakeAway ordine = new OrdineTakeAway();
-        impostaOrdine(ordine, nome, prodotti, dataOra, note);
-
-        ordine.setTelefono(telefono);
-
-        try (Connection connection = getConnection()) {
-            String query = "INSERT INTO ordini (nome, note, data_ora, telefono) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
-                preparedStmt.setString(1, ordine.getNominativo());
-                preparedStmt.setString(2, ordine.getNote());
-                preparedStmt.setTimestamp(3, Timestamp.valueOf(ordine.getDataOra()));
-                preparedStmt.setString(4, ordine.getTelefono());
-
-                preparedStmt.executeUpdate();
-            }
-
-            if (!inserisciProdottiScontiInDb(connection, ordine)) {
-                throw new IOException("Accesso al database fallito");
-            }
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException | ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-            throw new IOException("Accesso al database fallito");
-        }
-
-        return ordine;
-    }
-
-    // TODO: rimuovi ordine se non va tutto a buon fine, oppure usa transazioni
-    private boolean inserisciProdottiScontiInDb(Connection connection, Ordine ordine) throws SQLException {
-        int id = -1;
-        String query = "SELECT LAST_INSERT_ID() AS last_id from ordini";
-        try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
-            ResultSet rs = preparedStmt.executeQuery();
-            if (rs.next()) {
-                id = rs.getInt("last_id");
-            }
-        }
-
-        if (id < 0)
-            return false;
-
-        StringJoiner sj = new StringJoiner(", ");
-        for (int i = 0; i < ordine.getProdotti().size(); i++) sj.add("(?, ?, 1)");
-
-        query = "INSERT INTO prodotti_ordinati (id_ordine, numero_prod, quantita) VALUES "
-        + sj.toString()
-        + " ON DUPLICATE KEY UPDATE quantita=quantita+1";
-
-        try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
-            int i = 1;
-            for (Prodotto prodotto : ordine.getProdotti()) {
-                preparedStmt.setInt(i, id);
-                i++;
-                preparedStmt.setInt(i, prodotto.getNumero());    
-                i++;        
-            }
-
-            preparedStmt.executeUpdate();
-        }
-
-        if (ordine.getSconti().size() > 0) {
-            sj = new StringJoiner(", ");
-            for (int i = 0; i < ordine.getSconti().size(); i++) sj.add("(?, ?)");
-    
-            query = "INSERT INTO sconti_applicati (id_ordine, id_sconto) VALUES"
-            + sj.toString();
-    
-            try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
-                int i = 1;
-                for (Sconto sconto : ordine.getSconti()) {
-                    preparedStmt.setInt(i, id);
-                    i++;
-                    preparedStmt.setInt(i, sconto.getId());
-                    i++;
-
-           //         System.out.println("Adding: " +id + ", " + sconto.getId());
+        for (GeocodingResult result : results) {
+            for (AddressComponent addComp : result.addressComponents) {
+                if (Arrays.asList(addComp.types).contains(AddressComponentType.LOCALITY)) {
+                    String city = addComp.longName;
+                    if (city.equals(cfg.getGeo().getPreferCity())) {
+                        bestResult = result;
+                        break;
+                    }
                 }
-
-                preparedStmt.executeUpdate();
             }
         }
-            
+
+        if (bestResult == null && results.length > 0)
+            bestResult = results[0];
+
+        if (bestResult == null) {
+            throw new IllegalArgumentException("Indirizzo non trovato!");
+        }
+
+        return bestResult.formattedAddress;
+    }
+
+    @PostMapping({"/ordine-indirizzo"})
+    public String scegliIndirizzoPost(Model model, HttpServletRequest request, HttpSession session, RedirectAttributes rAttributes,
+            @RequestParam(value = "indirizzo", required = false) String indirizzo) {
+
+        if (indirizzo != null) {
+            if (indirizzo.isEmpty()) {
+                model.addAttribute("error", "Indirizzo vuoto.");
+                return "ordinazione/indirizzo";
+            }
+
+            @SuppressWarnings("unchecked")
+            List<Prodotto> prodotti = (List<Prodotto>) session.getAttribute("prodotti");
+            // Zona consegna scelta in base a totale, non totale scontato
+            double costo = prodotti.stream()
+                .map(prodotto -> prodotto.getPrezzo())
+                .reduce(0., (a, b) -> a + b);
+
+            try {
+                if (ordinazione.verificaZonaConsegna(indirizzo, costo)) {
+                    // Indirizzo completato da google maps API
+                    String indirizzoCompleto = null;
+                    try {
+                        indirizzoCompleto = getFullAddress(indirizzo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        model.addAttribute("error", "Indirizzo non valido, ricontrolla");
+                        return "ordinazione/indirizzo";    
+                    }
+
+                    session.setAttribute("indirizzo", indirizzoCompleto);
+                    return "redirect:/ordine-dati";
+                } else {
+                    model.addAttribute("error", "Non possiamo fare consegne a domicilio a queste distanze, in questa fascia di prezzo.");
+                    return "ordinazione/indirizzo";
+                }
+            } catch (ZonaConsegnaException | InvalidConfigurationPropertyValueException | IllegalStateException e) {
+                if (e instanceof ZonaConsegnaException)
+                    e.printStackTrace();
+                else
+                    System.err.println("scegliIndirizzoPost(): " + e.getMessage());
+                    
+                if (e instanceof IndirizzoSconosciutoException) {
+                    model.addAttribute("error", "Indirizzo sconosciuto.");
+                    return "ordinazione/indirizzo";
+                } else {
+                    // Se non funzionano i servizi di localizzazione, allora 
+                    // fai andare avanti l'ordinazione, e lascia lo smistamento
+                    // al titolare
+                    session.setAttribute("indirizzo", indirizzo);
+                    rAttributes.addFlashAttribute("errorZonaconsegna", true);
+                    return "redirect:/ordine-dati";
+                }
+            }
+
+
+        } else {
+            return scegliIndirizzoGet(model, request, session);
+        }
+    }
+
+    @RequestMapping({"/ordine-dati"})
+    public String inviaDati(Model model, HttpServletRequest request, HttpSession session,
+            @ModelAttribute("datiOrdine") DatiOrdine datiOrdine,
+            @RequestParam(value = "conferma", defaultValue = "false") String conferma,
+            @RequestParam(value = "pagamento", defaultValue = "false") String pagamento) {
+        
+        @SuppressWarnings("unchecked")
+        List<Prodotto> prodotti = (List<Prodotto>) session.getAttribute("prodotti");
+        if (prodotti == null)
+                return "redirect:/ordine-prodotti";
+
+        model.addAttribute("totale", ordinazione.calcolaTotale(prodotti));
     
-        return true;
+        model.addAttribute("chiediTelefono", "ORDINAZ_DOMICILIO".equals(session.getAttribute("tipoOrdine")) || "ORDINAZ_ASPORTO".equals(session.getAttribute("tipoOrdine")));
+        model.addAttribute("chiediTavolo", "ORDINAZ_TAVOLO".equals(session.getAttribute("tipoOrdine")));
+        model.addAttribute("chiediData", !"ORDINAZ_TAVOLO".equals(session.getAttribute("tipoOrdine")));
+
+        boolean chiediPagamentoOnline = "ORDINAZ_DOMICILIO".equals(session.getAttribute("tipoOrdine"));
+        model.addAttribute("chiediPagamentoOnline", chiediPagamentoOnline);
+
+        if (request.getMethod().equals("POST")) {
+            String verificaResult = verificaDati(datiOrdine, session, prodotti);
+            if (!verificaResult.equals("ok")) {
+                model.addAttribute("error", verificaResult);
+                return "ordinazione/dati";
+            }
+
+            if (pagamento.equals("true")) {
+                if (chiediPagamentoOnline) {
+                    session.setAttribute("datiOrdine", datiOrdine);
+                    return "redirect:/checkout";
+                } else {
+                    model.addAttribute("error", "Tentativo di pagamento per tipo non concesso di ordinazione");
+                    return "ordinazione/dati";
+                }
+            }
+
+            if (conferma.equals("true")) {
+                if ("ORDINAZ_TAVOLO".equals(session.getAttribute("tipoOrdine"))) {
+                    datiOrdine.setData(LocalDate.now());
+                    datiOrdine.setOra(LocalTime.now());
+                }
+                session.setAttribute("datiOrdine", datiOrdine);
+
+                return "redirect:/ordine-finale";
+            }
+        } 
+
+        return "ordinazione/dati";
+    }
+
+    @GetMapping("/ordine-finale")
+    public String confermaFinaleGet(Model model, HttpServletRequest request, HttpSession session) {
+        DatiOrdine datiOrdine = (DatiOrdine) session.getAttribute("datiOrdine");
+
+        if (datiOrdine == null)
+            return "redirect:/ordine-dati";
+
+        @SuppressWarnings("unchecked")
+        List<Prodotto> prodotti = (List<Prodotto>) session.getAttribute("prodotti");
+        double totale = ordinazione.calcolaTotale(prodotti);
+        double totaleScontato = ordinazione.calcolaTotaleScontato(prodotti, LocalDateTime.of(datiOrdine.getData(), datiOrdine.getOra()));
+
+        model.addAttribute("datiOrdine", datiOrdine);
+        model.addAttribute("totale", totale);
+        if (totaleScontato != totale) {
+            model.addAttribute("totaleScontato", totaleScontato);
+        }
+
+        return "ordinazione/review";
+    }
+
+    @PostMapping("/ordine-finale")
+    public String confermaFinalePost(Model model, HttpServletRequest request, HttpSession session, RedirectAttributes rdAttrs,
+      @RequestParam(value = "conferma", defaultValue = "false") String conferma) {
+
+        if (conferma.equals("true")) {
+            @SuppressWarnings("unchecked")
+            List<Prodotto> prodotti = (List<Prodotto>) session.getAttribute("prodotti");
+            DatiOrdine datiOrdine = (DatiOrdine) session.getAttribute("datiOrdine");
+            String tokenPagamento = (String) session.getAttribute("tokenPagamento");
+
+            LocalDateTime dataOra = LocalDateTime.of(datiOrdine.getData(), datiOrdine.getOra());
+
+            Ordine ordine = null;
+
+            try {
+                scriviOperazione(request.getRemoteAddr(), String.format("creaOrdine(tipo: %s, data: %s)", (String)session.getAttribute("tipoOrdine"), dataOra));
+
+                switch((String) session.getAttribute("tipoOrdine")) {
+                    case "ORDINAZ_DOMICILIO":
+                        if (tokenPagamento != null && !tokenPagamento.isEmpty()) {
+                            ordine = ordinazione.creaOrdineDomicilio(datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 
+                                datiOrdine.getTelefono(), (String)session.getAttribute("indirizzo"), tokenPagamento); 
+                        } else {
+                            ordine = ordinazione.creaOrdineDomicilio(datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 
+                                datiOrdine.getTelefono(), (String)session.getAttribute("indirizzo")); 
+                        }
+                        break;
+                    case "ORDINAZ_TAVOLO":
+                        ordine = ordinazione.creaOrdineTavolo(datiOrdine.getNome(), prodotti, datiOrdine.getNote(), 
+                            datiOrdine.getTavolo()); 
+                        break;
+                    case "ORDINAZ_ASPORTO": 
+                        ordine = ordinazione.creaOrdineAsporto(datiOrdine.getNome(), prodotti, dataOra, datiOrdine.getNote(), 
+                            datiOrdine.getTelefono()); 
+                        break;
+                    default:
+                        throw new IllegalStateException("Tipo ordine non valido!");
+                }
+            } catch (Exception e) {
+                rdAttrs.addFlashAttribute("error", e.getMessage());
+                return "redirect:/ordine-dati";
+            }
+    
+            model.addAttribute("ordineEseguito", ordine);
+            model.addAttribute("tipoOrdineEseguito", session.getAttribute("tipoOrdine"));
+            session.invalidate();
+            
+            return "ordinazione/finale";
+        }
+
+        return confermaFinaleGet(model, request, session);
+    }
+
+    private String verificaDati(DatiOrdine datiOrdine, HttpSession session, List<Prodotto> prodotti) {
+        String tipoOrdine = (String) session.getAttribute("tipoOrdine");
+        TipoDisattivazione tipo = TipoDisattivazione.valueOf(tipoOrdine);
+
+        if (getTipoOrdiniDisabilitati().contains(tipo))
+            return "bad-type";
+
+        if (!"ORDINAZ_TAVOLO".equals(session.getAttribute("tipoOrdine"))) {
+            LocalDateTime dataOra = LocalDateTime.of(datiOrdine.getData(), datiOrdine.getOra());
+            if (dataOra.isBefore(LocalDateTime.now())) {
+                return "past-date";
+            }
+        }
+
+        for (Prodotto prodotto : prodotti)    {
+            if (!getMenu().contains(prodotto))
+                return "bad-product";
+            else if (getProdottiDisabilitati().contains(prodotto))
+                return "disabled-product";
+        }
+
+        if (datiOrdine.getNome().isEmpty()) {
+            return "no-name";
+        }
+
+        if (tipo != TipoDisattivazione.ORDINAZ_TAVOLO) {
+            if (datiOrdine.getTelefono().isEmpty() || !Pattern.matches("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$", datiOrdine.getTelefono())) {
+                return "bad-phone";
+            }
+        }
+
+        return "ok";
+    }
+
+    @ModelAttribute("tipiDisabilitati")
+    public Set<TipoDisattivazione> getTipoOrdiniDisabilitati() {
+        return ordinazione.getTipoOrdiniDisabilitati();
+    }
+
+    @ModelAttribute("prodottiDisabilitati")
+    public Set<Prodotto> getProdottiDisabilitati() {
+        return ordinazione.getProdottiDisabilitati();
+    }
+
+    @ModelAttribute("menu")
+    public List<Prodotto> getMenu() {
+        return ordinazione.getMenu();
+    }
+
+    @ModelAttribute("tuttiSconti")
+    public List<Sconto> getSconti() {
+        return ordinazione.getSconti();
+    }
+
+    @ModelAttribute("scontiProdotti")
+    public List<Sconto> getScontiProdotti() {
+        return ordinazione.getSconti().stream()
+            .filter(sconto -> sconto.getPerProdotti() != null && sconto.getPerProdotti().size() > 0)
+            .collect(Collectors.toList());
+    }
+
+    @ModelAttribute("scontiGen")
+    public List<Sconto> getScontiGen() {
+        return ordinazione.getSconti().stream()
+            .filter(sconto -> sconto.getPerProdotti() == null || sconto.getPerProdotti().size() == 0)
+            .collect(Collectors.toList());
+    }
+
+    @ModelAttribute("datiOrdine")
+    public DatiOrdine setupDatiOrdine() {
+        DatiOrdine datiOrdine = new DatiOrdine();
+        datiOrdine.setData(LocalDate.now().plusDays(1));
+        datiOrdine.setOra(LocalTime.now());
+        return datiOrdine;
+    }
+
+    @ModelAttribute("ordinazioneService")
+    public IOrdinazioneService getOrdinazione() {
+        return this.ordinazione;
+    }
+
+    public void setOrdinazione(IOrdinazioneService ordinazione) {
+        this.ordinazione = ordinazione;
     }
 }

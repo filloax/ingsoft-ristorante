@@ -51,10 +51,7 @@ public class RicezionePrenotazioniController extends StageController {
             textarea.setText("Non ci sono più altre Prenotazioni in Attesa");
             btnAccetta.setDisable(true);
             btnRifiuta.setDisable(true);
-
-
         }
-
     }
 
     public void accettaPrenotazione(ActionEvent event) throws IOException {

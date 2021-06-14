@@ -6,14 +6,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import it.unibo.ingsoft.fortuna.model.*;
 import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
 import it.unibo.ingsoft.fortuna.model.richiesta.*;
 import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaException;
 
-public interface IOrdinazioneController {
+public interface IOrdinazioneService {
     public Set<TipoDisattivazione> getTipoOrdiniDisabilitati();
     public Set<Prodotto> getProdottiDisabilitati();
 
@@ -31,12 +29,12 @@ public interface IOrdinazioneController {
     public double calcolaTotale(List<Prodotto> prodotti);
     public double calcolaTotaleScontato(List<Prodotto> prodotti, LocalDateTime dataOra);
 
-    public OrdineAlTavolo creaOrdineTavolo(HttpServletRequest request, String nome, List<Prodotto> prodotti, 
+    public OrdineAlTavolo creaOrdineTavolo(String nome, List<Prodotto> prodotti, 
         String note, String tavolo) throws IOException;
-    public OrdineDomicilio creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, 
+    public OrdineDomicilio creaOrdineDomicilio(String nome, List<Prodotto> prodotti, 
         LocalDateTime dataOra, String note, String telefono, String indirizzo) throws IOException;
-    public OrdineDomicilio creaOrdineDomicilio(HttpServletRequest request, String nome, List<Prodotto> prodotti, 
+    public OrdineDomicilio creaOrdineDomicilio(String nome, List<Prodotto> prodotti, 
         LocalDateTime dataOra, String note, String telefono, String indirizzo, String tokenPagamento) throws IOException;
-    public OrdineTakeAway creaOrdineAsporto(HttpServletRequest request, String nome, List<Prodotto> prodotti, 
+    public OrdineTakeAway creaOrdineAsporto(String nome, List<Prodotto> prodotti, 
         LocalDateTime dataOra, String note, String telefono) throws IOException;
 }

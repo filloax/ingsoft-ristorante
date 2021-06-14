@@ -9,15 +9,15 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import it.unibo.ingsoft.fortuna.Controller;
+import it.unibo.ingsoft.fortuna.AbstractService;
 import it.unibo.ingsoft.fortuna.DatabaseException;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 
-@Component
+@Service
 @Primary
-public class GestioneProdotti extends Controller implements IGestioneProdotti {
+public class GestioneProdotti extends AbstractService implements IGestioneProdotti {
 
     private List<Prodotto> menu;
 
