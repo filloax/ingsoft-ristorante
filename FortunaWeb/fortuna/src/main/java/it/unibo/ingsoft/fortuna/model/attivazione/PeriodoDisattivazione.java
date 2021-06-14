@@ -12,9 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import it.unibo.ingsoft.fortuna.model.Prodotto;
+import lombok.Data;
 
 @Entity
 @Table(name = "periodi_disattivazione")
+@Data
 public class PeriodoDisattivazione {
     @Column(name = "inizio")
     private LocalDateTime inizio;
@@ -50,44 +52,8 @@ public class PeriodoDisattivazione {
         this(inizio, fine, tipo, null);
     }
 
-    public LocalDateTime getInizio() {
-        return this.inizio;
-    }
-
-    public void setInizio(LocalDateTime inizio) {
-        this.inizio = inizio;
-    }
-
-    public LocalDateTime getFine() {
-        return this.fine;
-    }
-
-    public void setFine(LocalDateTime fine) {
-        this.fine = fine;
-    }
-
-    public TipoDisattivazione getTipo() {
-        return this.tipo;
-    }
-
-    public void setTipo(TipoDisattivazione tipo) {
-        this.tipo = tipo;
-    }
-
-    public Prodotto getProdotto() {
-        return this.prodotto;
-    }
-
-    public void setProdotto(Prodotto prodotto) {
-        this.prodotto = prodotto;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public boolean contieneTempo(LocalDateTime tempo) {
+        return ( tempo.isAfter(inizio) || tempo.equals(inizio) ) && tempo.isBefore(tempo);
     }
 
     public PeriodoDisattivazione id(Integer id) {
@@ -113,5 +79,5 @@ public class PeriodoDisattivazione {
     public PeriodoDisattivazione prodotto(Prodotto prodotto) {
         setProdotto(prodotto);
         return this;
-    }
+    }    
 }

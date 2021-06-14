@@ -1,7 +1,10 @@
 package it.unibo.ingsoft.fortuna.gestionePrenotazione;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,20 +12,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.unibo.ingsoft.fortuna.AbstractController;
+import it.unibo.ingsoft.fortuna.DatabaseException;
 import it.unibo.ingsoft.fortuna.model.richiesta.Prenotazione;
+import it.unibo.ingsoft.fortuna.sms.SMSException;
 
 @RestController
 @RequestMapping("/gest-prenotazioni")
-public class PrenotazioneGestController {
+public class PrenotazioneGestController extends AbstractController {
 
     @Autowired
-    private PrenotazioneGestService service;
+    private IGestionePrenotazioni service;
 
     @GetMapping
     public List<Prenotazione> list() {
@@ -50,13 +54,11 @@ public class PrenotazioneGestController {
 
     }
 
-    @PostMapping
-    public void add(@RequestBody Prenotazione prenotazione) {
-        service.save(prenotazione);
-        // TODO:
-        // Log
-        // NotificaSMS
-    }
+    // @PostMapping
+    // public void add(HttpServletRequest request, @RequestBody Prenotazione prenotazione) {
+    //     scriviOperazione(request.getRemoteAddr(), String.format("addPrenotazione(dataOra: %s)", prenotazione.getDataOra()));
+    //     service.save(prenotazione);
+    // }
 
     // // RequestBody per serializzazione
     // // PathVariable per prendere dal URI quello tra parentesi e castarlo nella
@@ -92,7 +94,7 @@ public class PrenotazioneGestController {
     // PathVariable per prendere dal URI quello tra parentesi e castarlo nella
     // variabile dichiata dopo
     @PutMapping(value = "{id}")
-    public ResponseEntity<?> accetta(@PathVariable Integer id) {
+    public ResponseEntity<?> accetta(HttpServletRequest request, @PathVariable Integer id) {
         // controllo che la prenotazione esiste in database
         /*
          * è implicito il fatto che se passo dal URI ~/10, l'oggetto json che passo ha id 10, non si
@@ -101,36 +103,35 @@ public class PrenotazioneGestController {
          * 
          */
 
-        // TODO:
-        // Log
-        // NotificaSMS
-        try {
+        scriviOperazione(request.getRemoteAddr(), String.format("accettaPrenotazione(id: %d)", id));
 
-            Prenotazione validPrenotazione = service.get(id);
+        try {
             service.accetta(id);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (DatabaseException | SMSException | IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
 
     @DeleteMapping(value = "{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
+    public ResponseEntity<?> delete(HttpServletRequest request, @PathVariable Integer id) {
+        scriviOperazione(request.getRemoteAddr(), String.format("deletePrenotazione(id: %d)", id));
 
-        // TODO:
-        // Log
-        // NotificaSMS
+        String ragione = "";
+
         try {
-
-            Prenotazione validPrenotazione = service.get(id);
-            service.delete(id);
+            service.cancella(id, ragione);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SMSException | IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

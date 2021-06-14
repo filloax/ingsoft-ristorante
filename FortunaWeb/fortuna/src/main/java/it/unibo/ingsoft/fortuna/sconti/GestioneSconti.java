@@ -15,17 +15,17 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import it.unibo.ingsoft.fortuna.Controller;
+import it.unibo.ingsoft.fortuna.AbstractService;
 import it.unibo.ingsoft.fortuna.DatabaseException;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 import it.unibo.ingsoft.fortuna.model.Sconto;
 import it.unibo.ingsoft.fortuna.prodotti.IGestioneProdotti;
 
-@Component
+@Service
 @Primary
-public class GestioneSconti extends Controller implements IGestioneSconti {
+public class GestioneSconti extends AbstractService implements IGestioneSconti {
     @Autowired
     private IGestioneProdotti gestioneProdotti;
 

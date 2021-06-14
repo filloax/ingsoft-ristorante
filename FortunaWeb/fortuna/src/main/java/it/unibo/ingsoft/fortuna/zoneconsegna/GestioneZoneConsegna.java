@@ -17,17 +17,17 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import it.unibo.ingsoft.fortuna.Controller;
+import it.unibo.ingsoft.fortuna.AbstractService;
 import it.unibo.ingsoft.fortuna.DatabaseException;
 import it.unibo.ingsoft.fortuna.model.zonaconsegna.IZonaConsegna;
 import it.unibo.ingsoft.fortuna.model.zonaconsegna.Vector;
 import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaPunti;
 
-@Component
+@Service
 @Primary
-public class GestioneZoneConsegna extends Controller implements IGestioneZoneConsegna, IListaZoneConsegna {
+public class GestioneZoneConsegna extends AbstractService implements IGestioneZoneConsegna, IListaZoneConsegna {
 
     private Set<ZonaConsegnaPunti> zone;
 

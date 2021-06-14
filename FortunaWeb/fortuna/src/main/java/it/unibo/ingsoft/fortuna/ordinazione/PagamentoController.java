@@ -18,16 +18,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import it.unibo.ingsoft.fortuna.AbstractController;
 import it.unibo.ingsoft.fortuna.ConfigProps;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 
 @Controller
-public class PagamentoServlet {
+public class PagamentoController extends AbstractController {
     @Autowired
     private StripeService pagamentoStripe;
 
     @Autowired
-    IOrdinazioneController ordinazione;
+    IOrdinazioneService ordinazione;
 
     @Autowired
     ConfigProps cfg;
@@ -53,11 +54,12 @@ public class PagamentoServlet {
     }
 
     @PostMapping("/pagamento")
-    public String charge(ChargeRequest chargeRequest, Model model, HttpSession session)
+    public String charge(HttpServletRequest request, ChargeRequest chargeRequest, Model model, HttpSession session)
       throws StripeException {
         chargeRequest.setDescription("Pagamento ordine");
         chargeRequest.setCurrency(ChargeRequest.Currency.EUR);
         
+        scriviOperazione(request.getRemoteAddr(), "pagamento");
         Charge charge = pagamentoStripe.authorize(chargeRequest);
         session.setAttribute("tokenPagamento", charge.getId());
         
@@ -72,7 +74,7 @@ public class PagamentoServlet {
     }
 
     @ModelAttribute("ordinazioneService")
-    public IOrdinazioneController getOrdinazione() {
+    public IOrdinazioneService getOrdinazione() {
         return this.ordinazione;
     }
 }

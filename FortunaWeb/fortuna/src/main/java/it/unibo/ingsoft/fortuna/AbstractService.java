@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import it.unibo.ingsoft.fortuna.ConfigProps.DatabaseProps;
 import it.unibo.ingsoft.fortuna.log.ILogManager;
 
-public abstract class Controller {
+public abstract class AbstractService {
 
     @Autowired
     private ConfigProps config;
@@ -46,22 +46,5 @@ public abstract class Controller {
 
 	protected void scriviOperazione(String ip, String operazione) {
 		log.scriviOperazione(ip, operazione);
-	}
-
-	//getter setter per permettere injection
-    public ConfigProps getConfig() {
-        return this.config;
-    }
-
-    public void setConfig(ConfigProps config) {
-        this.config = config;
-    }
-
-	public ILogManager getLog() {
-		return this.log;
-	}
-
-	public void setLog(ILogManager log) {
-		this.log = log;
 	}
 }
