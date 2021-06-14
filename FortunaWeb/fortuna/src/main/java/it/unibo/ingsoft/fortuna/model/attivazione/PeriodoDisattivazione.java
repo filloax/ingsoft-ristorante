@@ -2,14 +2,35 @@ package it.unibo.ingsoft.fortuna.model.attivazione;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 
+@Entity
+@Table(name = "periodi_disattivazione")
 public class PeriodoDisattivazione {
+    @Column(name = "inizio")
     private LocalDateTime inizio;
+    @Column(name = "fine")
     private LocalDateTime fine;
+    @Column(name = "tipo")
     private TipoDisattivazione tipo;
+
+    @ManyToOne
+    @JoinColumn(name = "numero_prodotto")
     private Prodotto prodotto;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
 
     public PeriodoDisattivazione() {
     }
@@ -28,7 +49,6 @@ public class PeriodoDisattivazione {
     public PeriodoDisattivazione(LocalDateTime inizio, LocalDateTime fine, TipoDisattivazione tipo) {
         this(inizio, fine, tipo, null);
     }
-
 
     public LocalDateTime getInizio() {
         return this.inizio;
@@ -61,7 +81,19 @@ public class PeriodoDisattivazione {
     public void setProdotto(Prodotto prodotto) {
         this.prodotto = prodotto;
     }
-    
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public PeriodoDisattivazione id(Integer id) {
+        setId(id);
+        return this;
+    }
 
     public PeriodoDisattivazione inizio(LocalDateTime inizio) {
         setInizio(inizio);

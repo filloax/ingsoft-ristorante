@@ -3,6 +3,7 @@ package it.unibo.ingsoft.fortuna.model.attivazione;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import it.unibo.ingsoft.fortuna.model.*;
@@ -10,15 +11,15 @@ import it.unibo.ingsoft.fortuna.model.*;
 public class InsiemePeriodiDisattivazione {
     private ArrayList<PeriodoDisattivazione> periodi;
 
-
     public InsiemePeriodiDisattivazione() {
         this.periodi = new ArrayList<PeriodoDisattivazione>();
     }
 
     /**
      * Controlla se un certo tipo di richiesta è attivo.
+     * 
      * @param tempo Tempo in cui controllare
-     * @param tipo Tipo da controllare
+     * @param tipo  Tipo da controllare
      * @return true se è attivo, false se è disattivato
      */
     public boolean controlla(LocalDateTime tempo, TipoDisattivazione tipo) {
@@ -31,10 +32,11 @@ public class InsiemePeriodiDisattivazione {
     }
 
     /**
-     * Controlla se un certo prodotto è attivo.
-     * Modifica rispetto a progetto: avere tipo come argomento sarebbe ridondante, essendo per prodotto sempre
-     * PRODOTTO il tipo
-     * @param tempo Tempo in cui controllare
+     * Controlla se un certo prodotto è attivo. Modifica rispetto a progetto: avere
+     * tipo come argomento sarebbe ridondante, essendo per prodotto sempre PRODOTTO
+     * il tipo
+     * 
+     * @param tempo    Tempo in cui controllare
      * @param prodotto Prodotto da controllare
      * @return true se è attivo, false se è disattivato
      */
@@ -68,27 +70,41 @@ public class InsiemePeriodiDisattivazione {
     }
 
     private boolean timeBetween(LocalDateTime tempo, PeriodoDisattivazione periodo) {
-        return (tempo.isAfter(periodo.getInizio()) || tempo.isEqual(periodo.getInizio())) 
-        && tempo.isBefore(periodo.getFine());
+        return (tempo.isAfter(periodo.getInizio()) || tempo.isEqual(periodo.getInizio()))
+                && tempo.isBefore(periodo.getFine());
     }
 
-    private boolean isDisattivatoPeriodoTipo(PeriodoDisattivazione periodo, LocalDateTime tempo, TipoDisattivazione tipo) {
-        return periodo.getTipo().equals(tipo)
-        && timeBetween(tempo, periodo);
+    private boolean isDisattivatoPeriodoTipo(PeriodoDisattivazione periodo, LocalDateTime tempo,
+            TipoDisattivazione tipo) {
+        return periodo.getTipo().equals(tipo) && timeBetween(tempo, periodo);
     }
 
-    private boolean isDisattivatoPeriodoProdotto(PeriodoDisattivazione periodo, LocalDateTime tempo, Prodotto prodotto) {
+    private boolean isDisattivatoPeriodoProdotto(PeriodoDisattivazione periodo, LocalDateTime tempo,
+            Prodotto prodotto) {
         return isDisattivatoPeriodoTipo(periodo, tempo, TipoDisattivazione.PRODOTTO)
-        && periodo.getProdotto().equals(prodotto);
+                && periodo.getProdotto().equals(prodotto);
     }
-
 
     public void add(PeriodoDisattivazione periodo) {
         periodi.add(periodo);
     }
 
+    public void setAll(List<PeriodoDisattivazione> periodi) {
+        this.periodi = new ArrayList<PeriodoDisattivazione>(periodi);
+    }
+
     public boolean remove(PeriodoDisattivazione periodo) {
         return periodi.remove(periodo);
+    }
+
+    public boolean removeById(Integer id) {
+
+        // TODO come si fa in lambda?
+        for (PeriodoDisattivazione item : periodi) {
+            if (item.getId().equals(id))
+                return periodi.remove(item);
+        }
+        return false;
     }
 
     public PeriodoDisattivazione get(int i) {

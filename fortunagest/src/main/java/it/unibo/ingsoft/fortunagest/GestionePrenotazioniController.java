@@ -1,9 +1,11 @@
 package it.unibo.ingsoft.fortunagest;
 
+import java.io.IOException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 
@@ -38,4 +40,6 @@ public class GestionePrenotazioniController extends StageController {
         prenotazioniAccettateList.setItems(observableAccettateList);
 
     }
+
+   
 }
