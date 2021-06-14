@@ -69,8 +69,9 @@ public class Prodotto {
         return this;
     }
 
-    public Integer getNumero() {
+       public Integer getNumero(){
         return this.numero;
     }
 
+    
 }

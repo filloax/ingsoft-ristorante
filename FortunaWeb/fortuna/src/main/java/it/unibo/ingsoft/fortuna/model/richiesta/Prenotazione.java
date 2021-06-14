@@ -11,9 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "prenotazioni")
 @AttributeOverrides({ @AttributeOverride(name = "iDRichiesta", column = @Column(name = "id")),
-        @AttributeOverride(name = "dataOra", column = @Column(name = "data_ora"))
-
-})
+        @AttributeOverride(name = "dataOra", column = @Column(name = "data_ora")) })
 public class Prenotazione extends Richiesta {
     @Column(name = "numero_persone")
     private int numeroPersone;

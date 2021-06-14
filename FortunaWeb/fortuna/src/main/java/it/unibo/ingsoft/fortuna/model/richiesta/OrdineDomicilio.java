@@ -1,15 +1,23 @@
 package it.unibo.ingsoft.fortuna.model.richiesta;
 
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+
+@Entity(name = "ordine_domicilio")
+@DiscriminatorValue("ordine_domicilio")
 public class OrdineDomicilio extends Ordine {
+    @Column(name = "telefono")
     private String telefono;
+    @Column(name = "indirizzo")
     private String indirizzo;
+    @Column(name = "pagamento")
     private String tokenPagamento;
     private String email; // TBD
     private boolean inConsegna; // TBD
 
-
-    public OrdineDomicilio() {}
-
+    public OrdineDomicilio() {
+    }
 
     public String getTelefono() {
         return this.telefono;
@@ -35,7 +43,6 @@ public class OrdineDomicilio extends Ordine {
         this.tokenPagamento = tokenPagamento;
     }
 
-
     public String getEmail() {
         return this.email;
     }
@@ -55,7 +62,6 @@ public class OrdineDomicilio extends Ordine {
     public void setInConsegna(boolean inConsegna) {
         this.inConsegna = inConsegna;
     }
-
 
     public OrdineDomicilio telefono(String telefono) {
         setTelefono(telefono);
