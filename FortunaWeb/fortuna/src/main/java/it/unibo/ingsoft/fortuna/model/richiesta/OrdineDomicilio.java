@@ -3,6 +3,7 @@ package it.unibo.ingsoft.fortuna.model.richiesta;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 @Entity(name = "ordine_domicilio")
 @DiscriminatorValue("ordine_domicilio")
@@ -13,7 +14,9 @@ public class OrdineDomicilio extends Ordine {
     private String indirizzo;
     @Column(name = "pagamento")
     private String tokenPagamento;
+    @Transient
     private String email; // TBD
+    @Transient
     private boolean inConsegna; // TBD
 
     public OrdineDomicilio() {

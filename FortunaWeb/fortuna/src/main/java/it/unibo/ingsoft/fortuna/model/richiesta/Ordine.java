@@ -10,6 +10,9 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -17,17 +20,18 @@ import it.unibo.ingsoft.fortuna.model.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name= "ordini_tipo")
+@DiscriminatorColumn(name = "ordini_tipo")
 @Table(name = "ordini")
 @AttributeOverrides({ @AttributeOverride(name = "iDRichiesta", column = @Column(name = "id")),
         @AttributeOverride(name = "dataOra", column = @Column(name = "data_ora")) })
 public abstract class Ordine extends Richiesta {
 
-    @Column(name="note")
+    @Column(name = "note")
     private String note;
     @Transient
     private List<Prodotto> prodotti;
-    @Transient
+    @ManyToMany
+    @JoinTable(name = "sconti_applicati", joinColumns = @JoinColumn(name = "id_ordine"), inverseJoinColumns = @JoinColumn(name = "id_sconto"))
     private List<Sconto> sconti;
 
     protected Ordine() {
