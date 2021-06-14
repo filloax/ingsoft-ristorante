@@ -16,17 +16,12 @@ import it.unibo.ingsoft.fortuna.log.ILogManager;
 // se si vuol estendere la ricerca ad altri package, c'è una nota apposita
 @SpringBootApplication
 public class FortunaApplication {
-
-	// Variabile di ambiente esterna per sicurezza (mai salvare key in chiaro su repository), 
-	// API key di google maps Geocoding ottenuta da google cloud
-    @Value("${GEOCODING_KEY: null}")
-    private String mapsApiKey;
-
 	@Autowired
 	Environment env;
-
 	@Autowired
 	ILogManager logManager;
+	@Autowired
+	ConfigProps cfg;
 
 	public static void main(String[] args) {
 		SpringApplication.run(FortunaApplication.class, args);
@@ -34,14 +29,14 @@ public class FortunaApplication {
 
 	@Bean(destroyMethod = "shutdown")
 	public GeoApiContext geoApiContext() {
-		if (mapsApiKey.equals("null")) {
+		if (cfg.getKeys().getGoogleGeocoding() == null) {
 			logManager.scriviMessaggio("API Key per Google Maps non impostata su variabile ambiente GEOCODING_KEY, servizio ZonaConsegna non funzionerà.");
 			System.err.println("API Key per Google Maps non impostata su variabile ambiente GEOCODING_KEY, servizio ZonaConsegna non funzionerà.");
 			return null;
 		}
 
 		return new GeoApiContext.Builder()
-			.apiKey(mapsApiKey)
+			.apiKey(cfg.getKeys().getGoogleGeocoding())
 			.build();
 	}
 

@@ -17,21 +17,18 @@ import com.google.maps.model.LatLng;
 
 import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
 
+import it.unibo.ingsoft.fortuna.ConfigProps;
 import it.unibo.ingsoft.fortuna.SpringContext;
 import it.unibo.ingsoft.fortuna.log.ILogManager;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 public class ZonaConsegnaPunti implements IZonaConsegna {
-    // Usati da API di google per impostare la preferenza di ricerca
-    // non restrittivi, rappresentano solo una preferenza
-    public static final LatLng BOUNDS_BOLOGNA_SW = new LatLng( 44.461555, 11.262151 );
-    public static final LatLng BOUNDS_BOLOGNA_NE = new LatLng( 44.562733, 11.430363 );
-    public static final String PREFER_CITY = "Bologna";
+    @ToString.Exclude private GeoApiContext geoApiContext;
+    @ToString.Exclude private ConfigProps cfg;
 
-    private GeoApiContext geoApiContext;
-
-    private ILogManager log;
+    @ToString.Exclude private ILogManager log;
 
     private double prezzoMinimo;
     private List<Vector> punti;
@@ -81,10 +78,9 @@ public class ZonaConsegnaPunti implements IZonaConsegna {
     
     private Vector coordDaIndirizzo(String indirizzo) throws ZonaConsegnaException {
         if (getGeoApiContext() == null)
-            throw new InvalidConfigurationPropertyValueException("GEOCODING_KEY", "null", "API Key per Google Maps Geocoding non impostata!");
+            throw new IllegalStateException("API google non inizializzata! Key non impostata?");
 
         // String urlAddress = new URLEncoder().encode(indirizzo, Charset.defaultCharset());
-        String region = "it";
 
         // String requestURL = String.format("https://maps.googleapis.com/maps/api/geocode/json?key=%s&region=%s&address=%s", mapsApiKey, region, urlAddress);
         
@@ -93,14 +89,14 @@ public class ZonaConsegnaPunti implements IZonaConsegna {
             getLog().scriviMessaggio(String.format("Richiesta a API Google per Geocoding di '%s'...", indirizzo));
 
             GeocodingResult[] results =  GeocodingApi.geocode(getGeoApiContext(), indirizzo)
-                .region(region) //preferenza, non restrittivo
-                .bounds(BOUNDS_BOLOGNA_SW, BOUNDS_BOLOGNA_NE) //preferenza, non restrittivo
+                .region(cfg.getGeo().getRegion()) //preferenza, non restrittivo
+                .bounds(cfg.getGeo().getGapiBounds().southwest, cfg.getGeo().getGapiBounds().northeast) //preferenza, non restrittivo
                 .await();
                     
             for (GeocodingResult r : results) {
-                if (getLocality(r).equals(PREFER_CITY)) {
+                if (getLocality(r).equals(cfg.getGeo().getPreferCity())) {
                     result = r;
-                    break; //sì è brutto ma è brutto in generale tutto ciò visto che hardcoda città ecc
+                    break;
                 }
             }
 
@@ -118,7 +114,7 @@ public class ZonaConsegnaPunti implements IZonaConsegna {
 
         String locality = getLocality(result);
 
-        if (!locality.equals(PREFER_CITY)) {
+        if (!locality.equals(cfg.getGeo().getPreferCity())) {
             getLog().scriviMessaggio(String.format("Richiesta geocoding per '%s' ricevuta da fuori città, possibile spam?", indirizzo));
         }
 
@@ -166,5 +162,12 @@ public class ZonaConsegnaPunti implements IZonaConsegna {
             geoApiContext = SpringContext.getBean(GeoApiContext.class);
 
         return geoApiContext;
+    }
+
+    private ConfigProps getCfg() {
+        if (cfg == null)
+            cfg = SpringContext.getBean(ConfigProps.class);
+
+        return cfg;
     }
 }
