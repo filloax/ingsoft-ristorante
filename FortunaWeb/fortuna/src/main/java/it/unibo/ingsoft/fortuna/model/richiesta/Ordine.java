@@ -13,6 +13,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -28,6 +29,9 @@ public abstract class Ordine extends Richiesta {
 
     @Column(name = "note")
     private String note;
+    @OneToMany(mappedBy = "ordine")
+    private List<ProdottoOrdine> prodottoOrdini;
+
     @Transient
     private List<Prodotto> prodotti;
     @ManyToMany

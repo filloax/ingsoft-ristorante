@@ -1,13 +1,12 @@
 package it.unibo.ingsoft.fortuna.model;
 
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
+import javax.persistence.Transient;
 import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
 import lombok.Data;
 
@@ -28,8 +27,12 @@ public class Prodotto {
     @Column(name = "immagine")
     private String img;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "prodotto")
+    private List<ProdottoOrdine> prodottoOrdines;
+
+    @Transient
     private List<Ordine> ordini;
+
     public Prodotto() {
 
     }
@@ -75,9 +78,8 @@ public class Prodotto {
         return this;
     }
 
-       public Integer getNumero(){
+    public Integer getNumero() {
         return this.numero;
     }
 
-    
 }
