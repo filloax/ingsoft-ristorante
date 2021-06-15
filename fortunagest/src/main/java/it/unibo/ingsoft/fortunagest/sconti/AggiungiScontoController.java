@@ -10,7 +10,7 @@ import java.util.function.Function;
 import org.springframework.web.client.RestTemplate;
 
 import it.unibo.ingsoft.fortunagest.StageController;
-import it.unibo.ingsoft.fortunagest.model.DatiSconti;
+import it.unibo.ingsoft.fortunagest.model.DatiSconto;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -113,7 +113,7 @@ public class AggiungiScontoController extends StageController {
         LocalTime startTimeValue = LocalTime.parse(startTime.getText(), DateTimeFormatter.ISO_TIME);
         LocalTime endTimeValue = LocalTime.parse(endTime.getText(), DateTimeFormatter.ISO_TIME);
 
-        DatiSconti datiSconto = new DatiSconti();
+        DatiSconto datiSconto = new DatiSconto();
         datiSconto.setStart(LocalDateTime.of(startDate.getValue(), startTimeValue));
         datiSconto.setEnd(LocalDateTime.of(endDate.getValue(), endTimeValue));
         datiSconto.setQuantita(Double.parseDouble(quantita.getText()));
@@ -127,5 +127,7 @@ public class AggiungiScontoController extends StageController {
         String url = "http://localhost:8080/gest-sconti/";
         
         template.put(url, datiSconto);
+
+        switchToGestioneSconti(event);
     }
 }

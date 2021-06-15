@@ -84,12 +84,13 @@
 
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-        <Button layoutX="111.0" layoutY="64.0" mnemonicParsing="false" text="Button" />
-        <Button layoutX="300.0" layoutY="64.0" mnemonicParsing="false" text="Button" />
-        <Button layoutX="420.0" layoutY="64.0" mnemonicParsing="false" onAction="#switchToGestionePrenotazioni" text="Gestione Prenotazioni" />
-        <Button layoutX="111.0" layoutY="210.0" mnemonicParsing="false" onAction="#switchToGestioneSconti" text="Gestione Sconti" />
-        <Button layoutX="300.0" layoutY="210.0" mnemonicParsing="false" text="Button" />
-        <Button layoutX="420.0" layoutY="210.0" mnemonicParsing="false" text="Button" />
+        <Button layoutX="50.0" layoutY="70.0" mnemonicParsing="false" onAction="#switchToGestionePrenotazioni" text="Gestione Prenotazioni" />
+        <Button layoutX="250.0" layoutY="70.0" mnemonicParsing="false" text="Gestione Ordini" />
+        <Button layoutX="420.0" layoutY="70.0" mnemonicParsing="false" onAction="#switchToGestioneSconti" text="Gestione Sconti" />
+        <Button layoutX="50.0" layoutY="160.0" mnemonicParsing="false" onAction="#switchToGestioneProdotti" text="Gestione Prodotti" />
+        <Button layoutX="250.0" layoutY="160.0" mnemonicParsing="false" text="Gestione Zone di consegna" />
+        <Button layoutX="420.0" layoutY="160.0" mnemonicParsing="false" text="Scarica log" />
+        <Button layoutX="420.0" layoutY="250.0" mnemonicParsing="false" text="Logout" />
       </children>
     </AnchorPane>
 

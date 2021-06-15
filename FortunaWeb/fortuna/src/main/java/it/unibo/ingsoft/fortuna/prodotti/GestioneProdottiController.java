@@ -48,11 +48,11 @@ public class GestioneProdottiController extends AbstractController {
 
     @PutMapping
     public ResponseEntity<?> aggiungiProdotto(HttpServletRequest request, @RequestBody Prodotto prodotto) {
-        scriviOperazione(request.getRemoteAddr(), String.format("aggiungiProdotto(numero: %d)", prodotto.getNumero()));
+        scriviOperazione(request.getRemoteAddr(), String.format("aggiungiProdotto(prodotto: %s)", prodotto.toString()));
 
         try {
             // Di fatto viene ricreato il prodotto, per come era fatta l'interfaccia; non è un grande sacrificio di memoria
-            service.aggiungiProdotto(prodotto.getNome(), prodotto.getNumero(), prodotto.getPrezzo(), prodotto.getDesc(), prodotto.getNome());
+            service.aggiungiProdotto(prodotto.getNome(), prodotto.getNumero(), prodotto.getPrezzo(), prodotto.getDesc(), prodotto.getImg());
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (DatabaseException e) {

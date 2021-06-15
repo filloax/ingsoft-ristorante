@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import it.unibo.ingsoft.fortunagest.StageController;
-import it.unibo.ingsoft.fortunagest.model.DatiSconti;
+import it.unibo.ingsoft.fortunagest.model.DatiSconto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,8 +16,8 @@ import javafx.scene.control.ListView;
 
 public class GestioneScontiController extends StageController {
     @FXML
-    private ListView<DatiSconti> listaSconti;
-    private ObservableList<DatiSconti> observableListaSconti = FXCollections.observableArrayList();
+    private ListView<DatiSconto> listaSconti;
+    private ObservableList<DatiSconto> observableListaSconti = FXCollections.observableArrayList();
     
 
     public void initialize() {
@@ -29,9 +29,9 @@ public class GestioneScontiController extends StageController {
         RestTemplate template = new RestTemplate();
         String url = "http://localhost:8080/gest-sconti/";
         
-        ResponseEntity<DatiSconti[]> response =
-        template.getForEntity(url, DatiSconti[].class);
-        DatiSconti[] arraySconti = response.getBody();
+        ResponseEntity<DatiSconto[]> response =
+        template.getForEntity(url, DatiSconto[].class);
+        DatiSconto[] arraySconti = response.getBody();
 
         observableListaSconti.setAll(arraySconti);
         listaSconti.refresh();

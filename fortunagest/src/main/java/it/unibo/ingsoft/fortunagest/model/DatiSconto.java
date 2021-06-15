@@ -7,7 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import lombok.Data;
 
 @Data
-public class DatiSconti {
+public class DatiSconto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalDateTime start;
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)

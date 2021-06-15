@@ -39,6 +39,15 @@ public class StageController {
     }
 
 
+    public void switchToGestioneProdotti(ActionEvent event) throws IOException{
+        switchToResource(event, "/GestioneProdotti.fxml");
+    }
+
+    public void switchToAggiuntaProdotti(ActionEvent event) throws IOException {
+        switchToResource(event, "/AggiuntaProdotto.fxml");
+    }
+
+
     private void switchToResource(ActionEvent event, String path) throws IOException {
         // il path relativo di default per getResource a quanto pare è  src/resources
         // quindi mettendo /nomefile.fxml mi va a cercare il file nella cartella resources
