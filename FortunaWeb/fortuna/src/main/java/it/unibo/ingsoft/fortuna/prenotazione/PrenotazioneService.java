@@ -10,8 +10,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.unibo.ingsoft.fortuna.AbstractService;
@@ -22,10 +24,16 @@ import it.unibo.ingsoft.fortuna.model.richiesta.Prenotazione;
 
 @Service
 public class PrenotazioneService extends AbstractService implements IPrenotazioneService {
+    @Autowired
     private PeriodiController periodiDisattivazione;
 
     public PrenotazioneService() {
-        periodiDisattivazione = PeriodiController.getInstance();
+        //periodiDisattivazione = PeriodiController.getInstance();
+    }
+
+    @PostConstruct
+    private void init(){
+        System.out.println("\n[POST-CONSTRUCT]PrenotazioneService\n");
     }
 
     @Override

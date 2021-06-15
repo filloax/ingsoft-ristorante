@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.unibo.ingsoft.fortuna.AbstractService;
@@ -15,26 +16,30 @@ import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
 
 @Service
 public class DisabilitaPrenotazioneService extends AbstractService implements IDisabilitazionePrenotazioni {
+    @Autowired
     private PeriodiController periodiController;
+
+    // @Autowired
+    // private DisabilitaPrenotazioniRepository repo;
 
     public DisabilitaPrenotazioneService() {
     }
 
     @PostConstruct
     private void init() {
-        periodiController = PeriodiController.getInstance();
-    }
+    //     periodiController = PeriodiController.getInstance();
+        System.out.println("\n[POST-CONSTRUCT] DisabilitaPrenotazioneService\n");
+}
 
     public List<PeriodoDisattivazione> listaPeriodiDisattivazione() {
         return periodiController.getPeriodi().getPeriodi().stream()
-            .filter(periodo -> periodo.getTipo() == TipoDisattivazione.PRENOTAZIONE)
-            .collect(Collectors.toList());
+                .filter(periodo -> periodo.getTipo() == TipoDisattivazione.PRENOTAZIONE).collect(Collectors.toList());
     }
 
     public List<PeriodoDisattivazione> listaPeriodiDisattivazione(LocalDateTime time) {
         return periodiController.getPeriodi().getPeriodi().stream()
-            .filter(periodo -> periodo.getTipo() == TipoDisattivazione.PRENOTAZIONE && periodo.contieneTempo(time))
-            .collect(Collectors.toList());
+                .filter(periodo -> periodo.getTipo() == TipoDisattivazione.PRENOTAZIONE && periodo.contieneTempo(time))
+                .collect(Collectors.toList());
     }
 
     public void disabilitaPrenotazioni(LocalDateTime inizio, LocalDateTime fine) {
