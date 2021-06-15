@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.sconti.AggiungiScontoController">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="405.0" prefWidth="660.0" VBox.vgrow="ALWAYS">
+      <children>
+        <Button fx:id="btnAggiungi" layoutX="447.0" layoutY="115.0" mnemonicParsing="false" onAction="#aggiungiSconto" text="Aggiungi" />
+        <TextField fx:id="startTime" layoutX="26.0" layoutY="74.0" promptText="00:00 Ora Inizio" />
+        <Label layoutX="25.0" layoutY="119.0" text="Numero prodotto (se applicabile)" />
+        <DatePicker fx:id="startDate" layoutX="26.0" layoutY="37.0" promptText="Data Inizio" />
+        <DatePicker fx:id="endDate" layoutX="214.0" layoutY="37.0" promptText="Data Fine" />
+        <TextField fx:id="endTime" layoutX="214.0" layoutY="74.0" promptText="23:59 Ora Fine" />
+        <Button fx:id="btnBack" layoutX="79.0" layoutY="285.0" mnemonicParsing="false" onAction="#switchToGestioneSconti" text="Torna indietro" />
+        <TextField fx:id="numeroProdotto" layoutX="25.0" layoutY="144.0" promptText="100" />
+        <Label layoutX="213.0" layoutY="119.0" text="Spesa minima" />
+        <TextField fx:id="spesaMinima" layoutX="213.0" layoutY="144.0" promptText="0.0" />
+        <CheckBox fx:id="isPercent" layoutX="214.0" layoutY="212.0" mnemonicParsing="false" text="Percentuale?" />
+        <Label layoutX="25.0" layoutY="183.0" text="Quantità sconto" />
+        <TextField fx:id="quantita" layoutX="25.0" layoutY="208.0" promptText="0" />
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>

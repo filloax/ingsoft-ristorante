@@ -58,11 +58,12 @@ public class GestioneScontiController extends AbstractController {
 
     @PutMapping
     public ResponseEntity<?> aggiungiSconto(HttpServletRequest request, @RequestBody DatiSconti dati) {
-        scriviOperazione(request.getRemoteAddr(), String.format("aggiungiSconto(inizio: %s, fine: %s, quant: %s, numero: %d)", 
+        scriviOperazione(request.getRemoteAddr(), String.format("aggiungiSconto(inizio: %s, fine: %s, quant: %s, numero: %d, prezzoMinimo: %f)", 
             dati.getStart(), 
             dati.getEnd(),
-            dati.getQuantita() + (dati.isPercent() ? "%" : ""),
-            dati.getNumeroProdotto()));
+            dati.isPercent() ? (dati.getQuantita() * 100 + "%") : dati.getQuantita(),
+            dati.getNumeroProdotto(),
+            dati.getPrezzoMin()));
 
         try {
             if (dati.getNumeroProdotto() == null) {

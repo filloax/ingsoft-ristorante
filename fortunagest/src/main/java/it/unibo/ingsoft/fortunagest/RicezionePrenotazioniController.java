@@ -1,7 +1,6 @@
 package it.unibo.ingsoft.fortunagest;
 
 import java.io.IOException;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;

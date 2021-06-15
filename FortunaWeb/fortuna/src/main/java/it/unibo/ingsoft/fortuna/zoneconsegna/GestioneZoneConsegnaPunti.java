@@ -27,11 +27,11 @@ import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaPunti;
 
 @Service
 @Primary
-public class GestioneZoneConsegna extends AbstractService implements IGestioneZoneConsegna, IListaZoneConsegna {
+public class GestioneZoneConsegnaPunti extends AbstractService implements IGestioneZoneConsegnaPunti, IListaZoneConsegna {
 
     private Set<ZonaConsegnaPunti> zone;
 
-    public GestioneZoneConsegna() {
+    public GestioneZoneConsegnaPunti() {
         zone = new HashSet<ZonaConsegnaPunti>();
     }
 
@@ -43,8 +43,15 @@ public class GestioneZoneConsegna extends AbstractService implements IGestioneZo
     @Override
     public ZonaConsegnaPunti aggiungiZonaConsegna(List<Vector> punti, double prezzoMinimo) throws DatabaseException {
         ZonaConsegnaPunti toAdd = new ZonaConsegnaPunti(prezzoMinimo, punti);
-        aggiungiDb(toAdd);
-        zone.add(toAdd);
+
+        if (zone.add(toAdd)) {
+            try {
+                aggiungiDb(toAdd);
+            } catch (DatabaseException e) {
+                zone.remove(toAdd);
+                throw e;
+            }
+        }
 
         return toAdd;
     }
@@ -52,9 +59,15 @@ public class GestioneZoneConsegna extends AbstractService implements IGestioneZo
     @Override
     public boolean rimuoviZonaConsegna(ZonaConsegnaPunti toRemove) throws DatabaseException {
         rimuoviDb(toRemove);
-        zone.remove(toRemove);
 
-        return true;
+        return zone.remove(toRemove);
+    }
+    
+    @Override
+    public boolean rimuoviZonaConsegna(int id) throws DatabaseException {
+        rimuoviDb(id);
+
+        return zone.removeIf(z -> z.getId() == id);
     }
 
     @Override
@@ -62,6 +75,10 @@ public class GestioneZoneConsegna extends AbstractService implements IGestioneZo
         return List.copyOf(zone);
     }
 
+    @Override
+    public List<ZonaConsegnaPunti> list() {
+        return List.copyOf(zone);
+    }
     
     private void load() throws DatabaseException {
         zone.clear();
@@ -130,7 +147,7 @@ public class GestioneZoneConsegna extends AbstractService implements IGestioneZo
 
     private void aggiungiDb(ZonaConsegnaPunti zona) throws DatabaseException {
         try (Connection connection = getConnection()) {
-            String query = "INSERT INTO zona_consegna (prezzo_minimo) VALUES (?, ?)";
+            String query = "INSERT INTO zona_consegna (prezzo_minimo) VALUES (?)";
             try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
                 preparedStmt.setBigDecimal(1, BigDecimal.valueOf(zona.getPrezzoMinimo()));
 
@@ -171,13 +188,17 @@ public class GestioneZoneConsegna extends AbstractService implements IGestioneZo
     }
 
     private void rimuoviDb(ZonaConsegnaPunti zona) throws DatabaseException {
+        rimuoviDb(zona.getId());
+    }
+
+    private void rimuoviDb(int id) throws DatabaseException {
         try (Connection connection = getConnection()) {
-            String query = "DELETE FROM zona_consegna_punti WHERE id = " + zona.getId();
+            String query = "DELETE FROM zona_consegna_punti WHERE id = " + id;
             try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
                 preparedStmt.executeUpdate();
             }
 
-            String query2 = "DELETE FROM zona_consegna WHERE id = " + zona.getId();
+            String query2 = "DELETE FROM zona_consegna WHERE id = " + id;
             try (PreparedStatement preparedStmt = connection.prepareStatement(query2)) {
                 preparedStmt.executeUpdate();
             }

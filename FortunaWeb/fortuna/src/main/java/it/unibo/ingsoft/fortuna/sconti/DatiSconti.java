@@ -25,6 +25,7 @@ public class DatiSconti {
         datiSconto.setStart(sconto.getInizio());
         datiSconto.setEnd(sconto.getFine());
         datiSconto.setPercent(sconto.getQuantitaPct() != null && sconto.getQuantitaPct() > 0);
+        datiSconto.setPrezzoMin(sconto.getCostoMinimo());
 
         datiSconto.setQuantita(datiSconto.isPercent() ? sconto.getQuantitaPct() : sconto.getQuantita());
         if (sconto.getPerProdotti() != null)

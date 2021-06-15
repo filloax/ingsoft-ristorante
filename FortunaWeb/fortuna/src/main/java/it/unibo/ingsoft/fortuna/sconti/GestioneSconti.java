@@ -49,8 +49,13 @@ public class GestioneSconti extends AbstractService implements IGestioneSconti {
         else
             toAdd = Sconto.of(start, end, 0, quantita, 0);
 
-        aggiungiScontoDb(toAdd);
-        sconti.add(toAdd);
+        if (sconti.add(toAdd)) //se non era già presente
+            try {
+                aggiungiScontoDb(toAdd);
+            } catch (DatabaseException e) {
+                sconti.remove(toAdd);
+                throw e;
+            }
 
         return toAdd;
     }
@@ -64,8 +69,13 @@ public class GestioneSconti extends AbstractService implements IGestioneSconti {
         else
             toAdd = Sconto.ofProdotti(start, end, 0, quantita, prezzoMinimo, perProdotto);
 
-        aggiungiScontoDb(toAdd);
-        sconti.add(toAdd);
+        if (sconti.add(toAdd)) //se non era già presente
+            try {
+                aggiungiScontoDb(toAdd);
+            } catch (DatabaseException e) {
+                sconti.remove(toAdd);
+                throw e;
+            }
 
         return toAdd;
     }
@@ -79,8 +89,13 @@ public class GestioneSconti extends AbstractService implements IGestioneSconti {
         else
             toAdd = Sconto.ofProdotti(start, end, 0, quantita, 0, perProdotto);
 
-        aggiungiScontoDb(toAdd);
-        sconti.add(toAdd);
+        if (sconti.add(toAdd)) //se non era già presente
+            try {
+                aggiungiScontoDb(toAdd);
+            } catch (DatabaseException e) {
+                sconti.remove(toAdd);
+                throw e;
+            }
 
         return toAdd;
     }
@@ -94,8 +109,13 @@ public class GestioneSconti extends AbstractService implements IGestioneSconti {
         else
             toAdd = Sconto.of(start, end, 0, quantita, prezzoMinimo);
 
-        aggiungiScontoDb(toAdd);
-        sconti.add(toAdd);
+        if (sconti.add(toAdd)) //se non era già presente
+            try {
+                aggiungiScontoDb(toAdd);
+            } catch (DatabaseException e) {
+                sconti.remove(toAdd);
+                throw e;
+            }
 
         return toAdd;
     }
@@ -103,17 +123,15 @@ public class GestioneSconti extends AbstractService implements IGestioneSconti {
     @Override
     public boolean rimuoviSconto(Sconto toRemove) throws DatabaseException {
         rimuoviScontoDB(toRemove);
-        sconti.remove(toRemove);
 
-        return true;
+        return sconti.remove(toRemove);
     }
 
     @Override
     public boolean rimuoviSconto(int id) throws DatabaseException {
         rimuoviScontoDB(id);
-        sconti.removeIf(sconto -> sconto.getId() == id);
 
-        return true;
+        return sconti.removeIf(sconto -> sconto.getId() == id);
     }
 
     @Override
@@ -264,8 +282,17 @@ public class GestioneSconti extends AbstractService implements IGestioneSconti {
 
     private void rimuoviScontoDB(int id) throws DatabaseException {
         try (Connection connection = getConnection()) {
-            String queryProdotti = "DELETE FROM prodotti_sconti WHERE id_sconto = " + id;
-            try (PreparedStatement preparedStmt = connection.prepareStatement(queryProdotti)) {
+            // Non richiesto: on delete cascade
+            // String queryProdotti = "DELETE FROM prodotti_sconti WHERE id_sconto = " + id;
+            // try (PreparedStatement preparedStmt = connection.prepareStatement(queryProdotti)) {
+            //     preparedStmt.executeUpdate();
+            // }
+
+            // TODO: fare in modo che rimangano gli sconti nei prodotti (flag dentro tabella sconti?)
+            // se presenti dentro a prodotto, e in quel caso rimuoverli appena tutti i prodotti a cui
+            // fanno riferimento vengono rimossi
+            String queryOrdini = "DELETE FROM sconti_applicati WHERE id_sconto = " + id;
+            try (PreparedStatement preparedStmt = connection.prepareStatement(queryOrdini)) {
                 preparedStmt.executeUpdate();
             }
 

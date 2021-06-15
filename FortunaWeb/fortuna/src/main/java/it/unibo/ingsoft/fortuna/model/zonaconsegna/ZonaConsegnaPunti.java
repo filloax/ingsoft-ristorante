@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
@@ -21,10 +22,10 @@ import lombok.ToString;
 
 @Data
 public class ZonaConsegnaPunti implements IZonaConsegna {
-    @ToString.Exclude private GeoApiContext geoApiContext;
-    @ToString.Exclude private ConfigProps cfg;
+    @ToString.Exclude @JsonIgnore private GeoApiContext geoApiContext;
+    @ToString.Exclude @JsonIgnore private ConfigProps cfg;
 
-    @ToString.Exclude private ILogManager log;
+    @ToString.Exclude @JsonIgnore private ILogManager log;
 
     private double prezzoMinimo;
     private List<Vector> punti;

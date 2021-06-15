@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna.prodotti;
+package it.unibo.ingsoft.fortuna.zoneconsegna;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,40 +19,39 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.unibo.ingsoft.fortuna.AbstractController;
 import it.unibo.ingsoft.fortuna.DatabaseException;
-import it.unibo.ingsoft.fortuna.model.Prodotto;
+import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaPunti;
 
 @RestController
-@RequestMapping("/gest-prodotti")
-public class GestioneProdottiController extends AbstractController {
+@RequestMapping("/gest-zone")
+public class GestioneZoneConsegnaController extends AbstractController {
     @Autowired
-    private IGestioneProdotti service;
+    private IGestioneZoneConsegnaPunti service;
 
     @GetMapping
-    public List<Prodotto> list() {
-        return service.listaProdotti();
+    public List<ZonaConsegnaPunti> list() {
+        return service.list();
     }
 
     @GetMapping(value = "{id}")
-    public ResponseEntity<Prodotto> get(@PathVariable Integer id) {
-        Optional<Prodotto> prodottoTrovato = service.listaProdotti().stream()
-            .filter(pr -> pr.getNumero() == id)
+    public ResponseEntity<ZonaConsegnaPunti> get(@PathVariable Integer id) {
+        Optional<ZonaConsegnaPunti> found = service.list().stream()
+            .filter(z -> z.getId() == id)
             .findFirst();
 
-        if (prodottoTrovato.isPresent()) {
-            return new ResponseEntity<Prodotto>(prodottoTrovato.get(), HttpStatus.OK);
+        if (found.isPresent()) {
+            return new ResponseEntity<ZonaConsegnaPunti>(found.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<Prodotto>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<ZonaConsegnaPunti>(HttpStatus.NOT_FOUND);
         }
     }
 
 
     @PutMapping
-    public ResponseEntity<?> aggiungiProdotto(HttpServletRequest request, @RequestBody Prodotto prodotto) {
-        scriviOperazione(request.getRemoteAddr(), String.format("aggiungiProdotto(prodotto: %s)", prodotto.toString()));
+    public ResponseEntity<?> aggiungiZonaConsegna(HttpServletRequest request, @RequestBody ZonaConsegnaPunti zonaConsegna) {
+        scriviOperazione(request.getRemoteAddr(), String.format("aggiungiZonaConsegna(zonaConsegna: %s)", zonaConsegna.toString()));
 
         try {
-            // Di fatto viene ricreato il prodotto, per come era fatta l'interfaccia; non è un grande sacrificio di memoria
-            service.aggiungiProdotto(prodotto.getNome(), prodotto.getNumero(), prodotto.getPrezzo(), prodotto.getDesc(), prodotto.getImg());
+            service.aggiungiZonaConsegna(zonaConsegna.getPunti(), zonaConsegna.getPrezzoMinimo());
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (DatabaseException e) {
@@ -64,10 +63,10 @@ public class GestioneProdottiController extends AbstractController {
 
     @DeleteMapping(value = "{id}")
     public ResponseEntity<?> delete(HttpServletRequest request, @PathVariable int id) {
-        scriviOperazione(request.getRemoteAddr(), String.format("deleteProdotto(numero: %d)", id));
+        scriviOperazione(request.getRemoteAddr(), String.format("deleteZonaConsegna(id: %d)", id));
 
         try {
-            service.rimuoviProdotto(id);
+            service.rimuoviZonaConsegna(id);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (NoSuchElementException e) {
