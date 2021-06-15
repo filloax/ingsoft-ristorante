@@ -7,7 +7,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import it.unibo.ingsoft.fortuna.gestionePrenotazione.DisabilitaPrenotazioniRepository;
 import it.unibo.ingsoft.fortuna.model.attivazione.InsiemePeriodiDisattivazione;
 import it.unibo.ingsoft.fortuna.model.attivazione.PeriodoDisattivazione;
 
@@ -16,7 +15,7 @@ import it.unibo.ingsoft.fortuna.model.attivazione.PeriodoDisattivazione;
 public class PeriodiController {
 
     @Autowired
-    private DisabilitaPrenotazioniRepository repo;
+    private PeriodoDisattivazioneRepository repo;
 
     private InsiemePeriodiDisattivazione periodi;
 
