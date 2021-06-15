@@ -48,6 +48,15 @@ public class StageController {
     }
 
 
+    public void switchToGestioneZoneConsegna(ActionEvent event) throws IOException{
+        switchToResource(event, "/GestioneZoneConsegna.fxml");
+    }
+
+    public void switchToAggiuntaZoneConsegna(ActionEvent event) throws IOException {
+        switchToResource(event, "/AggiuntaZonaConsegna.fxml");
+    }
+
+
     private void switchToResource(ActionEvent event, String path) throws IOException {
         // il path relativo di default per getResource a quanto pare è  src/resources
         // quindi mettendo /nomefile.fxml mi va a cercare il file nella cartella resources
