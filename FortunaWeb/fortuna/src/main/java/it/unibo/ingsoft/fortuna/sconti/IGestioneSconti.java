@@ -21,6 +21,7 @@ public interface IGestioneSconti {
                         throws DatabaseException;
 
         public boolean rimuoviSconto(Sconto sconto) throws DatabaseException;
+        public boolean rimuoviSconto(int id) throws DatabaseException;
 
         public List<Sconto> listaSconti(LocalDateTime tempo);
 

@@ -7,6 +7,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import it.unibo.ingsoft.fortuna.DatabaseException;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 
 @Component
@@ -32,6 +33,11 @@ public class GestioneProdottiMock implements IGestioneProdotti {
         listaProdotti.add(new Prodotto("Riso", 150, 4));
 
         return listaProdotti;
+    }
+
+    @Override
+    public boolean rimuoviProdotto(int numero) throws DatabaseException {
+        return false;
     }
     
 }

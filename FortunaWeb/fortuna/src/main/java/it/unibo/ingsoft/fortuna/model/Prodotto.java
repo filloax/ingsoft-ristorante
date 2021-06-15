@@ -8,10 +8,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -21,6 +26,7 @@ import lombok.Data;
 public class Prodotto {
     @Id
     @Column(name = "numero")
+    @Getter
     private Integer numero;
     @Column(name = "nome")
     private String nome;
@@ -32,9 +38,11 @@ public class Prodotto {
     private String img;
 
     @OneToMany(mappedBy = "prodotto")
+    @ToString.Exclude @JsonIgnore
     private List<ProdottoOrdine> prodottoOrdines;
 
     @Transient
+    @ToString.Exclude @JsonIgnore
     private List<Ordine> ordini;
 
     public Prodotto() {
@@ -81,9 +89,4 @@ public class Prodotto {
         setImg(img);
         return this;
     }
-
-    public Integer getNumero() {
-        return this.numero;
-    }
-
 }

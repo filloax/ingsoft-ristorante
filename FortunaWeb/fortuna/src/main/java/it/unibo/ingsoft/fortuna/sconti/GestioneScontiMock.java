@@ -8,6 +8,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import it.unibo.ingsoft.fortuna.DatabaseException;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 import it.unibo.ingsoft.fortuna.model.Sconto;
 
@@ -76,7 +77,11 @@ public class GestioneScontiMock implements IGestioneSconti {
 
     @Override
     public List<Sconto> listaSconti(LocalDateTime inizioPeriodo, LocalDateTime finePeriodo) {
-        // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public boolean rimuoviSconto(int id) throws DatabaseException {
+        return false;
     }
 }

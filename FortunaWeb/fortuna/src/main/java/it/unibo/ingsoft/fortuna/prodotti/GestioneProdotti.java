@@ -49,6 +49,14 @@ public class GestioneProdotti extends AbstractService implements IGestioneProdot
     }
 
     @Override
+    public boolean rimuoviProdotto(int numero) throws DatabaseException {
+        rimuoviProdottoDB(numero);
+        menu.removeIf(prod -> prod.getNumero() == numero);
+        
+        return true;
+    }
+
+    @Override
     public List<Prodotto> listaProdotti() {
         return menu;
     }
@@ -102,7 +110,11 @@ public class GestioneProdotti extends AbstractService implements IGestioneProdot
     }
 
     private void rimuoviProdottoDB(Prodotto prodotto) throws DatabaseException {
-        String query = "DELETE FROM prodotti WHERE id = " + prodotto.getNumero();
+        rimuoviProdotto(prodotto.getNumero());
+    }
+
+    private void rimuoviProdottoDB(int numero) throws DatabaseException {
+        String query = "DELETE FROM prodotti WHERE numero = " + numero;
         try (Connection connection = getConnection(); PreparedStatement preparedStmt = connection.prepareStatement(query)) {
             preparedStmt.executeUpdate();
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

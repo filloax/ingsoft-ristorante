@@ -109,6 +109,14 @@ public class GestioneSconti extends AbstractService implements IGestioneSconti {
     }
 
     @Override
+    public boolean rimuoviSconto(int id) throws DatabaseException {
+        rimuoviScontoDB(id);
+        sconti.removeIf(sconto -> sconto.getId() == id);
+
+        return true;
+    }
+
+    @Override
     public List<Sconto> listaSconti(LocalDateTime inizio, LocalDateTime fine) {
         return sconti.stream().filter(sconto -> sconto.overlapsTempo(inizio, fine)).collect(Collectors.toList());
     }
@@ -159,7 +167,7 @@ public class GestioneSconti extends AbstractService implements IGestioneSconti {
                     sconto.setQuantita(resultSet.getBigDecimal("quantita").doubleValue());
                 }
                 if (resultSet.getBigDecimal("quantita_pct") != null) {
-                    sconto.setQuantita(resultSet.getBigDecimal("quantita_pct").doubleValue());
+                    sconto.setQuantitaPct(resultSet.getBigDecimal("quantita_pct").doubleValue());
                 }
                 if (resultSet.getBigDecimal("costo_minimo") != null) {
                     sconto.setCostoMinimo(resultSet.getBigDecimal("costo_minimo").doubleValue());
@@ -204,7 +212,7 @@ public class GestioneSconti extends AbstractService implements IGestioneSconti {
 
     private void aggiungiScontoDb(Sconto sconto) throws DatabaseException {
         try (Connection connection = getConnection()) {
-            String query = "INSERT INTO sconti (inizio, fine, quantita, quantitaPct, costoMinimo) VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO sconti (inizio, fine, quantita, quantita_pct, costo_minimo) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
                 preparedStmt.setTimestamp(1, Timestamp.valueOf(sconto.getInizio()));
                 preparedStmt.setTimestamp(2, Timestamp.valueOf(sconto.getFine()));
@@ -251,15 +259,17 @@ public class GestioneSconti extends AbstractService implements IGestioneSconti {
     }
 
     private void rimuoviScontoDB(Sconto sconto) throws DatabaseException {
+        rimuoviSconto(sconto.getId());
+    }
+
+    private void rimuoviScontoDB(int id) throws DatabaseException {
         try (Connection connection = getConnection()) {
-            if (sconto.getPerProdotti() != null && !sconto.getPerProdotti().isEmpty()) {
-                String queryProdotti = "DELETE FROM prodotti_sconti WHERE id_sconto = " + sconto.getId();
-                try (PreparedStatement preparedStmt = connection.prepareStatement(queryProdotti)) {
-                    preparedStmt.executeUpdate();
-                }
+            String queryProdotti = "DELETE FROM prodotti_sconti WHERE id_sconto = " + id;
+            try (PreparedStatement preparedStmt = connection.prepareStatement(queryProdotti)) {
+                preparedStmt.executeUpdate();
             }
 
-            String query = "DELETE FROM sconti WHERE id = " + sconto.getId();
+            String query = "DELETE FROM sconti WHERE id = " + id;
             try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
                 preparedStmt.executeUpdate();
             }
