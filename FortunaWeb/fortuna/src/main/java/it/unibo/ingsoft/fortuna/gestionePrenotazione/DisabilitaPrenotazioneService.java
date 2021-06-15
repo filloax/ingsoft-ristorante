@@ -41,10 +41,10 @@ public class DisabilitaPrenotazioneService extends AbstractService implements ID
         PeriodoDisattivazione periodo = new PeriodoDisattivazione().inizio(inizio).fine(fine);
         periodo.setTipo(TipoDisattivazione.PRENOTAZIONE);
 
-        periodiController.getPeriodi().add(periodo);
+        periodiController.add(periodo);
     }
 
     public void riabilitaPrenotazioni(Integer id) {
-        periodiController.getPeriodi().removeById(id);
+        periodiController.remove(id);
     }
 }
