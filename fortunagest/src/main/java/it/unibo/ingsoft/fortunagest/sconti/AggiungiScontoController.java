@@ -42,8 +42,7 @@ public class AggiungiScontoController extends StageController {
         // force the field to be numeric only
         numeroProdotto.textProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, 
-                String newValue) {
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (!newValue.matches("\\d*")) {
                     numeroProdotto.setText(newValue.replaceAll("[^\\d]", ""));
                 }
@@ -55,8 +54,7 @@ public class AggiungiScontoController extends StageController {
 
         Function<TextField, ChangeListener<String>> timeListener = (campo) -> new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, 
-                String newValue) {
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (!newValue.matches("\\d*:\\d*")) {
                     String[] parts = newValue.split(":");
                     for (int i = 0; i < parts.length; i++) {
@@ -81,13 +79,13 @@ public class AggiungiScontoController extends StageController {
 
     private boolean checkData() {
         return startTime.getText().matches("\\d\\d:\\d\\d") && endTime.getText().matches("\\d\\d:\\d\\d")
-            && endDate.getValue() != null && startDate.getValue() != null
-            && endDate.getValue().isAfter(startDate.getValue())
-            && !quantita.getText().isBlank();
+                && endDate.getValue() != null && startDate.getValue() != null
+                && endDate.getValue().isAfter(startDate.getValue()) && !quantita.getText().isBlank();
     }
 
     public void aggiungiSconto(ActionEvent event) throws IOException {
-        if (!checkData()) return;
+        if (!checkData())
+            return;
 
         LocalTime startTimeValue = LocalTime.parse(startTime.getText(), DateTimeFormatter.ISO_TIME);
         LocalTime endTimeValue = LocalTime.parse(endTime.getText(), DateTimeFormatter.ISO_TIME);
@@ -104,7 +102,7 @@ public class AggiungiScontoController extends StageController {
 
         RestTemplate template = new RestTemplate();
         String url = "http://localhost:8080/gest-sconti/";
-        
+
         template.put(url, datiSconto);
 
         switchToGestioneSconti(event);

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class PeriodoDisabilitazioneDati {
@@ -50,6 +51,9 @@ public class PeriodoDisabilitazioneDati {
         // configure objectMapper for pretty input
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         mapper.registerModule(new JavaTimeModule());
+        // Jackson così stampa in ISO
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        // StdDateFormat is ISO8601 since jackson 2.9
 
         try {
             return mapper.writeValueAsString(this);

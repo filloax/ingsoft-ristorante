@@ -66,6 +66,7 @@ public class PrenotazioneDati {
 
 
         } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -74,6 +75,7 @@ public class PrenotazioneDati {
 
     @Override
     public String toString() {
+        // TODO Auto-generated method stub
         return this.toJSON();
     }
 

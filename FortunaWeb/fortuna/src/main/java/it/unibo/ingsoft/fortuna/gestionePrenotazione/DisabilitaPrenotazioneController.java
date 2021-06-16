@@ -32,10 +32,10 @@ public class DisabilitaPrenotazioneController extends AbstractController {
     }
 
     @PostMapping
-    public void add(HttpServletRequest request, @RequestBody LocalDateTime inizio, @RequestBody LocalDateTime fine) {
+    public void add(HttpServletRequest request, @RequestBody PeriodoDisattivazione periodo) {
         scriviOperazione(request.getRemoteAddr(),
-                String.format("addPeriodoDisattivazionePrenotazioni(da: %s, a: %s)", inizio, fine));
-        service.disabilitaPrenotazioni(inizio, fine);
+                String.format("addPeriodoDisattivazionePrenotazioni(da: %s, a: %s)", periodo.getInizio(), periodo.getFine()));
+        service.disabilitaPrenotazioni(periodo.getInizio(), periodo.getFine());
     }
 
     @PostMapping(value = "test")

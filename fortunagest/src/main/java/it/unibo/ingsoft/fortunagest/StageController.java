@@ -18,6 +18,10 @@ public class StageController {
     public void switchToHomeTitolare(ActionEvent event) throws IOException{
         switchToResource(event, "/HomeTitolare.fxml");
     }
+
+    public void switchToAbilitaPrenotazioni(ActionEvent event) throws IOException{
+        switchToResource(event, "/AbilitaPrenotazioni.fxml");
+    }
    
 
     public void switchToGestionePrenotazioni(ActionEvent event) throws IOException{
