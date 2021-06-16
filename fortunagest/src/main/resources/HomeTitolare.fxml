@@ -88,7 +88,7 @@
         <Button layoutX="250.0" layoutY="70.0" mnemonicParsing="false" text="Gestione Ordini" />
         <Button layoutX="420.0" layoutY="70.0" mnemonicParsing="false" onAction="#switchToGestioneSconti" text="Gestione Sconti" />
         <Button layoutX="50.0" layoutY="160.0" mnemonicParsing="false" onAction="#switchToGestioneProdotti" text="Gestione Prodotti" />
-        <Button layoutX="250.0" layoutY="160.0" mnemonicParsing="false" text="Gestione Zone di consegna" />
+        <Button layoutX="250.0" layoutY="160.0" mnemonicParsing="false" onAction="#switchToGestioneZoneConsegna" text="Gestione Zone di consegna" />
         <Button layoutX="420.0" layoutY="160.0" mnemonicParsing="false" text="Scarica log" />
         <Button layoutX="420.0" layoutY="250.0" mnemonicParsing="false" text="Logout" />
       </children>

@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import org.springframework.web.client.RestTemplate;
 
+import it.unibo.ingsoft.fortunagest.DoubleTextListener;
 import it.unibo.ingsoft.fortunagest.StageController;
 import it.unibo.ingsoft.fortunagest.model.DatiSconto;
 import javafx.beans.value.ChangeListener;
@@ -49,30 +50,8 @@ public class AggiungiScontoController extends StageController {
             }
         });
 
-        Function<TextField, ChangeListener<String>> doubleListener = (campo) -> new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, 
-                String newValue) {
-                if (!newValue.matches("\\d*\\.\\d*")) {
-                    String[] parts = newValue.split("\\.");
-                    for (int i = 0; i < parts.length; i++) {
-                        parts[i] = parts[i].replaceAll("[^\\d]", "");
-                    }
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(parts[0]);
-                    if (parts.length > 1) {
-                        sb.append(".");
-                        for (int i = 1; i < parts.length; i++) {
-                            sb.append(parts[i]);
-                        }
-                    }
-                    campo.setText(sb.toString());
-                }
-            }
-        };
-
-        quantita.textProperty().addListener(doubleListener.apply(quantita));
-        spesaMinima.textProperty().addListener(doubleListener.apply(spesaMinima));
+        quantita.textProperty().addListener(new DoubleTextListener(quantita));
+        spesaMinima.textProperty().addListener(new DoubleTextListener(spesaMinima));
 
         Function<TextField, ChangeListener<String>> timeListener = (campo) -> new ChangeListener<String>() {
             @Override

@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import org.springframework.web.client.RestTemplate;
 
+import it.unibo.ingsoft.fortunagest.DoubleTextListener;
 import it.unibo.ingsoft.fortunagest.StageController;
 import it.unibo.ingsoft.fortunagest.model.DatiProdotto;
 import it.unibo.ingsoft.fortunagest.model.DatiSconto;
@@ -37,33 +38,12 @@ public class AggiungiProdottoController extends StageController {
             }
         });
 
-        Function<TextField, ChangeListener<String>> doubleListener = (campo) -> new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, 
-                String newValue) {
-                if (!newValue.matches("\\d*\\.\\d*")) {
-                    String[] parts = newValue.split("\\.");
-                    for (int i = 0; i < parts.length; i++) {
-                        parts[i] = parts[i].replaceAll("[^\\d]", "");
-                    }
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(parts[0]);
-                    if (parts.length > 1) {
-                        sb.append(".");
-                        for (int i = 1; i < parts.length; i++) {
-                            sb.append(parts[i]);
-                        }
-                    }
-                    campo.setText(sb.toString());
-                }
-            }
-        };
-
-        prezzo.textProperty().addListener(doubleListener.apply(prezzo));
+        prezzo.textProperty().addListener(new DoubleTextListener(prezzo));
     }
 
     private boolean checkData() {
-        return !numero.getText().isBlank() && !nome.getText().isBlank() && !prezzo.getText().isBlank();
+        return !numero.getText().isBlank() && !nome.getText().isBlank() && !prezzo.getText().isBlank() 
+            && Double.parseDouble(prezzo.getText()) >= 0;
     }
 
     public void aggiungiProdotto(ActionEvent event) throws IOException {

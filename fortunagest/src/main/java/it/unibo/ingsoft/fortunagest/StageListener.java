@@ -8,6 +8,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 
 @Component
 public class StageListener implements ApplicationListener<StageReadyEvent> {
@@ -26,7 +28,10 @@ public class StageListener implements ApplicationListener<StageReadyEvent> {
             Stage window = event.getStage();
             window.setTitle(this.applicationTitle);
             Parent root = FXMLLoader.load(getClass().getResource("/HomeTitolare.fxml"));
+
             Scene scene1 = new Scene(root);
+            Styler.style(scene1);
+
             window.setScene(scene1);
             window.show();
 

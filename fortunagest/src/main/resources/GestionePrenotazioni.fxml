@@ -49,7 +49,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.GestionePrenotazioniController">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.GestionePrenotazioniController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -102,9 +102,10 @@
                 <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
               </textFill>
             </Label>
-                  <Button layoutX="32.0" layoutY="110.0" mnemonicParsing="false" text="Ricezione Prenotazioni"  onAction="#switchToRicezionePrenotazioni"/>
-                  <Button layoutX="22.0" layoutY="218.0" mnemonicParsing="false" text="Abilitazione Prenotazioni" />
-                  <Button layoutX="18.0" layoutY="377.0" mnemonicParsing="false" text="Cancellazione Prenotazioni"  onAction="#switchToCancellazionePrenotazioni" />
+                  <Button layoutX="35.0" layoutY="91.0" mnemonicParsing="false" onAction="#switchToRicezionePrenotazioni" text="Ricezione Prenotazioni" />
+                  <Button layoutX="29.0" layoutY="197.0" mnemonicParsing="false" text="Abilitazione Prenotazioni" />
+                  <Button layoutX="24.0" layoutY="145.0" mnemonicParsing="false" onAction="#switchToCancellazionePrenotazioni" text="Cancellazione Prenotazioni" />
+                  <Button layoutX="62.0" layoutY="315.0" mnemonicParsing="false" onAction="#switchToHomeTitolare" text="Indietro" />
           </children>
         </AnchorPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">

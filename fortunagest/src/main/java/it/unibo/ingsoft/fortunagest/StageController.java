@@ -7,6 +7,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 
 public class StageController {
     private Stage stage;
@@ -48,13 +50,22 @@ public class StageController {
     }
 
 
+    public void switchToGestioneZoneConsegna(ActionEvent event) throws IOException{
+        switchToResource(event, "/GestioneZoneConsegna.fxml");
+    }
+
+    public void switchToAggiuntaZoneConsegna(ActionEvent event) throws IOException {
+        switchToResource(event, "/AggiuntaZonaConsegna.fxml");
+    }
+
+
     private void switchToResource(ActionEvent event, String path) throws IOException {
         // il path relativo di default per getResource a quanto pare è  src/resources
         // quindi mettendo /nomefile.fxml mi va a cercare il file nella cartella resources
         root = FXMLLoader.load(getClass().getResource(path));
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
-        
+        Styler.style(scene);
         
         stage.setScene(scene);
         stage.show();
