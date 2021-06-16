@@ -38,7 +38,7 @@ public class AutenticazioneLocale extends AbstractService implements IAutenticaz
     private String savedEncodedCredString = null;
     
     @PostConstruct
-    private void init() {
+    public void init() {
         try {
             leggiFileCredenziali();
         } catch (IOException e) {
@@ -74,6 +74,7 @@ public class AutenticazioneLocale extends AbstractService implements IAutenticaz
         if (autentica(username, password)) {
             try {
                 salvaCredenzialiCifrate(newUsername, password);
+                scriviMessaggio("Username modificato: " + newUsername);
             } catch (IOException e) {
                 throw new AutenticazioneException("Impossibile salvare le credenziali modificate: " + e.getMessage(), e);
             }
@@ -85,6 +86,7 @@ public class AutenticazioneLocale extends AbstractService implements IAutenticaz
         if (autentica(username, password)) {
             try {
                 salvaCredenzialiCifrate(username, newPassword);
+                scriviMessaggio("Passwrd modificata!");
             } catch (IOException e) {
                 throw new AutenticazioneException("Impossibile salvare le credenziali modificate: " + e.getMessage(), e);
             }
@@ -92,11 +94,11 @@ public class AutenticazioneLocale extends AbstractService implements IAutenticaz
     }
 
     private void leggiFileCredenziali() throws IOException {
-        FileSystemResource configDir = new FileSystemResource("config");
-        Resource passFile = configDir.createRelative(PASS_FILE);
+        FileSystemResource passFile = new FileSystemResource("config/" + PASS_FILE);
 
         try (BufferedReader rd = new BufferedReader(new FileReader(passFile.getFile()))) {
             savedEncodedCredString = rd.readLine();
+            scriviMessaggio("Password caricata con successo!");
         } catch (FileNotFoundException e) { // FILE CREDENZIALI NON TROVATO, DEFAULT
             savedEncodedCredString = passEncoder.encode("fortunAdmin,");
         }
@@ -104,8 +106,7 @@ public class AutenticazioneLocale extends AbstractService implements IAutenticaz
     
     private void salvaCredenzialiCifrate(String username, String password) throws IOException {
         String credString = username + "," + password;
-        FileSystemResource configDir = new FileSystemResource("config");
-        Resource passFile = configDir.createRelative(PASS_FILE);
+        FileSystemResource passFile = new FileSystemResource("config/" + PASS_FILE);
 
         try(PrintWriter wr = new PrintWriter(new FileWriter(passFile.getFile()))) {
             String newEncodedCredString = passEncoder.encode(credString);
