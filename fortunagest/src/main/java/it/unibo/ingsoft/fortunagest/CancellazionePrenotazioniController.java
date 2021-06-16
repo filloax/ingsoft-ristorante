@@ -12,7 +12,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-public class GestioneCancellazioneController extends StageController {
+public class CancellazionePrenotazioniController extends StageController {
 
     @FXML
     private TableView<PrenotazioneDati> tableview;

@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.annotations.GenericGenerators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,15 @@ public class OrdineGestController extends AbstractController {
     @GetMapping
     public List<Ordine> list() {
         return service.listAll();
+    }
+
+    @GetMapping(value = "attesa")
+    public List<Ordine> listInAttesa() {
+        return service.listInAttesa();
+    }
+    @GetMapping(value = "accettati")
+    public List<Ordine> listAccettati() {
+        return service.listAccettati();
     }
 
     @GetMapping(value = "{id}")

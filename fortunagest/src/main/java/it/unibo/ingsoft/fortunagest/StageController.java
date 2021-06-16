@@ -22,17 +22,31 @@ public class StageController {
     public void switchToAbilitaPrenotazioni(ActionEvent event) throws IOException{
         switchToResource(event, "/AbilitaPrenotazioni.fxml");
     }
+
+    public void switchToAbilitaOrdini(ActionEvent event) throws IOException{
+        switchToResource(event, "/AbilitaOrdini.fxml");
+    }
    
 
     public void switchToGestionePrenotazioni(ActionEvent event) throws IOException{
         switchToResource(event, "/GestionePrenotazioni.fxml");
     }
+    public void switchToGestioneOrdini(ActionEvent event) throws IOException{
+        switchToResource(event, "/GestioneOrdini.fxml");
+    }
 
     public void switchToRicezionePrenotazioni(ActionEvent event) throws IOException{
         switchToResource(event, "/RicezionePrenotazioni.fxml");
     }
+
+    public void switchToRicezioneOrdini(ActionEvent event) throws IOException{
+        switchToResource(event, "/RicezioneOrdini.fxml");
+    }
     public void switchToCancellazionePrenotazioni(ActionEvent event) throws IOException{
         switchToResource(event, "/CancellazionePrenotazioni.fxml");
+    }
+    public void switchToCancellazioneOrdini(ActionEvent event) throws IOException{
+        switchToResource(event, "/CancellazioneOrdini.fxml");
     }
 
 

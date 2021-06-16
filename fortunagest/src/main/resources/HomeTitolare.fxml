@@ -85,7 +85,7 @@
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
         <Button layoutX="50.0" layoutY="70.0" mnemonicParsing="false" onAction="#switchToGestionePrenotazioni" text="Gestione Prenotazioni" />
-        <Button layoutX="250.0" layoutY="70.0" mnemonicParsing="false" text="Gestione Ordini" />
+        <Button layoutX="250.0" layoutY="70.0" mnemonicParsing="false" text="Gestione Ordini" onAction="#switchToGestioneOrdini" />
         <Button layoutX="420.0" layoutY="70.0" mnemonicParsing="false" onAction="#switchToGestioneSconti" text="Gestione Sconti" />
         <Button layoutX="50.0" layoutY="160.0" mnemonicParsing="false" onAction="#switchToGestioneProdotti" text="Gestione Prodotti" />
         <Button layoutX="250.0" layoutY="160.0" mnemonicParsing="false" onAction="#switchToGestioneZoneConsegna" text="Gestione Zone di consegna" />

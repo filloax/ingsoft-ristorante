@@ -96,14 +96,14 @@ public class OrdineGestService {
         if (rowsUpdated == 1) {
             Ordine ordine = get(id);
             if (ordine instanceof OrdineDomicilio) {
-                String msgTemplate = ResourceUtilsLib.loadResourceToString("/sms/prenot-accettata.txt");
+                String msgTemplate = ResourceUtilsLib.loadResourceToString("/sms/ordine-accettato.txt");
                 sms.inviaSMS(((OrdineDomicilio) ordine).getTelefono(),
                         String.format(msgTemplate,
                                 ordine.getDataOra().format(
                                         DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)),
                                 id));
             } else if (ordine instanceof OrdineTakeAway) {
-                String msgTemplate = ResourceUtilsLib.loadResourceToString("/sms/prenot-accettata.txt");
+                String msgTemplate = ResourceUtilsLib.loadResourceToString("/sms/ordine-accettato.txt");
                 sms.inviaSMS(((OrdineTakeAway) ordine).getTelefono(),
                         String.format(msgTemplate,
                                 ordine.getDataOra().format(
@@ -125,10 +125,15 @@ public class OrdineGestService {
         // repo.deleteOrdine(id); TODO da sostituire
         repo.deleteById(id);
 
-        if (!(ordine instanceof OrdineAlTavolo)) {
-            String msgTemplate = ResourceUtilsLib.loadResourceToString("sms/prenot-accettata.txt");
+        if (ordine instanceof OrdineDomicilio) {
+            String msgTemplate = ResourceUtilsLib.loadResourceToString("/sms/ordine-cancellato.txt");
             sms.inviaSMS(((OrdineDomicilio) ordine).getTelefono(), String.format(msgTemplate, ordine.getDataOra()
                     .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), id));
+        } else if (ordine instanceof OrdineTakeAway) {
+            String msgTemplate = ResourceUtilsLib.loadResourceToString("/sms/ordine-cancellato.txt");
+            sms.inviaSMS(((OrdineTakeAway) ordine).getTelefono(), String.format(msgTemplate, ordine.getDataOra()
+                    .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), id));
+
         }
     }
 

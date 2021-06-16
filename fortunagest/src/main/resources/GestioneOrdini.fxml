@@ -49,7 +49,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.GestioneOrdiniController">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.GestioneOrdiniController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -102,18 +102,19 @@
                 <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
               </textFill>
             </Label>
-                  <Button layoutX="32.0" layoutY="110.0" mnemonicParsing="false" text="Ricezione Prenotazioni" />
-                  <Button layoutX="22.0" layoutY="218.0" mnemonicParsing="false" text="Abilitazione Prenotazioni" />
-                  <Button layoutX="18.0" layoutY="377.0" mnemonicParsing="false" text="Cancellazione Prenotazioni" />
+                  <Button layoutX="35.0" layoutY="91.0" mnemonicParsing="false" onAction="#switchToRicezioneOrdini" text="Ricezione Ordini" />
+                  <Button layoutX="29.0" layoutY="197.0" mnemonicParsing="false" onAction="#switchToAbilitaOrdini" text="Abilitazione Ordini" />
+                  <Button layoutX="24.0" layoutY="145.0" mnemonicParsing="false" onAction="#switchToCancellazioneOrdini" text="Cancellazione Ordini" />
+                  <Button layoutX="62.0" layoutY="315.0" mnemonicParsing="false" onAction="#switchToHomeTitolare" text="Indietro" />
           </children>
         </AnchorPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
           <content>
             <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
               <children>
-                <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Prenotazioni in attesa" textAlignment="CENTER" textFill="$x2" wrapText="false" />
-                        <ListView fx:id="prenotazioniInAttesaList" layoutX="12.0" layoutY="44.0" prefHeight="215.0" prefWidth="407.0" />
-                        <Label alignment="CENTER" layoutX="14.0" layoutY="273.0" style="&#10;" text="Prenotazioni accettate" textAlignment="CENTER" wrapText="false">
+                <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Ordini in attesa" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                        <ListView fx:id="ordiniInAttesaList" layoutX="12.0" layoutY="44.0" prefHeight="215.0" prefWidth="407.0" />
+                        <Label alignment="CENTER" layoutX="14.0" layoutY="273.0" style="&#10;" text="Ordini accettati" textAlignment="CENTER" wrapText="false">
                            <font>
                               <Font size="18.0" fx:id="x11" />
                            </font>
@@ -121,7 +122,7 @@
                               <Color red="0.624" green="0.624" blue="0.624" fx:id="x21" />
                            </textFill>
                         </Label>
-                        <ListView fx:id="prenotazioniAccettateList" layoutX="12.0" layoutY="304.0" prefHeight="215.0" prefWidth="407.0" />
+                        <ListView fx:id="ordiniAccettatiList" layoutX="12.0" layoutY="304.0" prefHeight="215.0" prefWidth="407.0" />
               </children>
             </AnchorPane>
           </content>
@@ -129,6 +130,7 @@
         <AnchorPane>
           <children>
             <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Disabilitazioni" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                  <ListView fx:id="disabilitazioniOrdiniList" layoutX="11.0" layoutY="66.0" prefHeight="418.0" prefWidth="204.0" />
           </children>
         </AnchorPane>
       </items>
