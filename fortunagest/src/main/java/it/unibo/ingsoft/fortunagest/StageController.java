@@ -7,6 +7,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 
 public class StageController {
     private Stage stage;
@@ -63,7 +65,7 @@ public class StageController {
         root = FXMLLoader.load(getClass().getResource(path));
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
-        
+        Styler.style(scene);
         
         stage.setScene(scene);
         stage.show();
