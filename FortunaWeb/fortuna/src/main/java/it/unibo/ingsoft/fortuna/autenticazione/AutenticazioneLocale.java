@@ -49,6 +49,7 @@ public class AutenticazioneLocale extends AbstractService implements IAutenticaz
 
     @Override
     public boolean autentica(String username, String password) throws AutenticazioneException {
+        scriviMessaggio("Tentativo di accesso con username: " + username);
         if (savedEncodedCredString == null) {
             try {
                 leggiFileCredenziali();
@@ -59,7 +60,13 @@ public class AutenticazioneLocale extends AbstractService implements IAutenticaz
 
         String credString = username + "," + password;
 
-        return passEncoder.matches(credString, savedEncodedCredString);
+        if (passEncoder.matches(credString, savedEncodedCredString)) {
+            scriviMessaggio("Tentativo di accesso RIUSCITO con username: " + username);
+            return true;
+        } else {
+            scriviMessaggio("Tentativo di accesso FALLITO con username: " + username);
+            return false;
+        }
     }
 
     @Override
