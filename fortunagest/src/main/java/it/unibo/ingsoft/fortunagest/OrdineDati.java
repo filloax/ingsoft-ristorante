@@ -1,57 +1,36 @@
 package it.unibo.ingsoft.fortunagest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-public class PrenotazioneDati {
+import org.springframework.format.annotation.DateTimeFormat;
+
+import it.unibo.ingsoft.fortunagest.model.DatiProdotto;
+import it.unibo.ingsoft.fortunagest.model.DatiSconto;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public class OrdineDati {
     private String nominativo;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDateTime dataOra;
-    private Integer numeroPersone;
+    private String note;
     private String telefono;
+    private String indirizzo;
+    private String tavolo;
     private Integer idRichiesta;
-
-    public LocalDateTime getDataOra() {
-        return dataOra;
-    }
-
-    public Integer getIdRichiesta() {
-        return idRichiesta;
-    }
-
-    public String getNominativo() {
-        return nominativo;
-    }
-
-    public Integer getNumeroPersone() {
-        return numeroPersone;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setDataOra(LocalDateTime dataOra) {
-        this.dataOra = dataOra;
-    }
-
-    public void setIdRichiesta(Integer idRichiesta) {
-        this.idRichiesta = idRichiesta;
-    }
-
-    public void setNominativo(String nominativo) {
-        this.nominativo = nominativo;
-    }
-
-    public void setNumeroPersone(Integer numeroPersone) {
-        this.numeroPersone = numeroPersone;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
+    private String tokenPagamento;
+    private DatiProdotto[] prodotti;
+    private DatiSconto[] sconti;
 
     private String toJSON() {
         ObjectMapper mapper = new ObjectMapper();
@@ -78,5 +57,4 @@ public class PrenotazioneDati {
         // TODO Auto-generated method stub
         return this.toJSON();
     }
-
 }

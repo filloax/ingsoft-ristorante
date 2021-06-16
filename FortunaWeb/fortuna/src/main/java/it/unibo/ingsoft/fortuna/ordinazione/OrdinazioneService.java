@@ -16,6 +16,8 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ import it.unibo.ingsoft.fortuna.zoneconsegna.IListaZoneConsegna;
 
 @Service
 public class OrdinazioneService extends AbstractService implements IOrdinazioneService {
+    @Autowired
     private PeriodiController periodiDisattivazione;
 
     // Campi Autowired inseriti automaticamente da Spring Boot a partire da classi
@@ -55,12 +58,18 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
     private IPagamentoOnline pagamentoOnline;
 
     public OrdinazioneService() {
-        periodiDisattivazione = PeriodiController.getInstance();
+        // periodiDisattivazione = PeriodiController.getInstance();
+    }
+
+    @PostConstruct
+    private void init() {
+        System.out.println("\n[POST-CONSTRUCT] OrdinazioneService\n");
     }
 
     @Override
     public Set<TipoDisattivazione> getTipoOrdiniDisabilitati() {
-        Set<TipoDisattivazione> tipiDisattivati = periodiDisattivazione.getPeriodi().getTipiDisattivati(LocalDateTime.now());
+        Set<TipoDisattivazione> tipiDisattivati = periodiDisattivazione.getPeriodi()
+                .getTipiDisattivati(LocalDateTime.now());
         tipiDisattivati.remove(TipoDisattivazione.PRENOTAZIONE);
         tipiDisattivati.remove(TipoDisattivazione.PRODOTTO);
         return tipiDisattivati;
@@ -100,7 +109,7 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
     @Override
     public List<Sconto> getScontiApplicabili(List<Prodotto> prodotti, Optional<LocalDateTime> dataOra) {
         List<Sconto> scontiApplicabili = new ArrayList<>();
-        
+
         if (dataOra.isPresent()) {
             scontiApplicabili.addAll(gestioneSconti.listaSconti(dataOra.get(), calcolaTotale(prodotti)));
             for (Prodotto prodotto : prodotti) {
@@ -108,14 +117,14 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
             }
         } else {
             scontiApplicabili.addAll(gestioneSconti.listaScontiTotali().stream()
-                .filter(sconto -> sconto.getPerProdotti() == null || sconto.getPerProdotti().isEmpty())
-                .collect(Collectors.toList()));
+                    .filter(sconto -> sconto.getPerProdotti() == null || sconto.getPerProdotti().isEmpty())
+                    .collect(Collectors.toList()));
             for (Prodotto prodotto : prodotti) {
                 scontiApplicabili.addAll(gestioneSconti.listaScontiTotali().stream()
-                    .filter(sconto -> sconto.getPerProdotti() != null || sconto.getPerProdotti().contains(prodotto))
-                    .collect(Collectors.toList()));
+                        .filter(sconto -> sconto.getPerProdotti() != null || sconto.getPerProdotti().contains(prodotto))
+                        .collect(Collectors.toList()));
             }
-    
+
         }
 
         return scontiApplicabili;
@@ -125,10 +134,8 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
     public double calcolaTotaleScontato(List<Prodotto> prodotti, LocalDateTime dataOra) {
         // Agisci creando ordine e facendo calcolare a lui, visto che ha già la logica
         // Al tavolo è arbitrario, visto che Ordine è astratta come classe
-        Ordine tempOrdine = new OrdineAlTavolo()
-            .dataOra(dataOra)
-            .prodotti(prodotti)
-            .sconti(getScontiApplicabili(prodotti, Optional.of(dataOra)));
+        Ordine tempOrdine = new OrdineAlTavolo().dataOra(dataOra).prodotti(prodotti)
+                .sconti(getScontiApplicabili(prodotti, Optional.of(dataOra)));
 
         return tempOrdine.calcolaCostoScontato();
     }
@@ -140,20 +147,18 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
         return prodotti.stream().map(p -> p.getPrezzo()).reduce((a, b) -> a + b).get();
     }
 
-    private void impostaOrdine(Ordine ordine, String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note) {
-        ordine.nominativo(nome)
-            .prodotti(prodotti)
-            .dataOra(dataOra)
-            .note(note);
-        
+    private void impostaOrdine(Ordine ordine, String nome, List<Prodotto> prodotti, LocalDateTime dataOra,
+            String note) {
+        ordine.nominativo(nome).prodotti(prodotti).dataOra(dataOra).note(note);
+
         // try {
-        //     ordine.setIdRichiesta(generaId());
+        // ordine.setIdRichiesta(generaId());
         // } catch (SQLException e) {
-        //     e.printStackTrace();
-        //     return false;
+        // e.printStackTrace();
+        // return false;
         // } catch (Exception e) {
-        //     e.printStackTrace();
-        //     return false;
+        // e.printStackTrace();
+        // return false;
         // }
 
         ordine.setSconti(getScontiApplicabili(prodotti, Optional.of(dataOra)));
@@ -174,26 +179,28 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
 
     private List<Prodotto> getProdottiInvalidi(List<Prodotto> prodotti) {
         Stream<Prodotto> disabilitati = prodotti.stream()
-            .filter(prodotto -> getProdottiDisabilitati().contains(prodotto));
+                .filter(prodotto -> getProdottiDisabilitati().contains(prodotto));
 
-        Stream<Prodotto> inesistenti = prodotti.stream()
-            .filter(prodotto -> !getMenu().contains(prodotto));
+        Stream<Prodotto> inesistenti = prodotti.stream().filter(prodotto -> !getMenu().contains(prodotto));
 
         return Stream.concat(disabilitati, inesistenti).collect(Collectors.toList());
     }
 
     private boolean verificaTavolo(String tavolo) {
-        // TODO: controllare se tavolo esiste, è valido, ecc, funzionalità aggiuntiva probabilmente
+        // TODO: controllare se tavolo esiste, è valido, ecc, funzionalità aggiuntiva
+        // probabilmente
         return true;
     }
 
     @Override
-    public OrdineAlTavolo creaOrdineTavolo(String nome, List<Prodotto> prodotti, String note,
-            String tavolo) throws IOException {
+    public OrdineAlTavolo creaOrdineTavolo(String nome, List<Prodotto> prodotti, String note, String tavolo)
+            throws IOException {
         if (!verificaTipo(TipoDisattivazione.ORDINAZ_TAVOLO))
-            throw new IllegalStateException(String.format("Tipo ordinazione non attivo: %s!", TipoDisattivazione.ORDINAZ_TAVOLO));
+            throw new IllegalStateException(
+                    String.format("Tipo ordinazione non attivo: %s!", TipoDisattivazione.ORDINAZ_TAVOLO));
         if (!verificaProdotti(prodotti))
-            throw new IllegalArgumentException(String.format("Non tutti i prodotti sono validi: %s!", getProdottiInvalidi(prodotti)));
+            throw new IllegalArgumentException(
+                    String.format("Non tutti i prodotti sono validi: %s!", getProdottiInvalidi(prodotti)));
         if (!verificaTavolo(tavolo))
             throw new IllegalArgumentException(String.format("Tavolo non valido: %s!", tavolo));
 
@@ -235,9 +242,11 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
     public OrdineDomicilio creaOrdineDomicilio(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
             String telefono, String indirizzo, String tokenPagamento) throws IOException {
         if (!verificaTipo(TipoDisattivazione.ORDINAZ_DOMICILIO))
-            throw new IllegalStateException(String.format("Tipo ordinazione non attivo: %s", TipoDisattivazione.ORDINAZ_DOMICILIO));
+            throw new IllegalStateException(
+                    String.format("Tipo ordinazione non attivo: %s", TipoDisattivazione.ORDINAZ_DOMICILIO));
         if (!verificaProdotti(prodotti))
-            throw new IllegalArgumentException(String.format("Non tutti i prodotti sono validi: %s", getProdottiInvalidi(prodotti)));
+            throw new IllegalArgumentException(
+                    String.format("Non tutti i prodotti sono validi: %s", getProdottiInvalidi(prodotti)));
 
         OrdineDomicilio ordine = new OrdineDomicilio();
         impostaOrdine(ordine, nome, prodotti, dataOra, note);
@@ -254,20 +263,22 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
                 // Consenti proseguimento, verrà verificato a mano
                 indirizzoValido = true;
                 verificaManuale = true;
-                scriviMessaggio("creaOrdineDomicilio: errore in verifica indirizzo in zona consegna, necessaria verifica manuale.");
+                scriviMessaggio(
+                        "creaOrdineDomicilio: errore in verifica indirizzo in zona consegna, necessaria verifica manuale.");
             }
         }
 
         if (!indirizzoValido)
-            throw new IllegalArgumentException(String.format("Indirizzo non valido (a questa fascia di prezzo?): %s", indirizzo));
-    
+            throw new IllegalArgumentException(
+                    String.format("Indirizzo non valido (a questa fascia di prezzo?): %s", indirizzo));
+
         if (verificaManuale)
             indirizzo = "VERIFICA: " + indirizzo;
 
         ordine.setTelefono(telefono);
         ordine.setIndirizzo(indirizzo);
         ordine.setTokenPagamento(tokenPagamento);
-    
+
         boolean pagamentoValido = false;
         try {
             pagamentoValido = tokenPagamento.isEmpty() || pagamentoOnline.verificaAutorizzazione(ordine);
@@ -278,9 +289,9 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
             throw new IllegalArgumentException("Token pagamento non valido!");
 
         try (Connection connection = getConnection()) {
-            String query = tokenPagamento.isEmpty() 
-                ? "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo) VALUES (?, ?, ?, ?, ?)"
-                : "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo, pagamento) VALUES (?, ?, ?, ?, ?, ?)";
+            String query = tokenPagamento.isEmpty()
+                    ? "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo) VALUES (?, ?, ?, ?, ?)"
+                    : "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo, pagamento) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
                 preparedStmt.setString(1, ordine.getNominativo());
                 preparedStmt.setString(2, ordine.getNote());
@@ -292,7 +303,7 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
 
                 preparedStmt.executeUpdate();
             }
-            
+
             if (!inserisciProdottiScontiInDb(connection, ordine)) {
                 throw new IOException("Accesso al database fallito");
             }
@@ -309,9 +320,11 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
     public OrdineTakeAway creaOrdineAsporto(String nome, List<Prodotto> prodotti, LocalDateTime dataOra, String note,
             String telefono) throws IOException {
         if (!verificaTipo(TipoDisattivazione.ORDINAZ_ASPORTO))
-            throw new IllegalStateException(String.format("Tipo ordinazione non attivo: %s!", TipoDisattivazione.ORDINAZ_ASPORTO));
+            throw new IllegalStateException(
+                    String.format("Tipo ordinazione non attivo: %s!", TipoDisattivazione.ORDINAZ_ASPORTO));
         if (!verificaProdotti(prodotti))
-            throw new IllegalArgumentException(String.format("Non tutti i prodotti sono validi: %s!", getProdottiInvalidi(prodotti)));
+            throw new IllegalArgumentException(
+                    String.format("Non tutti i prodotti sono validi: %s!", getProdottiInvalidi(prodotti)));
 
         OrdineTakeAway ordine = new OrdineTakeAway();
         impostaOrdine(ordine, nome, prodotti, dataOra, note);
@@ -356,19 +369,19 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
             return false;
 
         StringJoiner sj = new StringJoiner(", ");
-        for (int i = 0; i < ordine.getProdotti().size(); i++) sj.add("(?, ?, 1)");
+        for (int i = 0; i < ordine.getProdotti().size(); i++)
+            sj.add("(?, ?, 1)");
 
-        query = "INSERT INTO prodotti_ordinati (id_ordine, numero_prod, quantita) VALUES "
-        + sj.toString()
-        + " ON DUPLICATE KEY UPDATE quantita=quantita+1";
+        query = "INSERT INTO prodotti_ordinati (id_ordine, numero_prod, quantita) VALUES " + sj.toString()
+                + " ON DUPLICATE KEY UPDATE quantita=quantita+1";
 
         try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
             int i = 1;
             for (Prodotto prodotto : ordine.getProdotti()) {
                 preparedStmt.setInt(i, id);
                 i++;
-                preparedStmt.setInt(i, prodotto.getNumero());    
-                i++;        
+                preparedStmt.setInt(i, prodotto.getNumero());
+                i++;
             }
 
             preparedStmt.executeUpdate();
@@ -376,11 +389,11 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
 
         if (ordine.getSconti().size() > 0) {
             sj = new StringJoiner(", ");
-            for (int i = 0; i < ordine.getSconti().size(); i++) sj.add("(?, ?)");
-    
-            query = "INSERT INTO sconti_applicati (id_ordine, id_sconto) VALUES"
-            + sj.toString();
-    
+            for (int i = 0; i < ordine.getSconti().size(); i++)
+                sj.add("(?, ?)");
+
+            query = "INSERT INTO sconti_applicati (id_ordine, id_sconto) VALUES" + sj.toString();
+
             try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
                 int i = 1;
                 for (Sconto sconto : ordine.getSconti()) {
@@ -389,14 +402,13 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
                     preparedStmt.setInt(i, sconto.getId());
                     i++;
 
-           //         System.out.println("Adding: " +id + ", " + sconto.getId());
+                    // System.out.println("Adding: " +id + ", " + sconto.getId());
                 }
 
                 preparedStmt.executeUpdate();
             }
         }
-            
-    
+
         return true;
     }
 }

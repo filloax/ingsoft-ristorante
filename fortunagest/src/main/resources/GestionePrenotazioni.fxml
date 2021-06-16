@@ -103,7 +103,7 @@
               </textFill>
             </Label>
                   <Button layoutX="35.0" layoutY="91.0" mnemonicParsing="false" onAction="#switchToRicezionePrenotazioni" text="Ricezione Prenotazioni" />
-                  <Button layoutX="29.0" layoutY="197.0" mnemonicParsing="false" text="Abilitazione Prenotazioni" />
+                  <Button layoutX="29.0" layoutY="197.0" mnemonicParsing="false" onAction="#switchToAbilitaPrenotazioni" text="Abilitazione Prenotazioni" />
                   <Button layoutX="24.0" layoutY="145.0" mnemonicParsing="false" onAction="#switchToCancellazionePrenotazioni" text="Cancellazione Prenotazioni" />
                   <Button layoutX="62.0" layoutY="315.0" mnemonicParsing="false" onAction="#switchToHomeTitolare" text="Indietro" />
           </children>
@@ -130,6 +130,7 @@
         <AnchorPane>
           <children>
             <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Disabilitazioni" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                  <ListView fx:id="disabilitazioniPrenotazioniList" layoutX="11.0" layoutY="66.0" prefHeight="418.0" prefWidth="204.0" />
           </children>
         </AnchorPane>
       </items>

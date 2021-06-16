@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna.gestionePrenotazione;
+package it.unibo.ingsoft.fortuna.gestioneOrdine;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,13 +18,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.unibo.ingsoft.fortuna.AbstractController;
+import it.unibo.ingsoft.fortuna.gestionePrenotazione.DisabilitaPrenotazioneService;
+import it.unibo.ingsoft.fortuna.model.Prodotto;
 import it.unibo.ingsoft.fortuna.model.attivazione.PeriodoDisattivazione;
+import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
 
 @RestController
-@RequestMapping("/disa-prenotazioni")
-public class DisabilitaPrenotazioneController extends AbstractController {
+@RequestMapping("/disa-ordini")
+public class DisabilitaOrdineController extends AbstractController {
     @Autowired
-    private IDisabilitazionePrenotazioni service;
+    private DisabilitaOrdineService service;
 
     @GetMapping
     public List<PeriodoDisattivazione> listDisabilitazionePrenotazioni() {
@@ -32,25 +35,34 @@ public class DisabilitaPrenotazioneController extends AbstractController {
     }
 
     @PostMapping
-    public void add(HttpServletRequest request, @RequestBody PeriodoDisattivazione periodo) {
+    public void add(HttpServletRequest request, @RequestBody LocalDateTime inizio, @RequestBody LocalDateTime fine,
+            @RequestBody TipoDisattivazione tipo) {
         scriviOperazione(request.getRemoteAddr(),
-                String.format("addPeriodoDisattivazionePrenotazioni(da: %s, a: %s)", periodo.getInizio(), periodo.getFine()));
-        service.disabilitaPrenotazioni(periodo.getInizio(), periodo.getFine());
+                String.format("addPeriodoDisattivazioneOrdine(da: %s, a: %s, tipo : %s)", inizio, fine, tipo));
+        service.disabilitaOrdini(inizio, fine, tipo);
     }
 
     @PostMapping(value = "test")
     public void addDefault() {
-        service.disabilitaPrenotazioni(LocalDateTime.now(), LocalDateTime.of(2021, 7, 5, 13, 33));
+        service.disabilitaOrdini(LocalDateTime.now(), LocalDateTime.of(2021, 7, 5, 13, 33),
+                TipoDisattivazione.ORDINAZ_TAVOLO);
     }
 
-    // TODO possibile non funzioni il delete su disattiva prodotti perchè cancello
-    // riga in relazione con altre tabelle
+    @PostMapping(value = "prodotto")
+    public void addDisattivaProdotto(HttpServletRequest request, @RequestBody LocalDateTime inizio,
+            @RequestBody LocalDateTime fine, @RequestBody Prodotto prodotto) {
+        scriviOperazione(request.getRemoteAddr(), String.format(
+                "addPeriodoDisattivazioneProdotto(da: %s, a: %s, prodotto : %s)", inizio, fine, prodotto.getNome()));
+        service.disabilitaOrdini(inizio, fine, prodotto);
+
+    }
+
     @DeleteMapping(value = "{id}")
     public ResponseEntity<?> delete(HttpServletRequest request, @PathVariable Integer id) {
-        scriviOperazione(request.getRemoteAddr(), String.format("deletePeriodoDisattivazionePrenotazioni(id: %d)", id));
+        scriviOperazione(request.getRemoteAddr(), String.format("deletePeriodoDisattivazioneOrdini(id: %d)", id));
 
         try {
-            service.riabilitaPrenotazioni(id);
+            service.riabilitaOrdini(id);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (NoSuchElementException e) {

@@ -1,6 +1,7 @@
 package it.unibo.ingsoft.fortuna.model.richiesta;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.AttributeOverrides;
@@ -87,7 +88,7 @@ public abstract class Ordine extends Richiesta {
     }
 
     public void setProdotti(List<Prodotto> prodotti) {
-        this.prodotti = prodotti;
+        this.prodotti = new ArrayList<>(prodotti);
     }
 
     public List<Sconto> getSconti() {

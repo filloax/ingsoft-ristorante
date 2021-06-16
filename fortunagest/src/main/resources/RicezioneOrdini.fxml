@@ -38,13 +38,11 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="921.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.CancellazionePrenotazioniController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.RicezioneOrdiniController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -85,22 +83,14 @@
         </Menu>
       </menus>
     </MenuBar>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="405.0" prefWidth="660.0" VBox.vgrow="ALWAYS">
-      <children>
-            <TableView fx:id="tableview" layoutX="26.0" layoutY="31.0" prefHeight="324.0" prefWidth="589.0">
-              <columns>
-                <TableColumn fx:id="colNominativo" prefWidth="141.0" text="nominativo" />
-                <TableColumn fx:id="colDataOra" prefWidth="134.0" text="dataOra" />
-                  <TableColumn fx:id="colTelefono" prefWidth="118.0" text="telefono" />
-                  <TableColumn fx:id="colPersone" prefWidth="98.0" text="persone" />
-                  <TableColumn fx:id="colId" prefWidth="97.0" text="id" />
-              </columns>
-            </TableView>
-            <Button fx:id="btnCancella" layoutX="725.0" layoutY="181.0" mnemonicParsing="false" onAction="#rifiutaPrenotazione" text="Cancella" />
-            <TextField fx:id="textfield" layoutX="677.0" layoutY="76.0" />
-            <Label layoutX="629.0" layoutY="38.0" text="Inserire id della prenotazione da cancellare" />
-            <Button layoutX="727.0" layoutY="256.0" mnemonicParsing="false" onAction="#switchToGestionePrenotazioni" text="Indietro" />
-      </children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+         <children>
+            <TextArea fx:id="textarea" editable="false" layoutX="49.0" layoutY="42.0" prefHeight="263.0" prefWidth="347.0" wrapText="true" />
+            <Button fx:id="btnAccetta" layoutX="515.0" layoutY="65.0" mnemonicParsing="false" onAction="#accettaPrenotazione" prefHeight="59.0" prefWidth="90.0" text="ACCETTA" />
+            <Button fx:id="btnRifiuta" layoutX="515.0" layoutY="144.0" mnemonicParsing="false" onAction="#rifiutaPrenotazione" prefHeight="59.0" prefWidth="90.0" text="RIFIUTA" />
+            <Button layoutX="515.0" layoutY="223.0" mnemonicParsing="false" onAction="#switchToGestionePrenotazioni" prefHeight="59.0" prefWidth="90.0" text="INDIETRO" />
+            <Label layoutX="109.0" layoutY="14.0" text="RIcezione Ordini" />
+         </children>
     </AnchorPane>
   </children>
 </VBox>

@@ -1,21 +1,20 @@
 {
-    "configurations": [
-        {
-            "type": "java",
-            "name": "Launch SpringLauncher",
-            "request": "launch",
-            "mainClass": "it.unibo.ingsoft.fortunagest.SpringLauncher",
-            "projectName": "fortunagest"
-        },
-        {
-            "type": "java",
-            "name": "Spring Boot-FortunaApplication<fortuna>",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "console": "internalConsole",
-            "mainClass": "it.unibo.ingsoft.fortuna.FortunaApplication",
-            "projectName": "fortuna",
-            "args": ""
-        }
-    ]
-}
+    "version": "0.2.0",
+     "configurations": [
+   
+       {
+         "type": "java",
+         "name": "Debug (Launch)",
+         "request": "launch",
+         "mainClass": "",
+         "args": ""
+       },
+       {
+         "type": "java",
+         "name": "Debug (Attach)",
+         "request": "attach",
+         "hostName": "localhost",
+         "port": 8000
+       }
+     ] 
+   }
