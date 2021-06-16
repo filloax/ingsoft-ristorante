@@ -24,6 +24,7 @@ public class ConfigProps {
     private LogProps log;
     @ToString.Exclude private Keys keys;
     private Geoconfig geo;
+    private SMSProps sms;
 
     //Data crea automaticamente getter e setter
     @Data
@@ -39,21 +40,27 @@ public class ConfigProps {
     }
 
     @Data
-    @NoArgsConstructor
     public static class LogProps { 
         private String host;
         private int port;
         private boolean localLog;
     }
 
+    @Data
+    public static class SMSProps {
+        private String number;
+        private boolean logNumbers;
+    }
+
     // Variabile di ambiente esterna per sicurezza (mai salvare key in chiaro su repository), 
 	// chiave privata per Stripe da account
     @Data
-    @NoArgsConstructor
     public static class Keys {
         private String stripePub = null;
         private String stripe = null;
         private String googleGeocoding = null;
+        private String twilioSid = null;
+        private String twilioAuth = null;
 
         public String toString() {
             return super.toString();

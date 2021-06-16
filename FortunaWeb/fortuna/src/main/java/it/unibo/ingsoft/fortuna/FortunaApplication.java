@@ -1,5 +1,10 @@
 package it.unibo.ingsoft.fortuna;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.google.maps.GeoApiContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +13,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.FileSystemResource;
 
 import it.unibo.ingsoft.fortuna.log.ILogManager;
 
@@ -25,8 +31,24 @@ public class FortunaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FortunaApplication.class, args);
+
+		initFolders();
 	}
 
+	private static void initFolders() {
+		String rootPath = new FileSystemResource("").getFile().getAbsolutePath();
+		Path config = Paths.get(rootPath, "config");
+
+		try {
+			if (!Files.isDirectory(config))
+				Files.createDirectory(config);
+		} catch(IOException e) {
+			e.printStackTrace();
+			System.err.println("Errore a creare le cartelle: " + e.getMessage());
+			System.exit(-1);
+		}
+	}
+	
 	@Bean(destroyMethod = "shutdown")
 	public GeoApiContext geoApiContext() {
 		if (cfg.getKeys().getGoogleGeocoding() == null) {
@@ -39,5 +61,4 @@ public class FortunaApplication {
 			.apiKey(cfg.getKeys().getGoogleGeocoding())
 			.build();
 	}
-
 }

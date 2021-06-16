@@ -2,10 +2,13 @@ package it.unibo.ingsoft.fortunagest.prodotti;
 
 import java.io.IOException;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import it.unibo.ingsoft.fortunagest.StageController;
+import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import it.unibo.ingsoft.fortunagest.model.DatiProdotto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,10 +29,12 @@ public class GestioneProdottiController extends StageController {
 
     public void updateList() {
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:8080/gest-prodotti/";
+        String url = "http://localhost:8080/gest/prodotti/";
         
-        ResponseEntity<DatiProdotto[]> response =
-        template.getForEntity(url, DatiProdotto[].class);
+        ResponseEntity<DatiProdotto[]> response = template.exchange(url, 
+            HttpMethod.GET, 
+            new HttpEntity<DatiProdotto[]>(AuthSingleton.getInstance().getAuthHeaders()), 
+            DatiProdotto[].class);
         DatiProdotto[] arrayProdotti = response.getBody();
 
         observableListaProdotti.setAll(arrayProdotti);
@@ -41,8 +46,11 @@ public class GestioneProdottiController extends StageController {
         int numero = listaProdotti.getItems().get(id).getNumero();
 
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:8080/gest-prodotti/" + numero;
-        template.delete(url);
+        String url = "http://localhost:8080/gest/prodotti/" + numero;
+        template.exchange(url, 
+            HttpMethod.DELETE, 
+            new HttpEntity<Object>(AuthSingleton.getInstance().getAuthHeaders()), 
+            Object.class);
 
         updateList();
     }

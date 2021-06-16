@@ -26,7 +26,7 @@ import it.unibo.ingsoft.fortuna.model.Sconto;
 import it.unibo.ingsoft.fortuna.prodotti.IGestioneProdotti;
 
 @RestController
-@RequestMapping("/gest-sconti")
+@RequestMapping("/gest/sconti")
 public class GestioneScontiController extends AbstractController {
     @Autowired
     private IGestioneSconti service;

@@ -1,9 +1,13 @@
 package it.unibo.ingsoft.fortunagest;
 
 import java.io.IOException;
+
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,7 +15,7 @@ import javafx.scene.control.TextArea;
 
 public class RicezionePrenotazioniController extends StageController {
 
-    private static String rootUrl = "http://localhost:8080/gest-prenotazioni";
+    private static String rootUrl = "http://localhost:8080/gest/prenotazioni";
 
     private PrenotazioneDati[] prenotazioniInAttesa;
 
@@ -30,10 +34,12 @@ public class RicezionePrenotazioniController extends StageController {
     public void initialize() {
 
         template = new RestTemplate();
-        String UrlInAttesa = rootUrl + "/attesa";
+        String url = rootUrl + "/attesa";
 
-        ResponseEntity<PrenotazioneDati[]> response =
-                template.getForEntity(UrlInAttesa, PrenotazioneDati[].class);
+        ResponseEntity<PrenotazioneDati[]> response = template.exchange(url, 
+            HttpMethod.GET, 
+            new HttpEntity<PrenotazioneDati[]>(AuthSingleton.getInstance().getAuthHeaders()), 
+            PrenotazioneDati[].class);
         prenotazioniInAttesa = response.getBody();
 
         this.mostraProssimaPrenotazione();
@@ -56,7 +62,7 @@ public class RicezionePrenotazioniController extends StageController {
     public void accettaPrenotazione(ActionEvent event) throws IOException {
 
         String resourceUrl = rootUrl + '/' + prenotazioniInAttesa[index].getIdRichiesta();
-        template.exchange(resourceUrl, HttpMethod.PUT, null, Void.class);
+        template.exchange(resourceUrl, HttpMethod.PUT, new HttpEntity<Void>(AuthSingleton.getInstance().getAuthHeaders()), Void.class);
 
         index++;
 
@@ -67,8 +73,7 @@ public class RicezionePrenotazioniController extends StageController {
     public void rifiutaPrenotazione(ActionEvent event) throws IOException {
         String resourceUrl = rootUrl + '/' + prenotazioniInAttesa[index].getIdRichiesta();
 
-        template.delete(resourceUrl);
-        // template.exchange(resourceUrl, HttpMethod.DELETE, null, Void.class);
+        template.exchange(resourceUrl, HttpMethod.DELETE, new HttpEntity<Void>(AuthSingleton.getInstance().getAuthHeaders()), Void.class);
 
         index++;
 

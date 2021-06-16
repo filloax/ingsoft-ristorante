@@ -22,7 +22,7 @@ import it.unibo.ingsoft.fortuna.model.richiesta.Prenotazione;
 import it.unibo.ingsoft.fortuna.sms.SMSException;
 
 @RestController
-@RequestMapping("/gest-prenotazioni")
+@RequestMapping("/gest/prenotazioni")
 public class PrenotazioneGestController extends AbstractController {
 
     @Autowired

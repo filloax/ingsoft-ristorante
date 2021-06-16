@@ -25,8 +25,8 @@ import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
 import it.unibo.ingsoft.fortuna.sms.SMSException;
 
 @RestController
-@RequestMapping("/gest-ordini")
-public class OrdineGestController extends AbstractController {
+@RequestMapping("/gest/ordini")
+public class OrdineGestController extends AbstractController{
 
     @Autowired
     private OrdineGestService service;

@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 secret/*.key
 secret/*.p
+**/debugNumbers.txt
 
 ### STS ###
 .apt_generated

@@ -8,11 +8,14 @@ import java.nio.charset.Charset;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-/**
- * Carica file come stringa da 
- * resources/static/*
- */
 public class ResourceUtilsLib {
+   /**
+    * Carica file come stringa da 
+    * resources/static/*
+    * @param resourcePath
+    * @return
+    * @throws IOException
+    */
     public static String loadResourceToString(String resourcePath) throws IOException {
         Resource resource = new ClassPathResource("static/" + resourcePath);
         StringBuffer sb = new StringBuffer();

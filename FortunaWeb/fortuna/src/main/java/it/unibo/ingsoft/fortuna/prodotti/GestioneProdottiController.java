@@ -22,7 +22,7 @@ import it.unibo.ingsoft.fortuna.DatabaseException;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 
 @RestController
-@RequestMapping("/gest-prodotti")
+@RequestMapping("/gest/prodotti")
 public class GestioneProdottiController extends AbstractController {
     @Autowired
     private IGestioneProdotti service;

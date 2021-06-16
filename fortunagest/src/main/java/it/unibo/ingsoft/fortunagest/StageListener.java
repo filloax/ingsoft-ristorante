@@ -27,7 +27,7 @@ public class StageListener implements ApplicationListener<StageReadyEvent> {
             // newfile.createNewFile();
             Stage window = event.getStage();
             window.setTitle(this.applicationTitle);
-            Parent root = FXMLLoader.load(getClass().getResource("/HomeTitolare.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/Login.fxml"));
 
             Scene scene1 = new Scene(root);
             Styler.style(scene1);
@@ -43,7 +43,7 @@ public class StageListener implements ApplicationListener<StageReadyEvent> {
             //     public void handle(ActionEvent event) {
             //         System.out.println("Hello World!");
             //         RestTemplate template = new RestTemplate();
-            //         String fooResourceUrl = "http://localhost:8080/gest-prenotazioni";
+            //         String fooResourceUrl = "http://localhost:8080/gest/prenotazioni";
             //         ResponseEntity<String> response = template.getForEntity(fooResourceUrl+"/1", String.class);
             //         System.out.println(response.getStatusCode());
             //         System.out.println("JSON");
