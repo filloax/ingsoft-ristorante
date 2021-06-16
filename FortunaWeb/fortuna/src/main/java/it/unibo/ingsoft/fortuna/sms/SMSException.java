@@ -8,4 +8,8 @@ public class SMSException extends Exception {
     public SMSException(String msg, Throwable e) {
         super(msg, e);
     }
+
+    public SMSException(Throwable e) {
+        super(e);
+    }
 }
