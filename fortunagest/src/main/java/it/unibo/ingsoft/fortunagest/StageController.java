@@ -1,20 +1,30 @@
 package it.unibo.ingsoft.fortunagest;
 
 import java.io.IOException;
+
+import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import jfxtras.styles.jmetro.JMetro;
-import jfxtras.styles.jmetro.Style;
 
 public class StageController {
     private Stage stage;
     private Parent root;
     private Scene scene;
 
+    
+    public void switchToLogin(ActionEvent event) throws IOException {
+        switchToResource(event, "/Login.fxml");
+    }
+
+    public void logout(ActionEvent event) throws IOException {
+        AuthSingleton.getInstance().logout();
+        switchToResource(event, "/Login.fxml");
+    }
+   
     public void switchToHomeTitolare(ActionEvent event) throws IOException{
         switchToResource(event, "/HomeTitolare.fxml");
     }

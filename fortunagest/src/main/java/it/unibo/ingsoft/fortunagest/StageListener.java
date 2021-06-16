@@ -27,7 +27,7 @@ public class StageListener implements ApplicationListener<StageReadyEvent> {
             // newfile.createNewFile();
             Stage window = event.getStage();
             window.setTitle(this.applicationTitle);
-            Parent root = FXMLLoader.load(getClass().getResource("/HomeTitolare.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/Login.fxml"));
 
             Scene scene1 = new Scene(root);
             Styler.style(scene1);

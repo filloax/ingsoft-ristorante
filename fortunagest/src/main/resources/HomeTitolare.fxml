@@ -90,7 +90,7 @@
         <Button layoutX="50.0" layoutY="160.0" mnemonicParsing="false" onAction="#switchToGestioneProdotti" prefHeight="25.0" prefWidth="133.0" text="Gestione Prodotti" />
         <Button layoutX="219.0" layoutY="160.0" mnemonicParsing="false" onAction="#switchToGestioneZoneConsegna" text="Gestione Zone di consegna" />
         <Button layoutX="420.0" layoutY="160.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" text="Scarica log" />
-        <Button layoutX="420.0" layoutY="243.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" text="Logout" />
+        <Button layoutX="420.0" layoutY="243.0" mnemonicParsing="false" onAction="#logout" prefHeight="25.0" prefWidth="99.0" text="Logout" />
       </children>
     </AnchorPane>
 

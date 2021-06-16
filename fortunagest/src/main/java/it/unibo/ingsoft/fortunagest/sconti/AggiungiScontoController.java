@@ -7,10 +7,13 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
 import it.unibo.ingsoft.fortunagest.DoubleTextListener;
 import it.unibo.ingsoft.fortunagest.StageController;
+import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import it.unibo.ingsoft.fortunagest.model.DatiSconto;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -105,7 +108,10 @@ public class AggiungiScontoController extends StageController {
         RestTemplate template = new RestTemplate();
         String url = "http://localhost:8080/gest/sconti/";
         
-        template.put(url, datiSconto);
+        template.exchange(url, 
+            HttpMethod.PUT, 
+            new HttpEntity<DatiSconto>(datiSconto, AuthSingleton.getInstance().getAuthHeaders()), 
+            DatiSconto.class);
 
         switchToGestioneSconti(event);
     }

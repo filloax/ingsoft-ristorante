@@ -2,8 +2,13 @@ package it.unibo.ingsoft.fortunagest;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -40,9 +45,10 @@ public class GestioneCancellazioneController extends StageController {
         template = new RestTemplate();
 
 
-        String UrlAccettate = "http://localhost:8080/gest/prenotazioni/accettati";
+        String url = "http://localhost:8080/gest/prenotazioni/accettati";
         ResponseEntity<PrenotazioneDati[]> response =
-                template.getForEntity(UrlAccettate, PrenotazioneDati[].class);
+        template.exchange(url, HttpMethod.GET, new HttpEntity<PrenotazioneDati[]>(AuthSingleton.getInstance().getAuthHeaders()), PrenotazioneDati[].class);
+
         PrenotazioneDati[] prenotazioniAccettate = response.getBody();
 
         colNominativo.setCellValueFactory(
@@ -65,8 +71,7 @@ public class GestioneCancellazioneController extends StageController {
     public void rifiutaPrenotazione(ActionEvent event) throws IOException {
         String resourceUrl = "http://localhost:8080/gest/prenotazioni" + '/' + textfield.getText();
 
-        template.delete(resourceUrl);
-        // template.exchange(resourceUrl, HttpMethod.DELETE, null, Void.class);
+        template.exchange(resourceUrl, HttpMethod.DELETE, new HttpEntity<PrenotazioneDati[]>(AuthSingleton.getInstance().getAuthHeaders()), Void.class);
 
     }
 }

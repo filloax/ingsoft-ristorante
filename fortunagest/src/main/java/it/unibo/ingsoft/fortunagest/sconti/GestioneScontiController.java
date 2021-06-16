@@ -3,10 +3,13 @@ package it.unibo.ingsoft.fortunagest.sconti;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import it.unibo.ingsoft.fortunagest.StageController;
+import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import it.unibo.ingsoft.fortunagest.model.DatiSconto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,8 +32,10 @@ public class GestioneScontiController extends StageController {
         RestTemplate template = new RestTemplate();
         String url = "http://localhost:8080/gest/sconti/";
         
-        ResponseEntity<DatiSconto[]> response =
-        template.getForEntity(url, DatiSconto[].class);
+        ResponseEntity<DatiSconto[]> response = template.exchange(url, 
+            HttpMethod.GET, 
+            new HttpEntity<Object>(AuthSingleton.getInstance().getAuthHeaders()), 
+            DatiSconto[].class);
         DatiSconto[] arraySconti = response.getBody();
 
         observableListaSconti.setAll(arraySconti);
@@ -43,7 +48,10 @@ public class GestioneScontiController extends StageController {
 
         RestTemplate template = new RestTemplate();
         String url = "http://localhost:8080/gest/sconti/" + scontoId;
-        template.delete(url);
+        template.exchange(url, 
+            HttpMethod.DELETE, 
+            new HttpEntity<Object>(AuthSingleton.getInstance().getAuthHeaders()), 
+            Object.class);
 
         updateList();
     }

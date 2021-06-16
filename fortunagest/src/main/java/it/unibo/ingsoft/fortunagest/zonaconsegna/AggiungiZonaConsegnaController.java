@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
 import it.unibo.ingsoft.fortunagest.DoubleTextListener;
 import it.unibo.ingsoft.fortunagest.StageController;
+import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import it.unibo.ingsoft.fortunagest.model.DatiZonaConsegnaPunti;
 import it.unibo.ingsoft.fortunagest.model.Vector;
 import javafx.beans.value.ChangeListener;
@@ -72,7 +75,10 @@ public class AggiungiZonaConsegnaController extends StageController {
         RestTemplate template = new RestTemplate();
         String url = "http://localhost:8080/gest/zone/";
         
-        template.put(url, datiZonaConsegna);
+        template.exchange(url, 
+            HttpMethod.PUT, 
+            new HttpEntity<DatiZonaConsegnaPunti>(datiZonaConsegna, AuthSingleton.getInstance().getAuthHeaders()), 
+            DatiZonaConsegnaPunti.class);
 
         switchToGestioneZoneConsegna(event);
     }

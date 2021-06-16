@@ -1,7 +1,11 @@
 package it.unibo.ingsoft.fortunagest;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,7 +27,7 @@ public class GestionePrenotazioniController extends StageController {
         String UrlInAttesa = "http://localhost:8080/gest/prenotazioni/attesa";
         
         ResponseEntity<PrenotazioneDati[]> response =
-        template.getForEntity(UrlInAttesa, PrenotazioneDati[].class);
+        template.exchange(UrlInAttesa, HttpMethod.GET, new HttpEntity<PrenotazioneDati[]>(AuthSingleton.getInstance().getAuthHeaders()), PrenotazioneDati[].class);
         PrenotazioneDati[] prenotazioniInAttesa = response.getBody();
         observableInAttesaList.addAll(prenotazioniInAttesa);
         prenotazioniInAttesaList.setItems(observableInAttesaList);
@@ -32,7 +36,7 @@ public class GestionePrenotazioniController extends StageController {
         
         String UrlAccettate = "http://localhost:8080/gest/prenotazioni/accettati";
         response =
-                template.getForEntity(UrlAccettate, PrenotazioneDati[].class);
+        template.exchange(UrlAccettate, HttpMethod.GET, new HttpEntity<PrenotazioneDati[]>(AuthSingleton.getInstance().getAuthHeaders()), PrenotazioneDati[].class);
         PrenotazioneDati[] prenotazioniAccettate = response.getBody();
         observableAccettateList.addAll(prenotazioniAccettate);
         prenotazioniAccettateList.setItems(observableAccettateList);

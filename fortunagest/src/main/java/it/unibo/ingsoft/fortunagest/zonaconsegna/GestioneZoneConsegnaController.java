@@ -3,10 +3,14 @@ package it.unibo.ingsoft.fortunagest.zonaconsegna;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import it.unibo.ingsoft.fortunagest.StageController;
+import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import it.unibo.ingsoft.fortunagest.model.DatiZonaConsegnaPunti;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,8 +33,10 @@ public class GestioneZoneConsegnaController extends StageController {
         RestTemplate template = new RestTemplate();
         String url = "http://localhost:8080/gest/zone/";
         
-        ResponseEntity<DatiZonaConsegnaPunti[]> response =
-        template.getForEntity(url, DatiZonaConsegnaPunti[].class);
+        ResponseEntity<DatiZonaConsegnaPunti[]> response = template.exchange(url, 
+            HttpMethod.GET, 
+            new HttpEntity<DatiZonaConsegnaPunti[]>(AuthSingleton.getInstance().getAuthHeaders()), 
+            DatiZonaConsegnaPunti[].class);
         DatiZonaConsegnaPunti[] arrayZone = response.getBody();
 
         observableListaZone.setAll(arrayZone);
@@ -42,8 +48,12 @@ public class GestioneZoneConsegnaController extends StageController {
         int zonaId = listaZone.getItems().get(id).getId();
 
         RestTemplate template = new RestTemplate();
+        
         String url = "http://localhost:8080/gest/zone/" + zonaId;
-        template.delete(url);
+        template.exchange(url, 
+            HttpMethod.DELETE, 
+            new HttpEntity<Object>(AuthSingleton.getInstance().getAuthHeaders()), 
+            Object.class);
 
         updateList();
     }
