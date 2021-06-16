@@ -44,7 +44,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="921.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.GestioneCancellazioneController">
+<VBox prefHeight="400.0" prefWidth="921.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.GestioneCancellazioneController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -96,9 +96,10 @@
                   <TableColumn fx:id="colId" prefWidth="97.0" text="id" />
               </columns>
             </TableView>
-            <Button fx:id="btnCancella" layoutX="725.0" layoutY="181.0" mnemonicParsing="false" text="Cancella" onAction="#rifiutaPrenotazione" />
+            <Button fx:id="btnCancella" layoutX="725.0" layoutY="181.0" mnemonicParsing="false" onAction="#rifiutaPrenotazione" text="Cancella" />
             <TextField fx:id="textfield" layoutX="677.0" layoutY="76.0" />
             <Label layoutX="629.0" layoutY="38.0" text="Inserire id della prenotazione da cancellare" />
+            <Button layoutX="727.0" layoutY="256.0" mnemonicParsing="false" onAction="#switchToGestionePrenotazioni" text="Indietro" />
       </children>
     </AnchorPane>
   </children>
