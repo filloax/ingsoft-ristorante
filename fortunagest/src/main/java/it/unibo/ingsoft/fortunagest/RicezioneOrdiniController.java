@@ -1,9 +1,13 @@
 package it.unibo.ingsoft.fortunagest;
 
 import java.io.IOException;
+
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,7 +15,7 @@ import javafx.scene.control.TextArea;
 
 public class RicezioneOrdiniController extends StageController {
 
-    private static String rootUrl = "http://localhost:8080/gest-ordini";
+    private static String rootUrl = "http://localhost:8080/gest/ordini";
 
     private OrdineDati[] ordiniInAttesa;
 
@@ -31,9 +35,10 @@ public class RicezioneOrdiniController extends StageController {
         template = new RestTemplate();
         String UrlInAttesa = rootUrl + "/attesa";
 
-        ResponseEntity<OrdineDati[]> response = template.getForEntity(UrlInAttesa, OrdineDati[].class);
-        ordiniInAttesa = response.getBody();
+        ResponseEntity<OrdineDati[]> response = template.exchange(UrlInAttesa, HttpMethod.GET,
+                new HttpEntity<OrdineDati[]>(AuthSingleton.getInstance().getAuthHeaders()), OrdineDati[].class);
 
+        ordiniInAttesa = response.getBody();
         this.mostraProssimaPrenotazione();
 
     }
@@ -52,7 +57,8 @@ public class RicezioneOrdiniController extends StageController {
     public void accettaPrenotazione(ActionEvent event) throws IOException {
 
         String resourceUrl = rootUrl + '/' + ordiniInAttesa[index].getIdRichiesta();
-        template.exchange(resourceUrl, HttpMethod.PUT, null, Void.class);
+        template.exchange(resourceUrl, HttpMethod.PUT,
+                new HttpEntity<Void>(AuthSingleton.getInstance().getAuthHeaders()), Void.class);
 
         index++;
 
@@ -63,8 +69,8 @@ public class RicezioneOrdiniController extends StageController {
     public void rifiutaPrenotazione(ActionEvent event) throws IOException {
         String resourceUrl = rootUrl + '/' + ordiniInAttesa[index].getIdRichiesta();
 
-        template.delete(resourceUrl);
-        // template.exchange(resourceUrl, HttpMethod.DELETE, null, Void.class);
+        template.exchange(resourceUrl, HttpMethod.DELETE,
+                new HttpEntity<Void>(AuthSingleton.getInstance().getAuthHeaders()), Void.class);
 
         index++;
 

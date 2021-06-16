@@ -19,59 +19,53 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class CancellazionePrenotazioniController extends StageController {
 
-    @FXML
-    private TableView<PrenotazioneDati> tableview;
+        @FXML
+        private TableView<PrenotazioneDati> tableview;
 
-    @FXML
-    private TableColumn<PrenotazioneDati, String> colNominativo;
-    @FXML
-    private TableColumn<PrenotazioneDati, LocalDateTime> colDataOra;
-    @FXML
-    private TableColumn<PrenotazioneDati, String> colTelefono;
-    @FXML
-    private TableColumn<PrenotazioneDati, Integer> colPersone;
-    @FXML
-    private TableColumn<PrenotazioneDati, Integer> colId;
+        @FXML
+        private TableColumn<PrenotazioneDati, String> colNominativo;
+        @FXML
+        private TableColumn<PrenotazioneDati, LocalDateTime> colDataOra;
+        @FXML
+        private TableColumn<PrenotazioneDati, String> colTelefono;
+        @FXML
+        private TableColumn<PrenotazioneDati, Integer> colPersone;
+        @FXML
+        private TableColumn<PrenotazioneDati, Integer> colId;
 
-    @FXML
-    private TextField textfield;
+        @FXML
+        private TextField textfield;
 
-    @FXML
-    private Button btnCancella;
+        @FXML
+        private Button btnCancella;
 
-    private RestTemplate template;
+        private RestTemplate template;
 
-    public void initialize() {
-        template = new RestTemplate();
+        public void initialize() {
+                template = new RestTemplate();
 
+                String url = "http://localhost:8080/gest/prenotazioni/accettati";
+                ResponseEntity<PrenotazioneDati[]> response = template.exchange(url, HttpMethod.GET,
+                                new HttpEntity<PrenotazioneDati[]>(AuthSingleton.getInstance().getAuthHeaders()),
+                                PrenotazioneDati[].class);
 
-        String url = "http://localhost:8080/gest/prenotazioni/accettati";
-        ResponseEntity<PrenotazioneDati[]> response =
-        template.exchange(url, HttpMethod.GET, new HttpEntity<PrenotazioneDati[]>(AuthSingleton.getInstance().getAuthHeaders()), PrenotazioneDati[].class);
+                PrenotazioneDati[] prenotazioniAccettate = response.getBody();
 
-        PrenotazioneDati[] prenotazioniAccettate = response.getBody();
+                colNominativo.setCellValueFactory(new PropertyValueFactory<PrenotazioneDati, String>("nominativo"));
+                colDataOra.setCellValueFactory(new PropertyValueFactory<PrenotazioneDati, LocalDateTime>("dataOra"));
+                colTelefono.setCellValueFactory(new PropertyValueFactory<PrenotazioneDati, String>("telefono"));
+                colPersone.setCellValueFactory(new PropertyValueFactory<PrenotazioneDati, Integer>("numeroPersone"));
+                colId.setCellValueFactory(new PropertyValueFactory<PrenotazioneDati, Integer>("idRichiesta"));
 
-        colNominativo.setCellValueFactory(
-                new PropertyValueFactory<PrenotazioneDati, String>("nominativo"));
-        colDataOra.setCellValueFactory(
-                new PropertyValueFactory<PrenotazioneDati, LocalDateTime>("dataOra"));
-        colTelefono.setCellValueFactory(
-                new PropertyValueFactory<PrenotazioneDati, String>("telefono"));
-        colPersone.setCellValueFactory(
-                new PropertyValueFactory<PrenotazioneDati, Integer>("numeroPersone"));
-        colId.setCellValueFactory(
-                new PropertyValueFactory<PrenotazioneDati, Integer>("idRichiesta"));
+                tableview.getItems().setAll(prenotazioniAccettate);
 
-        tableview.getItems().setAll(prenotazioniAccettate);
+        }
 
+        public void rifiutaPrenotazione(ActionEvent event) throws IOException {
+                String resourceUrl = "http://localhost:8080/gest/prenotazioni" + '/' + textfield.getText();
 
+                template.exchange(resourceUrl, HttpMethod.DELETE,
+                                new HttpEntity<Void>(AuthSingleton.getInstance().getAuthHeaders()), Void.class);
 
-    }
-
-    public void rifiutaPrenotazione(ActionEvent event) throws IOException {
-        String resourceUrl = "http://localhost:8080/gest/prenotazioni" + '/' + textfield.getText();
-
-        template.exchange(resourceUrl, HttpMethod.DELETE, new HttpEntity<PrenotazioneDati[]>(AuthSingleton.getInstance().getAuthHeaders()), Void.class);
-
-    }
+        }
 }

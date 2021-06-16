@@ -1,8 +1,11 @@
 package it.unibo.ingsoft.fortunagest;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -25,16 +28,20 @@ public class GestioneOrdiniController extends StageController {
     public void initialize() {
 
         RestTemplate template = new RestTemplate();
-        String UrlInAttesa = "http://localhost:8080/gest-ordini/attesa";
+        String UrlInAttesa = "http://localhost:8080/gest/ordini/attesa";
 
-        ResponseEntity<OrdineDati[]> response = template.getForEntity(UrlInAttesa, OrdineDati[].class);
+        ResponseEntity<OrdineDati[]> response = template.exchange(UrlInAttesa, HttpMethod.GET,
+                new HttpEntity<OrdineDati[]>(AuthSingleton.getInstance().getAuthHeaders()), OrdineDati[].class);
+
         OrdineDati[] ordiniInAttesa = response.getBody();
         observableInAttesaList.addAll(ordiniInAttesa);
         ordiniInAttesaList.setItems(observableInAttesaList);
         ordiniInAttesaList.refresh();
 
-        String UrlAccettate = "http://localhost:8080/gest-ordini/accettati";
-        response = template.getForEntity(UrlAccettate, OrdineDati[].class);
+        String UrlAccettate = "http://localhost:8080/gest/ordini/accettati";
+        response = template.exchange(UrlAccettate, HttpMethod.GET,
+                new HttpEntity<OrdineDati[]>(AuthSingleton.getInstance().getAuthHeaders()), OrdineDati[].class);
+
         OrdineDati[] ordiniAccettati = response.getBody();
         observableAccettatiList.addAll(ordiniAccettati);
         ordiniAccettatiList.setItems(observableAccettatiList);
