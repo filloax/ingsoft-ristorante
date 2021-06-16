@@ -27,7 +27,7 @@ public class GestioneScontiController extends StageController {
 
     public void updateList() {
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:8080/gest-sconti/";
+        String url = "http://localhost:8080/gest/sconti/";
         
         ResponseEntity<DatiSconto[]> response =
         template.getForEntity(url, DatiSconto[].class);
@@ -42,7 +42,7 @@ public class GestioneScontiController extends StageController {
         int scontoId = listaSconti.getItems().get(id).getId();
 
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:8080/gest-sconti/" + scontoId;
+        String url = "http://localhost:8080/gest/sconti/" + scontoId;
         template.delete(url);
 
         updateList();

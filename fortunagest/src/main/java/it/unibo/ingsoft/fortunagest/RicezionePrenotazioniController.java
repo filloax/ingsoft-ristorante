@@ -11,7 +11,7 @@ import javafx.scene.control.TextArea;
 
 public class RicezionePrenotazioniController extends StageController {
 
-    private static String rootUrl = "http://localhost:8080/gest-prenotazioni";
+    private static String rootUrl = "http://localhost:8080/gest/prenotazioni";
 
     private PrenotazioneDati[] prenotazioniInAttesa;
 

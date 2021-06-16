@@ -20,7 +20,7 @@ public class GestionePrenotazioniController extends StageController {
     public void initialize() {
 
         RestTemplate template = new RestTemplate();
-        String UrlInAttesa = "http://localhost:8080/gest-prenotazioni/attesa";
+        String UrlInAttesa = "http://localhost:8080/gest/prenotazioni/attesa";
         
         ResponseEntity<PrenotazioneDati[]> response =
         template.getForEntity(UrlInAttesa, PrenotazioneDati[].class);
@@ -30,7 +30,7 @@ public class GestionePrenotazioniController extends StageController {
         
 
         
-        String UrlAccettate = "http://localhost:8080/gest-prenotazioni/accettati";
+        String UrlAccettate = "http://localhost:8080/gest/prenotazioni/accettati";
         response =
                 template.getForEntity(UrlAccettate, PrenotazioneDati[].class);
         PrenotazioneDati[] prenotazioniAccettate = response.getBody();

@@ -56,7 +56,7 @@ public class AggiungiProdottoController extends StageController {
         datiProdotto.setDesc(descrizione.getText());
 
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:8080/gest-prodotti/";
+        String url = "http://localhost:8080/gest/prodotti/";
         
         template.put(url, datiProdotto);
 

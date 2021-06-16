@@ -27,7 +27,7 @@ public class GestioneZoneConsegnaController extends StageController {
 
     public void updateList() {
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:8080/gest-zone/";
+        String url = "http://localhost:8080/gest/zone/";
         
         ResponseEntity<DatiZonaConsegnaPunti[]> response =
         template.getForEntity(url, DatiZonaConsegnaPunti[].class);
@@ -42,7 +42,7 @@ public class GestioneZoneConsegnaController extends StageController {
         int zonaId = listaZone.getItems().get(id).getId();
 
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:8080/gest-zone/" + zonaId;
+        String url = "http://localhost:8080/gest/zone/" + zonaId;
         template.delete(url);
 
         updateList();

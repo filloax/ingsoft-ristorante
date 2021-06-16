@@ -22,7 +22,7 @@ import it.unibo.ingsoft.fortuna.DatabaseException;
 import it.unibo.ingsoft.fortuna.model.zonaconsegna.ZonaConsegnaPunti;
 
 @RestController
-@RequestMapping("/gest-zone")
+@RequestMapping("/gest/zone")
 public class GestioneZoneConsegnaController extends AbstractController {
     @Autowired
     private IGestioneZoneConsegnaPunti service;

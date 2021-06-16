@@ -70,7 +70,7 @@ public class AggiungiZonaConsegnaController extends StageController {
         datiZonaConsegna.setPrezzoMinimo(Double.parseDouble(spesaMinima.getText()));
 
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:8080/gest-zone/";
+        String url = "http://localhost:8080/gest/zone/";
         
         template.put(url, datiZonaConsegna);
 

@@ -26,7 +26,7 @@ public class GestioneProdottiController extends StageController {
 
     public void updateList() {
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:8080/gest-prodotti/";
+        String url = "http://localhost:8080/gest/prodotti/";
         
         ResponseEntity<DatiProdotto[]> response =
         template.getForEntity(url, DatiProdotto[].class);
@@ -41,7 +41,7 @@ public class GestioneProdottiController extends StageController {
         int numero = listaProdotti.getItems().get(id).getNumero();
 
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:8080/gest-prodotti/" + numero;
+        String url = "http://localhost:8080/gest/prodotti/" + numero;
         template.delete(url);
 
         updateList();

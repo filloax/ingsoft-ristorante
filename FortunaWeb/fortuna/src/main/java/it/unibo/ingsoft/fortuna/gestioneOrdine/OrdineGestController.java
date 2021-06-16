@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
 
 @RestController
-@RequestMapping("/gest-ordini")
+@RequestMapping("/gest/ordini")
 public class OrdineGestController {
 
     @Autowired

@@ -103,7 +103,7 @@ public class AggiungiScontoController extends StageController {
             datiSconto.setPrezzoMin(Integer.parseInt(numeroProdotto.getText()));
 
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:8080/gest-sconti/";
+        String url = "http://localhost:8080/gest/sconti/";
         
         template.put(url, datiSconto);
 

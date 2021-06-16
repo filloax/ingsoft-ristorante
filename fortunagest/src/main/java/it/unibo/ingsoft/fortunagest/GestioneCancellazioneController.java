@@ -40,7 +40,7 @@ public class GestioneCancellazioneController extends StageController {
         template = new RestTemplate();
 
 
-        String UrlAccettate = "http://localhost:8080/gest-prenotazioni/accettati";
+        String UrlAccettate = "http://localhost:8080/gest/prenotazioni/accettati";
         ResponseEntity<PrenotazioneDati[]> response =
                 template.getForEntity(UrlAccettate, PrenotazioneDati[].class);
         PrenotazioneDati[] prenotazioniAccettate = response.getBody();
@@ -63,7 +63,7 @@ public class GestioneCancellazioneController extends StageController {
     }
 
     public void rifiutaPrenotazione(ActionEvent event) throws IOException {
-        String resourceUrl = "http://localhost:8080/gest-prenotazioni" + '/' + textfield.getText();
+        String resourceUrl = "http://localhost:8080/gest/prenotazioni" + '/' + textfield.getText();
 
         template.delete(resourceUrl);
         // template.exchange(resourceUrl, HttpMethod.DELETE, null, Void.class);
