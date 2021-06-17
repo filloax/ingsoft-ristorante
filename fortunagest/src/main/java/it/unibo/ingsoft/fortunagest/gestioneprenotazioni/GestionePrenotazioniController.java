@@ -1,11 +1,14 @@
-package it.unibo.ingsoft.fortunagest;
+package it.unibo.ingsoft.fortunagest.gestioneprenotazioni;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import it.unibo.ingsoft.fortunagest.PeriodoDisabilitazioneDati;
+import it.unibo.ingsoft.fortunagest.StageController;
 import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
+import it.unibo.ingsoft.fortunagest.model.PrenotazioneDati;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

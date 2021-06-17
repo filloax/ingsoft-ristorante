@@ -94,8 +94,22 @@ public class Sconto {
     }
 
     private boolean isDateCostGood(LocalDateTime tempo, double costoTotale) {
-        return isInTempo(tempo) && costoTotale >= costoMinimo;
+        return isInTempo(tempo) && costoTotale >= getCostoMinimo();
     }
+
+
+    public double getQuantita() {
+        return quantita == null ? 0 : quantita.doubleValue();
+    }
+
+    public double getQuantitaPct() {
+        return quantitaPct == null ? 0 : quantitaPct.doubleValue();
+    }
+
+    public double getCostoMinimo() {
+        return costoMinimo == null ? 0 : costoMinimo.doubleValue();
+    }
+
 
     public Sconto inizio(LocalDateTime inizio) {
         setInizio(inizio);

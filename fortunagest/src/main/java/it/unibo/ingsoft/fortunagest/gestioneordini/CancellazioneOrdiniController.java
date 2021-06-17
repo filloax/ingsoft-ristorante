@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortunagest;
+package it.unibo.ingsoft.fortunagest.gestioneordini;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -8,7 +8,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import it.unibo.ingsoft.fortunagest.StageController;
 import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
+import it.unibo.ingsoft.fortunagest.model.DatiOrdine;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -20,18 +22,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class CancellazioneOrdiniController extends StageController {
 
     @FXML
-    private TableView<OrdineDati> tableview;
+    private TableView<DatiOrdine> tableview;
 
     @FXML
-    private TableColumn<OrdineDati, String> colNominativo;
+    private TableColumn<DatiOrdine, String> colNominativo;
     @FXML
-    private TableColumn<OrdineDati, LocalDateTime> colDataOra;
+    private TableColumn<DatiOrdine, LocalDateTime> colDataOra;
     @FXML
-    private TableColumn<OrdineDati, String> colTelefono;
+    private TableColumn<DatiOrdine, String> colTelefono;
     @FXML
-    private TableColumn<OrdineDati, String> colIndirizzo;
+    private TableColumn<DatiOrdine, String> colIndirizzo;
     @FXML
-    private TableColumn<OrdineDati, Integer> colId;
+    private TableColumn<DatiOrdine, Integer> colId;
 
     @FXML
     private TextField textfield;
@@ -45,16 +47,16 @@ public class CancellazioneOrdiniController extends StageController {
         template = new RestTemplate();
 
         String UrlAccettate = "http://localhost:8080/gest/ordini/accettati";
-        ResponseEntity<OrdineDati[]> response = template.exchange(UrlAccettate, HttpMethod.GET,
-                new HttpEntity<OrdineDati[]>(AuthSingleton.getInstance().getAuthHeaders()), OrdineDati[].class);
+        ResponseEntity<DatiOrdine[]> response = template.exchange(UrlAccettate, HttpMethod.GET,
+                new HttpEntity<DatiOrdine[]>(AuthSingleton.getInstance().getAuthHeaders()), DatiOrdine[].class);
 
-        OrdineDati[] prenotazioniAccettate = response.getBody();
+        DatiOrdine[] prenotazioniAccettate = response.getBody();
 
-        colNominativo.setCellValueFactory(new PropertyValueFactory<OrdineDati, String>("nominativo"));
-        colDataOra.setCellValueFactory(new PropertyValueFactory<OrdineDati, LocalDateTime>("dataOra"));
-        colTelefono.setCellValueFactory(new PropertyValueFactory<OrdineDati, String>("telefono"));
-        colIndirizzo.setCellValueFactory(new PropertyValueFactory<OrdineDati, String>("indirizzo"));
-        colId.setCellValueFactory(new PropertyValueFactory<OrdineDati, Integer>("idRichiesta"));
+        colNominativo.setCellValueFactory(new PropertyValueFactory<DatiOrdine, String>("nominativo"));
+        colDataOra.setCellValueFactory(new PropertyValueFactory<DatiOrdine, LocalDateTime>("dataOra"));
+        colTelefono.setCellValueFactory(new PropertyValueFactory<DatiOrdine, String>("telefono"));
+        colIndirizzo.setCellValueFactory(new PropertyValueFactory<DatiOrdine, String>("indirizzo"));
+        colId.setCellValueFactory(new PropertyValueFactory<DatiOrdine, Integer>("idRichiesta"));
 
         tableview.getItems().setAll(prenotazioniAccettate);
 

@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortunagest;
+package it.unibo.ingsoft.fortunagest.model;
 
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.core.JsonProcessingException;

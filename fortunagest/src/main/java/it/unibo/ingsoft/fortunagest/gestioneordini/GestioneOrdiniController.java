@@ -1,11 +1,14 @@
-package it.unibo.ingsoft.fortunagest;
+package it.unibo.ingsoft.fortunagest.gestioneordini;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import it.unibo.ingsoft.fortunagest.PeriodoDisabilitazioneDati;
+import it.unibo.ingsoft.fortunagest.StageController;
 import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
+import it.unibo.ingsoft.fortunagest.model.DatiOrdine;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,12 +16,12 @@ import javafx.scene.control.ListView;
 
 public class GestioneOrdiniController extends StageController {
     @FXML
-    private ListView<OrdineDati> ordiniInAttesaList;
-    private ObservableList<OrdineDati> observableInAttesaList = FXCollections.observableArrayList();
+    private ListView<DatiOrdine> ordiniInAttesaList;
+    private ObservableList<DatiOrdine> observableInAttesaList = FXCollections.observableArrayList();
 
     @FXML
-    private ListView<OrdineDati> ordiniAccettatiList;
-    private ObservableList<OrdineDati> observableAccettatiList = FXCollections.observableArrayList();
+    private ListView<DatiOrdine> ordiniAccettatiList;
+    private ObservableList<DatiOrdine> observableAccettatiList = FXCollections.observableArrayList();
 
     @FXML
     private ListView<PeriodoDisabilitazioneDati> disabilitazioniOrdiniList;
@@ -30,19 +33,19 @@ public class GestioneOrdiniController extends StageController {
         RestTemplate template = new RestTemplate();
         String UrlInAttesa = "http://localhost:8080/gest/ordini/attesa";
 
-        ResponseEntity<OrdineDati[]> response = template.exchange(UrlInAttesa, HttpMethod.GET,
-                new HttpEntity<OrdineDati[]>(AuthSingleton.getInstance().getAuthHeaders()), OrdineDati[].class);
+        ResponseEntity<DatiOrdine[]> response = template.exchange(UrlInAttesa, HttpMethod.GET,
+                new HttpEntity<DatiOrdine[]>(AuthSingleton.getInstance().getAuthHeaders()), DatiOrdine[].class);
 
-        OrdineDati[] ordiniInAttesa = response.getBody();
+        DatiOrdine[] ordiniInAttesa = response.getBody();
         observableInAttesaList.addAll(ordiniInAttesa);
         ordiniInAttesaList.setItems(observableInAttesaList);
         ordiniInAttesaList.refresh();
 
         String UrlAccettate = "http://localhost:8080/gest/ordini/accettati";
         response = template.exchange(UrlAccettate, HttpMethod.GET,
-                new HttpEntity<OrdineDati[]>(AuthSingleton.getInstance().getAuthHeaders()), OrdineDati[].class);
+                new HttpEntity<DatiOrdine[]>(AuthSingleton.getInstance().getAuthHeaders()), DatiOrdine[].class);
 
-        OrdineDati[] ordiniAccettati = response.getBody();
+        DatiOrdine[] ordiniAccettati = response.getBody();
         observableAccettatiList.addAll(ordiniAccettati);
         ordiniAccettatiList.setItems(observableAccettatiList);
 

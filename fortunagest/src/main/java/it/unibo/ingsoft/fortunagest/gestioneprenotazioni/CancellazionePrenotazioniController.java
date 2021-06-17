@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortunagest;
+package it.unibo.ingsoft.fortunagest.gestioneprenotazioni;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -8,7 +8,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import it.unibo.ingsoft.fortunagest.StageController;
 import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
+import it.unibo.ingsoft.fortunagest.model.PrenotazioneDati;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

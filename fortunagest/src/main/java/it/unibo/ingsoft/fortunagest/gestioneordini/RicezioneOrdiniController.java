@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortunagest;
+package it.unibo.ingsoft.fortunagest.gestioneordini;
 
 import java.io.IOException;
 
@@ -7,7 +7,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import it.unibo.ingsoft.fortunagest.StageController;
 import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
+import it.unibo.ingsoft.fortunagest.model.DatiOrdine;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -17,7 +19,7 @@ public class RicezioneOrdiniController extends StageController {
 
     private static String rootUrl = "http://localhost:8080/gest/ordini";
 
-    private OrdineDati[] ordiniInAttesa;
+    private DatiOrdine[] ordiniInAttesa;
 
     private RestTemplate template;
 
@@ -35,26 +37,26 @@ public class RicezioneOrdiniController extends StageController {
         template = new RestTemplate();
         String UrlInAttesa = rootUrl + "/attesa";
 
-        ResponseEntity<OrdineDati[]> response = template.exchange(UrlInAttesa, HttpMethod.GET,
-                new HttpEntity<OrdineDati[]>(AuthSingleton.getInstance().getAuthHeaders()), OrdineDati[].class);
+        ResponseEntity<DatiOrdine[]> response = template.exchange(UrlInAttesa, HttpMethod.GET,
+                new HttpEntity<DatiOrdine[]>(AuthSingleton.getInstance().getAuthHeaders()), DatiOrdine[].class);
 
         ordiniInAttesa = response.getBody();
-        this.mostraProssimaPrenotazione();
+        this.mostraProssimoOrdine();
 
     }
 
-    private void mostraProssimaPrenotazione() {
+    private void mostraProssimoOrdine() {
 
         if (index <= ordiniInAttesa.length - 1)
             textarea.setText(ordiniInAttesa[index].toString());
         else {
-            textarea.setText("Non ci sono più altre Prenotazioni in Attesa");
+            textarea.setText("Non ci sono più altri Ordini in Attesa");
             btnAccetta.setDisable(true);
             btnRifiuta.setDisable(true);
         }
     }
 
-    public void accettaPrenotazione(ActionEvent event) throws IOException {
+    public void accettaOrdine(ActionEvent event) throws IOException {
 
         String resourceUrl = rootUrl + '/' + ordiniInAttesa[index].getIdRichiesta();
         template.exchange(resourceUrl, HttpMethod.PUT,
@@ -62,11 +64,11 @@ public class RicezioneOrdiniController extends StageController {
 
         index++;
 
-        this.mostraProssimaPrenotazione();
+        this.mostraProssimoOrdine();
 
     }
 
-    public void rifiutaPrenotazione(ActionEvent event) throws IOException {
+    public void rifiutaOrdine(ActionEvent event) throws IOException {
         String resourceUrl = rootUrl + '/' + ordiniInAttesa[index].getIdRichiesta();
 
         template.exchange(resourceUrl, HttpMethod.DELETE,
@@ -74,7 +76,7 @@ public class RicezioneOrdiniController extends StageController {
 
         index++;
 
-        this.mostraProssimaPrenotazione();
+        this.mostraProssimoOrdine();
 
     }
 

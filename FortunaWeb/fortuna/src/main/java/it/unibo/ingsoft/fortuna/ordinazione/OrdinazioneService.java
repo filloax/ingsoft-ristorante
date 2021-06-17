@@ -210,7 +210,7 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
         ordine.setTavolo(tavolo);
 
         try (Connection connection = getConnection()) {
-            String query = "INSERT INTO ordini (nome, note, data_ora, tavolo) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO ordini (nome, note, data_ora, tavolo, ordini_tipo) VALUES (?, ?, ?, ?, 'ordine_al_tavolo')";
             try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
                 preparedStmt.setString(1, ordine.getNominativo());
                 preparedStmt.setString(2, ordine.getNote());
@@ -290,8 +290,8 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
 
         try (Connection connection = getConnection()) {
             String query = tokenPagamento.isEmpty()
-                    ? "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo) VALUES (?, ?, ?, ?, ?)"
-                    : "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo, pagamento) VALUES (?, ?, ?, ?, ?, ?)";
+                    ? "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo, ordini_tipo) VALUES (?, ?, ?, ?, ?, 'ordine_domicilio')"
+                    : "INSERT INTO ordini (nome, note, data_ora, telefono, indirizzo, pagamento, ordini_tipo) VALUES (?, ?, ?, ?, ?, ?, 'ordine_domicilio')";
             try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
                 preparedStmt.setString(1, ordine.getNominativo());
                 preparedStmt.setString(2, ordine.getNote());
@@ -332,7 +332,7 @@ public class OrdinazioneService extends AbstractService implements IOrdinazioneS
         ordine.setTelefono(telefono);
 
         try (Connection connection = getConnection()) {
-            String query = "INSERT INTO ordini (nome, note, data_ora, telefono) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO ordini (nome, note, data_ora, telefono, ordini_tipo) VALUES (?, ?, ?, ?, 'ordine_take_away')";
             try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
                 preparedStmt.setString(1, ordine.getNominativo());
                 preparedStmt.setString(2, ordine.getNote());

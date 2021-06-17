@@ -44,7 +44,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="921.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.CancellazionePrenotazioniController">
+<VBox prefHeight="400.0" prefWidth="921.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.gestioneprenotazioni.CancellazionePrenotazioniController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -87,19 +87,19 @@
     </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="405.0" prefWidth="660.0" VBox.vgrow="ALWAYS">
       <children>
-            <TableView fx:id="tableview" layoutX="26.0" layoutY="31.0" prefHeight="324.0" prefWidth="589.0">
-              <columns>
-                <TableColumn fx:id="colNominativo" prefWidth="141.0" text="nominativo" />
-                <TableColumn fx:id="colDataOra" prefWidth="134.0" text="dataOra" />
-                  <TableColumn fx:id="colTelefono" prefWidth="118.0" text="telefono" />
-                  <TableColumn fx:id="colPersone" prefWidth="98.0" text="persone" />
-                  <TableColumn fx:id="colId" prefWidth="97.0" text="id" />
-              </columns>
-            </TableView>
-            <Button fx:id="btnCancella" layoutX="725.0" layoutY="181.0" mnemonicParsing="false" onAction="#rifiutaPrenotazione" text="Cancella" />
-            <TextField fx:id="textfield" layoutX="677.0" layoutY="76.0" />
-            <Label layoutX="629.0" layoutY="38.0" text="Inserire id della prenotazione da cancellare" />
-            <Button layoutX="727.0" layoutY="256.0" mnemonicParsing="false" onAction="#switchToGestionePrenotazioni" text="Indietro" />
+        <TableView fx:id="tableview" layoutX="26.0" layoutY="31.0" prefHeight="324.0" prefWidth="589.0">
+          <columns>
+            <TableColumn fx:id="colNominativo" prefWidth="141.0" text="nominativo" />
+            <TableColumn fx:id="colDataOra" prefWidth="134.0" text="dataOra" />
+            <TableColumn fx:id="colTelefono" prefWidth="118.0" text="telefono" />
+            <TableColumn fx:id="colPersone" prefWidth="98.0" text="persone" />
+            <TableColumn fx:id="colId" prefWidth="97.0" text="id" />
+          </columns>
+        </TableView>
+        <Button fx:id="btnCancella" layoutX="725.0" layoutY="181.0" mnemonicParsing="false" onAction="#rifiutaPrenotazione" text="Cancella" />
+        <TextField fx:id="textfield" layoutX="677.0" layoutY="76.0" />
+        <Label layoutX="629.0" layoutY="38.0" text="Inserire id della prenotazione da cancellare" />
+        <Button layoutX="727.0" layoutY="256.0" mnemonicParsing="false" onAction="#switchToGestionePrenotazioni" text="Indietro" />
       </children>
     </AnchorPane>
   </children>

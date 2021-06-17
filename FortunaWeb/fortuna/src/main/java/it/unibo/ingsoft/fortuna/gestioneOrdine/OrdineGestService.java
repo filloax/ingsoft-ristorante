@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna.gestioneOrdine;
+package it.unibo.ingsoft.fortuna.gestioneordine;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -16,9 +16,10 @@ import it.unibo.ingsoft.fortuna.ResourceUtilsLib;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 import it.unibo.ingsoft.fortuna.model.ProdottoOrdine;
 import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
-import it.unibo.ingsoft.fortuna.model.richiesta.OrdineAlTavolo;
 import it.unibo.ingsoft.fortuna.model.richiesta.OrdineDomicilio;
 import it.unibo.ingsoft.fortuna.model.richiesta.OrdineTakeAway;
+import it.unibo.ingsoft.fortuna.ordinazione.IPagamentoOnline;
+import it.unibo.ingsoft.fortuna.ordinazione.PaymentException;
 import it.unibo.ingsoft.fortuna.sms.IInvioSms;
 import it.unibo.ingsoft.fortuna.sms.SMSException;
 
@@ -29,6 +30,9 @@ public class OrdineGestService {
 
     @Autowired
     private IInvioSms sms;
+
+    @Autowired
+    private IPagamentoOnline pagamentoOnline;
 
     @Autowired
     private ProdottoRepository prodottoRepo;
@@ -90,12 +94,25 @@ public class OrdineGestService {
     // questo il metodo non ha permesso a eseguire aggiornamenti alle tabelle,
     // provocando eccezioni
     @Transactional
-    public int accetta(Integer id) throws DatabaseException, SMSException, IOException {
+    public int accetta(Integer id) throws DatabaseException, SMSException, IOException, PaymentException {
         int rowsUpdated = repo.accetta(id);
 
         if (rowsUpdated == 1) {
             Ordine ordine = get(id);
             if (ordine instanceof OrdineDomicilio) {
+                // TODO: farlo funzionare
+                // String tokenPagamento = ((OrdineDomicilio) ordine).getTokenPagamento();
+                // if (tokenPagamento != null && !tokenPagamento.isBlank()) {
+                //     if (pagamentoOnline.verificaAutorizzazione((OrdineDomicilio)ordine) 
+                //     && !pagamentoOnline.verificaPagamento((OrdineDomicilio)ordine)) {
+                //         pagamentoOnline.effettuaPagamento((OrdineDomicilio) ordine);
+                //     } else {
+                //         // TODO: probabilmente meglio non crashare che dopo
+                //         // rende impossibile fare cose con l'ordine
+                //         throw new PaymentException("Pagamento non confermato!");
+                //     }
+                // }
+
                 String msgTemplate = ResourceUtilsLib.loadResourceToString("/sms/ordine-accettato.txt");
                 sms.inviaSMS(((OrdineDomicilio) ordine).getTelefono(),
                         String.format(msgTemplate,
@@ -119,20 +136,32 @@ public class OrdineGestService {
         return rowsUpdated;
     }
 
-    // @Transactional
-    public void cancella(Integer id, String ragione) throws IOException, SMSException {
+    @Transactional
+    public void cancella(Integer id, String ragione) throws IOException, SMSException, PaymentException {
         Ordine ordine = get(id);
-        // repo.deleteOrdine(id); TODO da sostituire
-        repo.deleteById(id);
+        repo.deleteOrdine(id);
+        // repo.deleteById(id);
 
         if (ordine instanceof OrdineDomicilio) {
+            String tokenPagamento = ((OrdineDomicilio) ordine).getTokenPagamento();
+            if (tokenPagamento != null && !tokenPagamento.isBlank()) {
+                if (pagamentoOnline.verificaAutorizzazione((OrdineDomicilio)ordine) 
+                || pagamentoOnline.verificaPagamento((OrdineDomicilio)ordine)) {
+                    pagamentoOnline.annullaPagamento((OrdineDomicilio) ordine);
+                }
+            }
+
             String msgTemplate = ResourceUtilsLib.loadResourceToString("/sms/ordine-cancellato.txt");
-            sms.inviaSMS(((OrdineDomicilio) ordine).getTelefono(), String.format(msgTemplate, ordine.getDataOra()
-                    .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), id));
+            sms.inviaSMS(((OrdineDomicilio) ordine).getTelefono(), String.format(msgTemplate, 
+                    ordine.getDataOra().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), 
+                    ragione,
+                    id));
         } else if (ordine instanceof OrdineTakeAway) {
             String msgTemplate = ResourceUtilsLib.loadResourceToString("/sms/ordine-cancellato.txt");
-            sms.inviaSMS(((OrdineTakeAway) ordine).getTelefono(), String.format(msgTemplate, ordine.getDataOra()
-                    .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), id));
+            sms.inviaSMS(((OrdineTakeAway) ordine).getTelefono(), String.format(msgTemplate, 
+                    ordine.getDataOra() .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), 
+                    ragione,
+                    id));
 
         }
     }

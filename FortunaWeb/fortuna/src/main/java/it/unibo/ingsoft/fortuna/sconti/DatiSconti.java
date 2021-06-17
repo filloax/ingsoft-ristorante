@@ -10,14 +10,12 @@ import lombok.Data;
 
 @Data
 public class DatiSconti {
-    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime start;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime end;
     private double quantita;
     private boolean isPercent = false;
-    // TODO se non c'è il prezzo minimo, significa che lo sconto si applica a tutti i costi sopra a 0
-    // modifica da fare al db
     private double prezzoMin = 0;
     private Integer numeroProdotto;
     private Integer id; // usato solo per response
@@ -26,13 +24,14 @@ public class DatiSconti {
         DatiSconti datiSconto = new DatiSconti();
         datiSconto.setStart(sconto.getInizio());
         datiSconto.setEnd(sconto.getFine());
-        datiSconto.setPercent(sconto.getQuantitaPct() != null && sconto.getQuantitaPct() > 0);
-        if (sconto.getCostoMinimo() != null)
+        datiSconto.setPercent(sconto.getQuantitaPct() > 0);
+        if (sconto.getCostoMinimo() > 0)
             datiSconto.setPrezzoMin(sconto.getCostoMinimo());
 
         datiSconto.setQuantita(datiSconto.isPercent() ? sconto.getQuantitaPct() : sconto.getQuantita());
-        if (sconto.getPerProdotti() != null)
+        if (sconto.getPerProdotti() != null && !sconto.getPerProdotti().isEmpty())
             datiSconto.setNumeroProdotto(sconto.getPerProdotti().stream().map(Prodotto::getNumero).findFirst().get());
+
         datiSconto.setId(sconto.getId());
 
         return datiSconto;

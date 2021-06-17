@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
@@ -30,12 +32,12 @@ public abstract class Ordine extends Richiesta {
 
     @Column(name = "note")
     private String note;
-    @OneToMany(mappedBy = "ordine")
+    @OneToMany(mappedBy = "ordine", cascade = CascadeType.ALL)
     private List<ProdottoOrdine> prodottoOrdini;
 
     @Transient
     private List<Prodotto> prodotti;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "sconti_applicati", joinColumns = @JoinColumn(name = "id_ordine"), inverseJoinColumns = @JoinColumn(name = "id_sconto"))
     private List<Sconto> sconti;
 

@@ -43,7 +43,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.AbilitaPrenotazioniController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.ingsoft.fortunagest.gestioneprenotazioni.AbilitaPrenotazioniController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -86,16 +86,16 @@
     </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-            <ListView fx:id="disabilitazionePrenotazioneList" layoutX="14.0" layoutY="21.0" prefHeight="344.0" prefWidth="298.0" />
-            <TextField fx:id="idCancellazione" layoutX="337.0" layoutY="39.0" prefHeight="24.0" prefWidth="242.0" promptText="Id disabilitazione da cancellare" />
-            <Button layoutX="513.0" layoutY="77.0" mnemonicParsing="false" text="Cancella" onAction="#riabilitaPeriodo" />
-            <DatePicker fx:id="dataInizio" layoutX="337.0" layoutY="166.0" promptText="inizio" />
-            <DatePicker fx:id="dataFine" layoutX="337.0" layoutY="241.0" promptText="fine" />
-            <TextField fx:id="oraInizio" layoutX="337.0" layoutY="206.0" prefHeight="24.0" prefWidth="63.0" promptText="00 ora" />
-            <Button layoutX="519.0" layoutY="314.0" mnemonicParsing="false" text="Aggiungi" onAction="#disabilitaPeriodo" />
-            <TextField fx:id="minutiInizio" layoutX="436.0" layoutY="206.0" prefHeight="24.0" prefWidth="63.0" promptText="00 min" />
-            <TextField fx:id="oraFine" layoutX="337.0" layoutY="279.0" prefHeight="24.0" prefWidth="63.0" promptText="23 ora" />
-            <TextField fx:id="minutiFine" layoutX="436.0" layoutY="279.0" prefHeight="24.0" prefWidth="63.0" promptText="59 min" />
+        <ListView fx:id="disabilitazionePrenotazioneList" layoutX="14.0" layoutY="21.0" prefHeight="344.0" prefWidth="298.0" />
+        <TextField fx:id="idCancellazione" layoutX="337.0" layoutY="39.0" prefHeight="24.0" prefWidth="242.0" promptText="Id disabilitazione da cancellare" />
+        <Button layoutX="513.0" layoutY="77.0" mnemonicParsing="false" text="Cancella" onAction="#riabilitaPeriodo" />
+        <DatePicker fx:id="dataInizio" layoutX="337.0" layoutY="166.0" promptText="inizio" />
+        <DatePicker fx:id="dataFine" layoutX="337.0" layoutY="241.0" promptText="fine" />
+        <TextField fx:id="oraInizio" layoutX="337.0" layoutY="206.0" prefHeight="24.0" prefWidth="63.0" promptText="00 ora" />
+        <Button layoutX="519.0" layoutY="314.0" mnemonicParsing="false" text="Aggiungi" onAction="#disabilitaPeriodo" />
+        <TextField fx:id="minutiInizio" layoutX="436.0" layoutY="206.0" prefHeight="24.0" prefWidth="63.0" promptText="00 min" />
+        <TextField fx:id="oraFine" layoutX="337.0" layoutY="279.0" prefHeight="24.0" prefWidth="63.0" promptText="23 ora" />
+        <TextField fx:id="minutiFine" layoutX="436.0" layoutY="279.0" prefHeight="24.0" prefWidth="63.0" promptText="59 min" />
       </children>
     </AnchorPane>
   </children>

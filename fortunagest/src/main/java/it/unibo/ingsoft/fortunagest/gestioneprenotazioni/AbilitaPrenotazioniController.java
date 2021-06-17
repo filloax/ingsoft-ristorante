@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortunagest;
+package it.unibo.ingsoft.fortunagest.gestioneprenotazioni;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -10,21 +10,22 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import it.unibo.ingsoft.fortunagest.PeriodoDisabilitazioneDati;
+import it.unibo.ingsoft.fortunagest.StageController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-public class AbilitaOrdiniController extends StageController {
+public class AbilitaPrenotazioniController extends StageController {
     @FXML
     private ListView<PeriodoDisabilitazioneDati> disabilitazionePrenotazioneList;
     private ObservableList<PeriodoDisabilitazioneDati> observableDisabilitazioneList = FXCollections
             .observableArrayList();
-    private String UrlDisabilitazioni = "http://localhost:8080/disa-ordini";
+    private String UrlDisabilitazioni = "http://localhost:8080/disa-prenotazioni";
     private RestTemplate template = new RestTemplate();
     @FXML
     private TextField idCancellazione;
@@ -40,13 +41,9 @@ public class AbilitaOrdiniController extends StageController {
     private TextField minutiInizio;
     @FXML
     private TextField minutiFine;
-    @FXML
-    private ComboBox<String> tipoOrdinazione;
 
     public void initialize() {
         updateList();
-        tipoOrdinazione.getItems().setAll("ORDINAZ_ASPORTO", "ORDINAZ_DOMICILIO", "ORDINAZ_TAVOLO");
-        tipoOrdinazione.getSelectionModel().selectFirst();
     }
 
     private void updateList() {
@@ -77,7 +74,7 @@ public class AbilitaOrdiniController extends StageController {
 
         periodo.setInizio(inizio);
         periodo.setFine(fine);
-        periodo.setTipo(tipoOrdinazione.getValue());
+        periodo.setTipo("PRENOTAZIONE");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna.gestioneOrdine;
+package it.unibo.ingsoft.fortuna.gestioneordine;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,8 +1,9 @@
-package it.unibo.ingsoft.fortuna.gestioneOrdine;
+package it.unibo.ingsoft.fortuna.gestioneordine;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import it.unibo.ingsoft.fortuna.AbstractController;
 import it.unibo.ingsoft.fortuna.DatabaseException;
 import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
+import it.unibo.ingsoft.fortuna.ordinazione.PaymentException;
 import it.unibo.ingsoft.fortuna.sms.SMSException;
 
 @RestController
@@ -32,8 +34,8 @@ public class OrdineGestController extends AbstractController{
     private OrdineGestService service;
 
     @GetMapping
-    public List<Ordine> list() {
-        return service.listAll();
+    public List<DatiOrdine> list() {
+        return service.listAll().stream().map(o -> DatiOrdine.fromOrdine(o)).collect(Collectors.toList());
     }
 
     @GetMapping(value = "attesa")
@@ -46,14 +48,18 @@ public class OrdineGestController extends AbstractController{
     }
 
     @GetMapping(value = "{id}")
-    public ResponseEntity<Ordine> get(@PathVariable Integer id) {
+    public ResponseEntity<DatiOrdine> get(@PathVariable Integer id) {
+        Ordine ordine = null;
         try {
-            Ordine ordine = service.get(id);
-            return new ResponseEntity<Ordine>(ordine, HttpStatus.OK);
+            ordine = service.get(id);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Ordine>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<DatiOrdine>(HttpStatus.NOT_FOUND);
         }
-
+        try {
+            return new ResponseEntity<DatiOrdine>(DatiOrdine.fromOrdine(ordine), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<DatiOrdine>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // @PostMapping
@@ -82,9 +88,9 @@ public class OrdineGestController extends AbstractController{
 
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (DatabaseException | SMSException | IOException e) {
+        } catch (DatabaseException | SMSException | IOException | PaymentException e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -101,9 +107,9 @@ public class OrdineGestController extends AbstractController{
 
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (SMSException | IOException e) {
+        } catch (SMSException | IOException | PaymentException e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
