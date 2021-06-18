@@ -1,0 +1,102 @@
+2021-06-17T09:50:13.6783438 - Password caricata con successo!
+2021-06-17T09:50:13.8033437 - Caricato menu da DB con successo
+2021-06-17T09:50:13.8463419 - Caricati sconti da DB con successo
+2021-06-17T09:50:13.9533443 - Caricate zone da DB con successo
+2021-06-17T10:15:03.8521298 - Password caricata con successo!
+2021-06-17T10:15:03.999132 - Caricato menu da DB con successo
+2021-06-17T10:15:04.0241293 - Caricati sconti da DB con successo
+2021-06-17T10:15:04.1121309 - Caricate zone da DB con successo
+2021-06-17T10:15:27.5400769 - Tentativo di accesso con username: fortunAdmin
+2021-06-17T10:15:27.5460755 - Tentativo di accesso RIUSCITO con username: fortunAdmin
+2021-06-17T10:15:29.5432716 - Tentativo di accesso con username: fortunAdmin
+2021-06-17T10:15:29.5492728 - Tentativo di accesso RIUSCITO con username: fortunAdmin
+2021-06-17T10:15:29.6313766 - Tentativo di accesso con username: fortunAdmin
+2021-06-17T10:15:29.6383776 - Tentativo di accesso RIUSCITO con username: fortunAdmin
+2021-06-17T10:15:36.2005463 - 127.0.0.1: deletePeriodoDisattivazioneOrdini(id: 8)
+2021-06-17T10:15:38.0827957 - 127.0.0.1: deletePeriodoDisattivazioneOrdini(id: 9)
+2021-06-17T10:16:05.8788018 - Richiesta a API Google per Geocoding di 'Via marconi 25'...
+2021-06-17T10:16:06.3902342 - Richiesta geocoding riuscita: risultato (44,497830, 11,338184)
+2021-06-17T10:21:10.7891457 - Caricato menu da DB con successo
+2021-06-17T10:21:10.8201464 - Caricati sconti da DB con successo
+2021-06-17T10:21:10.946478 - Caricate zone da DB con successo
+2021-06-17T10:21:28.0934007 - Richiesta a API Google per Geocoding di 'no'...
+2021-06-17T10:21:28.8534961 - Richiesta geocoding riuscita: risultato (44,496438, 11,338394)
+2021-06-17T10:26:59.8203429 - Password caricata con successo!
+2021-06-17T10:26:59.982244 - Caricato menu da DB con successo
+2021-06-17T10:27:00.0062425 - Caricati sconti da DB con successo
+2021-06-17T10:27:00.0872467 - Caricate zone da DB con successo
+2021-06-17T10:27:19.8736879 - Richiesta a API Google per Geocoding di 'Via Marconi 25'...
+2021-06-17T10:27:20.3656139 - Richiesta geocoding riuscita: risultato (44,497830, 11,338184)
+2021-06-17T10:28:47.5853467 - Password caricata con successo!
+2021-06-17T10:28:47.6743488 - Caricato menu da DB con successo
+2021-06-17T10:28:47.6953465 - Caricati sconti da DB con successo
+2021-06-17T10:28:47.7193487 - Caricate zone da DB con successo
+2021-06-17T10:28:55.0345215 - Password caricata con successo!
+2021-06-17T10:28:55.1225237 - Caricato menu da DB con successo
+2021-06-17T10:28:55.1435217 - Caricati sconti da DB con successo
+2021-06-17T10:28:55.1675204 - Caricate zone da DB con successo
+2021-06-17T10:29:24.044929 - Password caricata con successo!
+2021-06-17T10:29:24.1276181 - Caricato menu da DB con successo
+2021-06-17T10:29:24.1456183 - Caricati sconti da DB con successo
+2021-06-17T10:29:24.169621 - Caricate zone da DB con successo
+2021-06-17T10:30:17.1408105 - Richiesta a API Google per Geocoding di 'Via Marconi 25'...
+2021-06-17T10:30:17.3526893 - Richiesta geocoding riuscita: risultato (44,497830, 11,338184)
+2021-06-17T10:30:37.2099035 - 0:0:0:0:0:0:0:1: pagamento
+2021-06-17T10:30:41.5224674 - 0:0:0:0:0:0:0:1: creaOrdine(tipo: ORDINAZ_DOMICILIO, data: 2021-06-18T15:23)
+2021-06-17T10:30:41.5284651 - Richiesta a API Google per Geocoding di 'Via Guglielmo Marconi, 25, 40122 Bologna BO, Italy'...
+2021-06-17T10:30:41.8971066 - Richiesta geocoding riuscita: risultato (44,497830, 11,338184)
+2021-06-17T10:30:52.3911395 - Tentativo di accesso con username: fortunAdmin
+2021-06-17T10:30:52.3971407 - Tentativo di accesso RIUSCITO con username: fortunAdmin
+2021-06-17T10:31:07.9063345 - Tentativo di accesso con username: fortunAdmin
+2021-06-17T10:31:07.9123356 - Tentativo di accesso RIUSCITO con username: fortunAdmin
+2021-06-17T10:31:59.6096222 - Password caricata con successo!
+2021-06-17T10:31:59.6942679 - Caricato menu da DB con successo
+2021-06-17T10:31:59.71327 - Caricati sconti da DB con successo
+2021-06-17T10:31:59.7342699 - Caricate zone da DB con successo
+2021-06-17T10:32:12.2202804 - Password caricata con successo!
+2021-06-17T10:32:12.2992774 - Caricato menu da DB con successo
+2021-06-17T10:32:12.3152788 - Caricati sconti da DB con successo
+2021-06-17T10:32:12.3352784 - Caricate zone da DB con successo
+2021-06-17T10:32:36.2194576 - Tentativo di accesso con username: fortunAdmin
+2021-06-17T10:32:36.225458 - Tentativo di accesso RIUSCITO con username: fortunAdmin
+2021-06-17T10:32:37.9069412 - Tentativo di accesso con username: fortunAdmin
+2021-06-17T10:32:37.9129412 - Tentativo di accesso RIUSCITO con username: fortunAdmin
+2021-06-17T10:35:39.380996 - Password caricata con successo!
+2021-06-17T10:35:39.4749969 - Caricato menu da DB con successo
+2021-06-17T10:35:39.4979965 - Caricati sconti da DB con successo
+2021-06-17T10:35:39.5199955 - Caricate zone da DB con successo
+2021-06-17T10:36:23.7703164 - Password caricata con successo!
+2021-06-17T10:36:23.8473166 - Caricato menu da DB con successo
+2021-06-17T10:36:23.8653173 - Caricati sconti da DB con successo
+2021-06-17T10:36:23.8873544 - Caricate zone da DB con successo
+2021-06-17T10:36:41.0610831 - Richiesta a API Google per Geocoding di 'Via Maggi di Montecchi'...
+2021-06-17T10:36:41.8677092 - Richiesta geocoding per 'Via Maggi di Montecchi' ricevuta da fuori città, possibile spam?
+2021-06-17T10:36:41.8737089 - Richiesta geocoding riuscita: risultato (44,698662, 10,442611)
+2021-06-17T10:36:51.9200421 - Richiesta a API Google per Geocoding di 'Gianni morandi'...
+2021-06-17T10:36:52.4550594 - Richiesta geocoding riuscita: risultato (44,488541, 11,348225)
+2021-06-17T10:37:24.2663448 - 0:0:0:0:0:0:0:1: pagamento
+2021-06-17T10:37:26.5311985 - 0:0:0:0:0:0:0:1: creaOrdine(tipo: ORDINAZ_DOMICILIO, data: 2021-06-18T12:41)
+2021-06-17T10:37:26.5371996 - Richiesta a API Google per Geocoding di 'Via Cartoleria, 42, 40124 Bologna BO, Italy'...
+2021-06-17T10:37:27.0037094 - Richiesta geocoding riuscita: risultato (44,488541, 11,348225)
+2021-06-17T10:38:56.163831 - Password caricata con successo!
+2021-06-17T10:38:56.2468312 - Caricato menu da DB con successo
+2021-06-17T10:38:56.2658321 - Caricati sconti da DB con successo
+2021-06-17T10:38:56.2968321 - Caricate zone da DB con successo
+2021-06-17T10:39:30.3351959 - Password caricata con successo!
+2021-06-17T10:39:30.4211987 - Caricato menu da DB con successo
+2021-06-17T10:39:30.4451968 - Caricati sconti da DB con successo
+2021-06-17T10:39:30.4661958 - Caricate zone da DB con successo
+2021-06-17T10:39:43.8964829 - Password caricata con successo!
+2021-06-17T10:39:43.9899858 - Caricato menu da DB con successo
+2021-06-17T10:39:44.0069871 - Caricati sconti da DB con successo
+2021-06-17T10:39:44.027986 - Caricate zone da DB con successo
+2021-06-17T10:40:07.7351296 - Password caricata con successo!
+2021-06-17T10:40:07.8311291 - Caricato menu da DB con successo
+2021-06-17T10:40:07.8467428 - Caricati sconti da DB con successo
+2021-06-17T10:40:07.8667424 - Caricate zone da DB con successo
+2021-06-17T10:40:19.5454219 - Richiesta a API Google per Geocoding di 'Via Cartoleria, 42, 40124 Bologna BO, Italy'...
+2021-06-17T10:40:19.7134058 - Richiesta geocoding riuscita: risultato (44,488541, 11,348225)
+2021-06-17T10:40:42.8009144 - 0:0:0:0:0:0:0:1: pagamento
+2021-06-17T10:40:47.28642 - 0:0:0:0:0:0:0:1: creaOrdine(tipo: ORDINAZ_DOMICILIO, data: 2021-06-18T12:42)
+2021-06-17T10:40:47.2924198 - Richiesta a API Google per Geocoding di 'Via Cartoleria, 42, 40124 Bologna BO, Italy'...
+2021-06-17T10:40:47.3559831 - Richiesta geocoding riuscita: risultato (44,488541, 11,348225)
