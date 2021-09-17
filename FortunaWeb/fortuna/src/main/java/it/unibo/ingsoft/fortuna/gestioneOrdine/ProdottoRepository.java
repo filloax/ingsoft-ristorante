@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna.gestioneordine;
+package it.unibo.ingsoft.fortuna.gestioneOrdine;
 
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package it.unibo.ingsoft.fortunagest.sconti;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

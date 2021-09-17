@@ -1,9 +1,7 @@
 package it.unibo.ingsoft.fortuna.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -11,25 +9,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import it.unibo.ingsoft.fortuna.SpringContext;
-import it.unibo.ingsoft.fortuna.prodotti.IGestioneProdotti;
-
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
-
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 @JsonInclude(Include.NON_NULL)
 @Entity

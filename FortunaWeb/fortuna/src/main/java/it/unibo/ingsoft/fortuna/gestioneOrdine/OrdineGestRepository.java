@@ -1,14 +1,12 @@
-package it.unibo.ingsoft.fortuna.gestioneordine;
+package it.unibo.ingsoft.fortuna.gestioneOrdine;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
-
-import it.unibo.ingsoft.fortuna.model.Prodotto;
-import it.unibo.ingsoft.fortuna.model.ProdottoOrdine;
-import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
 import org.springframework.data.jpa.repository.Query;
+
+import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
 
 public interface OrdineGestRepository extends JpaRepository<Ordine, Integer> {
 

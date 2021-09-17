@@ -1,15 +1,13 @@
 package it.unibo.ingsoft.fortunagest;
 
-import java.io.File;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import jfxtras.styles.jmetro.JMetro;
-import jfxtras.styles.jmetro.Style;
 
 @Component
 public class StageListener implements ApplicationListener<StageReadyEvent> {
@@ -55,10 +53,8 @@ public class StageListener implements ApplicationListener<StageReadyEvent> {
             //             JsonNode nominativo = root.path("nominativo");
 
             //         } catch (JsonMappingException e) {
-            //             // TODO Auto-generated catch block
             //             e.printStackTrace();
             //         } catch (JsonProcessingException e) {
-            //             // TODO Auto-generated catch block
             //             e.printStackTrace();
             //         }
             //     }

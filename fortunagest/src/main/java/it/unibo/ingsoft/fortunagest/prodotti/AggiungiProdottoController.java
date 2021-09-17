@@ -1,8 +1,6 @@
 package it.unibo.ingsoft.fortunagest.prodotti;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.function.Function;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -12,7 +10,6 @@ import it.unibo.ingsoft.fortunagest.DoubleTextListener;
 import it.unibo.ingsoft.fortunagest.StageController;
 import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import it.unibo.ingsoft.fortunagest.model.DatiProdotto;
-import it.unibo.ingsoft.fortunagest.model.DatiSconto;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;

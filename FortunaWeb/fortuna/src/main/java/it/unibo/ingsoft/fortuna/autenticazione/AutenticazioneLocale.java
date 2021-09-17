@@ -1,7 +1,6 @@
 package it.unibo.ingsoft.fortuna.autenticazione;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -9,14 +8,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm;
 import org.springframework.stereotype.Service;
 
 import it.unibo.ingsoft.fortuna.AbstractService;

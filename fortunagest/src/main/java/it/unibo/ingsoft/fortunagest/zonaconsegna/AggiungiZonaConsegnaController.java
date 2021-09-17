@@ -1,7 +1,6 @@
 package it.unibo.ingsoft.fortunagest.zonaconsegna;
 
 import java.io.IOException;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpEntity;
@@ -13,13 +12,10 @@ import it.unibo.ingsoft.fortunagest.StageController;
 import it.unibo.ingsoft.fortunagest.auth.AuthSingleton;
 import it.unibo.ingsoft.fortunagest.model.DatiZonaConsegnaPunti;
 import it.unibo.ingsoft.fortunagest.model.Vector;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;

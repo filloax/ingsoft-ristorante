@@ -1,12 +1,10 @@
 package it.unibo.ingsoft.fortunagest.zonaconsegna;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import it.unibo.ingsoft.fortunagest.StageController;

@@ -1,6 +1,7 @@
 package it.unibo.ingsoft.fortuna.model;
 
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,10 +11,8 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.unibo.ingsoft.fortuna.model.richiesta.Ordine;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;

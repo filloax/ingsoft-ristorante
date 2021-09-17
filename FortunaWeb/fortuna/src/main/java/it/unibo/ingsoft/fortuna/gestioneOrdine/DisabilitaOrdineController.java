@@ -1,4 +1,4 @@
-package it.unibo.ingsoft.fortuna.gestioneordine;
+package it.unibo.ingsoft.fortuna.gestioneOrdine;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.unibo.ingsoft.fortuna.AbstractController;
-import it.unibo.ingsoft.fortuna.gestionePrenotazione.DisabilitaPrenotazioneService;
 import it.unibo.ingsoft.fortuna.model.Prodotto;
 import it.unibo.ingsoft.fortuna.model.attivazione.PeriodoDisattivazione;
 import it.unibo.ingsoft.fortuna.model.attivazione.TipoDisattivazione;
